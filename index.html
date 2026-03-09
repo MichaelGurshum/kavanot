@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
 <meta charset="UTF-8">
@@ -6,7 +6,7 @@
 <title>שם לפי שעה</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Hebrew:wght@400;700&display=swap" rel="stylesheet">
 <style>
-body{
+body {
   margin:0;
   height:100vh;
   display:flex;
@@ -17,21 +17,40 @@ body{
   overflow:hidden;
   color:white;
   padding-top:20px;
-  background: radial-gradient(circle at center,#0a0f2c,#000);
+  background: radial-gradient(circle at center,#0a0f2c,#000033);
   transition: background 1s;
 }
 
 /* TITLE */
-#title{
+#title {
   font-size:2rem;
   margin:20px 0;
   text-align:center;
   z-index:1;
   text-shadow:0 0 15px #4169e1;
 }
-#hourRange{
+#hourRange {
   dir:ltr;
 }
+
+/* STARS */
+#stars{
+  position:absolute;
+  width:100%;
+  height:100%;
+  top:0;
+  left:0;
+  pointer-events:none;
+  z-index:-1;
+}
+.star{
+  position:absolute;
+  background:white;
+  border-radius:50%;
+  opacity:0.8;
+  animation:twinkle 2s infinite alternate;
+}
+@keyframes twinkle{0%{opacity:0.2}100%{opacity:1}}
 
 /* CLOCK */
 #clockContainer{
@@ -39,7 +58,7 @@ body{
   width:320px;
   height:320px;
   border-radius:50%;
-  background: radial-gradient(circle at center,#002366 0%, #001144 100%);
+  background: radial-gradient(circle at 50% 50%, #111144,#000022);
   box-shadow:
     inset -12px -12px 25px rgba(0,0,0,0.5),
     inset 12px 12px 25px rgba(65,105,225,0.2),
@@ -51,8 +70,6 @@ body{
   overflow:hidden;
   transition: background 1s;
 }
-
-/* DIAL TEXTURE */
 #clockContainer::before{
   content:"";
   position:absolute;
@@ -68,25 +85,6 @@ body{
   );
   pointer-events:none;
 }
-
-/* LIGHT RAY */
-#lightRay{
-  position:absolute;
-  width:100%;
-  height:100%;
-  border-radius:50%;
-  background: linear-gradient(90deg, rgba(255,255,255,0.0) 0%, rgba(255,255,255,0.15) 50%, rgba(255,255,255,0.0) 100%);
-  transform: rotate(45deg);
-  pointer-events:none;
-  animation:rayMove 8s infinite linear;
-  mix-blend-mode:screen;
-}
-@keyframes rayMove{
-  0%{transform:rotate(45deg) translateX(-150%);}
-  100%{transform:rotate(45deg) translateX(150%);}
-}
-
-/* BEZEL */
 #clockContainer::after{
   content:"";
   position:absolute;
@@ -96,12 +94,23 @@ body{
   border:12px solid #4169e1;
   box-shadow: inset 0 0 8px rgba(255,255,255,0.3), 0 0 10px rgba(0,0,0,0.7);
   pointer-events:none;
-  animation:bezelShimmer 4s infinite linear;
 }
-@keyframes bezelShimmer{
-  0%{box-shadow: inset 0 0 8px rgba(255,255,255,0.1), 0 0 10px rgba(0,0,0,0.7);}
-  50%{box-shadow: inset 0 0 16px rgba(255,255,255,0.3), 0 0 12px rgba(0,0,0,0.8);}
-  100%{box-shadow: inset 0 0 8px rgba(255,255,255,0.1), 0 0 10px rgba(0,0,0,0.7);}
+
+/* LIGHT RAY */
+#lightRay{
+  position:absolute;
+  width:100%;
+  height:100%;
+  border-radius:50%;
+  background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.15) 50%, rgba(255,255,255,0) 100%);
+  transform: rotate(45deg);
+  pointer-events:none;
+  animation:rayMove 8s infinite linear;
+  mix-blend-mode:screen;
+}
+@keyframes rayMove{
+  0%{transform:rotate(45deg) translateX(-150%);}
+  100%{transform:rotate(45deg) translateX(150%);}
 }
 
 /* CLOCK NUMBERS */
@@ -151,13 +160,12 @@ body{
   top:50%; left:50%;
   transform:translate(-50%,-50%);
   box-shadow:0 4px 8px rgba(0,0,0,0.6), inset 0 2px 4px rgba(173,216,230,0.5);
-  z-index:1;
 }
 
 /* DIGITAL CLOCK */
 #digitalClock{
   position:absolute;
-  top:45%;
+  top:50%;
   left:50%;
   transform:translate(-50%,-50%);
   font-size:2.4rem;
@@ -183,7 +191,7 @@ body{
   text-shadow:0 0 20px #87cefa,0 0 60px #4169e1;
 }
 
-/* HOUR TABLE */
+/* TABLE */
 #hourTable{
   position:absolute;
   bottom:0;
@@ -204,15 +212,14 @@ body{
   <div id="minuteHand" class="hand"></div>
   <div id="secondHand" class="hand"></div>
   <div id="centerDot"></div>
-  <div id="digitalClock"></div>
   <div id="lightRay"></div>
+  <div id="digitalClock"></div>
 </div>
 
 <div id="title">שם לפי שעה <span id="hourRange" dir="ltr"></span></div>
 <div id="message"></div>
 <div id="stars"></div>
 <div id="hourTable"></div>
-
 <audio id="chime" src="chime.mp3" preload="auto"></audio>
 
 <script>
@@ -225,20 +232,35 @@ const titleEl=document.getElementById("title");
 const hourRangeEl=document.getElementById("hourRange");
 const clockEl=document.getElementById("clockContainer");
 const digitalClockEl=document.getElementById("digitalClock");
-const chimeEl=document.getElementById("chime");
+const hourTableEl=document.getElementById("hourTable");
+const chimeAudio=document.getElementById("chime");
 
+// --- Clock functions ---
+function updateClock(){
+  const now=new Date();
+  const sec=now.getSeconds()+now.getMilliseconds()/1000;
+  const min=now.getMinutes()+sec/60;
+  const hr=(now.getHours()%12)+min/60;
+  document.getElementById("secondHand").style.transform=`translateX(-50%) rotate(${sec*6}deg)`;
+  document.getElementById("minuteHand").style.transform=`translateX(-50%) rotate(${min*6}deg)`;
+  document.getElementById("hourHand").style.transform=`translateX(-50%) rotate(${hr*30}deg)`;
+  digitalClockEl.innerText=`${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}:${now.getSeconds().toString().padStart(2,'0')}`;
+}
+setInterval(updateClock,50);
+
+// --- Hour names ---
 function getNameByHour(hour){
   return (hour>=18||hour<6)?{name:hour>=18?nightNames[hour-18]:nightNames[hour+6],type:"night"}:{name:dayNames[hour-6],type:"day"};
 }
 
-function updateTitle(hour){
-  let next=(hour+1)%24;
-  let start=hour.toString().padStart(2,'0')+":00";
-  let end=next.toString().padStart(2,'0')+":00";
-  hourRangeEl.innerText=`(${start} - ${end})`;
-}
-
-function updateSky(type){
+function updateName(){
+  const hour=new Date().getHours();
+  const {name,type}=getNameByHour(hour);
+  messageEl.innerText=name;
+  messageEl.className=type;
+  const nextHour=(hour+1)%24;
+  hourRangeEl.innerText=`(${hour}:00 - ${nextHour}:00)`;
+  // Update sky
   const stars=document.getElementById("stars");
   if(type==="day"){
     document.body.style.background="radial-gradient(circle at center,#e6f0ff,#99ccff)";
@@ -250,36 +272,32 @@ function updateSky(type){
     stars.style.display="block";
   }
 }
+setInterval(updateName,60000);
+updateName();
 
-function updateName(){
-  let hour=new Date().getHours();
-  let {name,type}=getNameByHour(hour);
-  updateTitle(hour);
-  updateSky(type);
-  messageEl.style.opacity=0;
-  setTimeout(()=>{
-    messageEl.innerText=name; 
-    messageEl.className=type;
-    messageEl.style.opacity=1;
-  },400);
-}
-
-// --- Clock hands ---
-function updateClock(){
-  const now=new Date();
-  const sec=now.getSeconds()+now.getMilliseconds()/1000;
-  const min=now.getMinutes()+sec/60;
-  const hr=(now.getHours()%12)+min/60;
-
-  document.getElementById("secondHand").style.transform=`translateX(-50%) rotate(${sec*6}deg)`;
-  document.getElementById("minuteHand").style.transform=`translateX(-50%) rotate(${min*6}deg)`;
-  document.getElementById("hourHand").style.transform=`translateX(-50%) rotate(${hr*30}deg)`;
-  digitalClockEl.innerText=`${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}:${now.getSeconds().toString().padStart(2,'0')}`;
-
-  // play chime at 0 seconds of the hour
-  if(now.getMinutes()===0 && Math.floor(now.getSeconds())===0){
-    chimeEl.play();
+// --- Hour table ---
+function generateHourTable(){
+  hourTableEl.innerHTML="";
+  for(let h=0;h<24;h++){
+    const {name}=getNameByHour(h);
+    const span=document.createElement("span");
+    span.innerText=`${h.toString().padStart(2,'0')}:00 - ${name}`;
+    hourTableEl.appendChild(span);
   }
+}
+generateHourTable();
+
+// --- Stars ---
+const stars=document.getElementById("stars"); 
+for(let i=0;i<100;i++){
+  const star=document.createElement("div"); 
+  star.className="star"; 
+  let size=Math.random()*3+1; 
+  star.style.width=size+"px"; 
+  star.style.height=size+"px"; 
+  star.style.top=Math.random()*100+"%"; 
+  star.style.left=Math.random()*100+"%"; 
+  stars.appendChild(star);
 }
 
 // --- Clock numbers ---
@@ -297,39 +315,17 @@ function createClockNumbers(){
     clockEl.appendChild(num);
   }
 }
+createClockNumbers();
 
-// --- Stars ---
-const stars=document.getElementById("stars");
-for(let i=0;i<100;i++){
-  const star=document.createElement("div");
-  star.className="star";
-  let size=Math.random()*3+1;
-  star.style.width=size+"px";
-  star.style.height=size+"px";
-  star.style.top=Math.random()*100+"%";
-  star.style.left=Math.random()*100+"%";
-  stars.appendChild(star);
-}
-
-// --- Hour table ---
-function generateHourTable(){
-  const table=document.getElementById("hourTable");
-  table.innerHTML="";
-  for(let h=0;h<24;h++){
-    const {name}=getNameByHour(h);
-    const span=document.createElement("span");
-    span.innerText=`${h.toString().padStart(2,'0')}:00 - ${name}`;
-    table.appendChild(span);
+// --- Hourly chime ---
+function playChime(){
+  const now=new Date();
+  if(now.getMinutes()===0 && now.getSeconds()===0){
+    chimeAudio.play().catch(e=>console.log("Chime error:",e));
   }
 }
+setInterval(playChime,1000);
 
-// --- Initialize ---
-createClockNumbers();
-updateName();
-updateClock();
-generateHourTable();
-setInterval(updateClock,50);
-setInterval(updateName,60000);
 </script>
 </body>
 </html>

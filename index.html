@@ -6,51 +6,54 @@
 <title>שם לפי שעה</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Hebrew:wght@400;700&display=swap" rel="stylesheet">
 <style>
-/* --- BODY --- */
-body {
-  margin: 0;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
-  font-family: 'Noto Serif Hebrew', serif;
-  overflow: hidden;
-  color: white;
-  padding-top: 20px;
-  background: radial-gradient(circle at center,#0a0f2c,#000033);
+body{
+  margin:0;
+  height:100vh;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-start;
+  align-items:center;
+  font-family:'Noto Serif Hebrew',serif;
+  overflow:hidden;
+  color:white;
+  padding-top:20px;
+  background: radial-gradient(circle at center,#0a0f2c,#000);
   transition: background 1s;
 }
 
-/* --- TITLE --- */
-#title {
-  font-size: 2rem;
-  margin: 20px 0;
-  text-align: center;
-  z-index: 1;
-  text-shadow: 0 0 15px #4169e1;
+/* TITLE */
+#title{
+  font-size:2rem;
+  margin:20px 0;
+  text-align:center;
+  z-index:1;
+  text-shadow:0 0 15px #4169e1;
 }
-#hourRange { dir: ltr; }
+#hourRange{
+  dir:ltr;
+}
 
-/* --- CLOCK --- */
-#clockContainer {
-  position: relative;
-  width: 320px;
-  height: 320px;
-  border-radius: 50%;
-  background: radial-gradient(circle at center, #002366 0%, #001144 100%);
+/* CLOCK */
+#clockContainer{
+  position:relative;
+  width:320px;
+  height:320px;
+  border-radius:50%;
+  background: radial-gradient(circle at center,#002366 0%, #001144 100%);
   box-shadow:
     inset -12px -12px 25px rgba(0,0,0,0.5),
     inset 12px 12px 25px rgba(65,105,225,0.2),
     0 12px 35px rgba(0,0,0,0.7);
-  margin-bottom: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
+  margin-bottom:20px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
   transition: background 1s;
 }
-#clockContainer::before {
+
+/* DIAL TEXTURE */
+#clockContainer::before{
   content:"";
   position:absolute;
   width:100%;
@@ -65,22 +68,26 @@ body {
   );
   pointer-events:none;
 }
-#lightRay {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.15) 50%, rgba(255,255,255,0) 100%);
+
+/* LIGHT RAY */
+#lightRay{
+  position:absolute;
+  width:100%;
+  height:100%;
+  border-radius:50%;
+  background: linear-gradient(90deg, rgba(255,255,255,0.0) 0%, rgba(255,255,255,0.15) 50%, rgba(255,255,255,0.0) 100%);
   transform: rotate(45deg);
   pointer-events:none;
-  animation: rayMove 8s infinite linear;
-  mix-blend-mode: screen;
+  animation:rayMove 8s infinite linear;
+  mix-blend-mode:screen;
 }
-@keyframes rayMove {
-  0% { transform: rotate(45deg) translateX(-150%);}
-  100% { transform: rotate(45deg) translateX(150%);}
+@keyframes rayMove{
+  0%{transform:rotate(45deg) translateX(-150%);}
+  100%{transform:rotate(45deg) translateX(150%);}
 }
-#clockContainer::after {
+
+/* BEZEL */
+#clockContainer::after{
   content:"";
   position:absolute;
   width:100%;
@@ -89,25 +96,25 @@ body {
   border:12px solid #4169e1;
   box-shadow: inset 0 0 8px rgba(255,255,255,0.3), 0 0 10px rgba(0,0,0,0.7);
   pointer-events:none;
-  animation: bezelShimmer 4s infinite linear;
+  animation:bezelShimmer 4s infinite linear;
 }
-@keyframes bezelShimmer {
+@keyframes bezelShimmer{
   0%{box-shadow: inset 0 0 8px rgba(255,255,255,0.1), 0 0 10px rgba(0,0,0,0.7);}
   50%{box-shadow: inset 0 0 16px rgba(255,255,255,0.3), 0 0 12px rgba(0,0,0,0.8);}
   100%{box-shadow: inset 0 0 8px rgba(255,255,255,0.1), 0 0 10px rgba(0,0,0,0.7);}
 }
 
-/* --- CLOCK NUMBERS --- */
-.number {
-  position: absolute;
-  font-weight: bold;
-  font-size: 1.8rem;
-  width: 30px;
-  height: 30px;
-  line-height: 30px;
-  text-align: center;
-  transform-origin: center center;
-  color: #c0e0ff;
+/* CLOCK NUMBERS */
+.number{
+  position:absolute;
+  font-weight:bold;
+  font-size:1.8rem;
+  width:30px;
+  height:30px;
+  line-height:30px;
+  text-align:center;
+  transform-origin:center center;
+  color:#c0e0ff;
   background: linear-gradient(135deg, #e0f7ff, #4169e1);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -117,75 +124,67 @@ body {
     0 0 5px #aaddff,
     0 0 10px #87cefa,
     0 0 20px #4169e1;
-  animation: markerShimmer 3s infinite linear;
-}
-@keyframes markerShimmer {
-  0%,100% { text-shadow:0 1px 1px rgba(0,0,0,0.5),0 -1px 1px rgba(255,255,255,0.6),0 0 5px #aaddff,0 0 10px #87cefa,0 0 20px #4169e1; }
-  50% { text-shadow:0 2px 2px rgba(0,0,0,0.6),0 -2px 2px rgba(255,255,255,0.8),0 0 8px #b0e0ff,0 0 15px #87cefa,0 0 30px #4169e1; }
 }
 
-/* --- CLOCK HANDS --- */
-.hand {
-  position: absolute;
-  bottom: 50%;
-  left: 50%;
-  transform-origin: bottom center;
-  border-radius: 3px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+/* HANDS */
+.hand{
+  position:absolute;
+  bottom:50%;
+  left:50%;
+  transform-origin:bottom center;
+  border-radius:3px;
+  box-shadow:0 2px 6px rgba(0,0,0,0.5);
   transition: transform 0.05s linear;
   background: linear-gradient(45deg,#87cefa,#1e3aa0);
-  animation: handShimmer 3s infinite;
 }
-#hourHand { width:12px; height:70px;}
-#minuteHand { width:8px; height:100px;}
-#secondHand { width:3px; height:110px; background:#1e90ff; box-shadow:0 1px 3px rgba(0,0,0,0.5);}
-@keyframes handShimmer {
-  0%,100% { background-position:0 0;}
-  50% { background-position:50% 50%;}
+#hourHand{width:12px;height:70px;}
+#minuteHand{width:8px;height:100px;}
+#secondHand{width:3px;height:110px;background:#1e90ff;box-shadow:0 1px 3px rgba(0,0,0,0.5);}
+
+/* CENTER DOT */
+#centerDot{
+  position:absolute;
+  width:18px;
+  height:18px;
+  background:radial-gradient(circle,#87cefa,#1e3aa0);
+  border-radius:50%;
+  top:50%; left:50%;
+  transform:translate(-50%,-50%);
+  box-shadow:0 4px 8px rgba(0,0,0,0.6), inset 0 2px 4px rgba(173,216,230,0.5);
+  z-index:1;
 }
 
-/* --- CENTER PIN --- */
-#centerDot {
-  position: absolute;
-  width: 18px;
-  height: 18px;
-  background: radial-gradient(circle,#87cefa,#1e3aa0);
-  border-radius: 50%;
-  top: 50%; left: 50%;
-  transform: translate(-50%,-50%);
-  box-shadow: 0 4px 8px rgba(0,0,0,0.6), inset 0 2px 4px rgba(173,216,230,0.5);
+/* DIGITAL CLOCK */
+#digitalClock{
+  position:absolute;
+  top:45%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  font-size:2.4rem;
+  text-shadow:0 0 20px #4169e1;
+  z-index:2;
 }
 
-/* --- DIGITAL CLOCK INSIDE --- */
-#digitalClock {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 2.4rem;
-  text-shadow: 0 0 20px #4169e1;
-  z-index: 1;
+/* NAME */
+#message{
+  font-size:5rem;
+  letter-spacing:12px;
+  opacity:0;
+  transition:opacity 1s;
+  z-index:1;
+  margin:20px 0;
 }
-
-/* --- NAME --- */
-#message {
-  font-size: 5rem;
-  letter-spacing: 12px;
-  opacity: 0;
-  transition: opacity 1s;
-  z-index: 1;
-}
-.day {
+.day{
   color:#add8e6;
   text-shadow:0 0 20px #add8e6,0 0 60px #87cefa;
 }
-.night {
+.night{
   color:#87cefa;
   text-shadow:0 0 20px #87cefa,0 0 60px #4169e1;
 }
 
-/* --- BOTTOM TABLE --- */
-#hourTable {
+/* HOUR TABLE */
+#hourTable{
   position:absolute;
   bottom:0;
   width:100%;
@@ -196,26 +195,7 @@ body {
   font-size:0.8rem;
   text-align:center;
 }
-#hourTable span { display:inline-block; padding:0 10px; }
-
-/* --- STARS --- */
-#stars {
-  position:absolute;
-  width:100%;
-  height:100%;
-  top:0;
-  left:0;
-  pointer-events:none;
-  z-index:-1;
-}
-.star {
-  position:absolute;
-  background:white;
-  border-radius:50%;
-  opacity:0.8;
-  animation:twinkle 2s infinite alternate;
-}
-@keyframes twinkle {0%{opacity:0.2}100%{opacity:1}}
+#hourTable span{display:inline-block;padding:0 10px;}
 </style>
 </head>
 <body>
@@ -224,8 +204,8 @@ body {
   <div id="minuteHand" class="hand"></div>
   <div id="secondHand" class="hand"></div>
   <div id="centerDot"></div>
-  <div id="lightRay"></div>
   <div id="digitalClock"></div>
+  <div id="lightRay"></div>
 </div>
 
 <div id="title">שם לפי שעה <span id="hourRange" dir="ltr"></span></div>
@@ -233,17 +213,19 @@ body {
 <div id="stars"></div>
 <div id="hourTable"></div>
 
-<audio id="chimeAudio" src="chime.mp3"></audio>
+<audio id="chime" src="chime.mp3" preload="auto"></audio>
 
 <script>
-// --- NAMES ---
+// --- Names ---
 const nightNames=["אדני","אדינ","אניד","דניא","דנאי","דינא","נדאי","נדיא","נאדי","דאינ","דאני","דיאנ"];
 const dayNames=["יהוה","יההו","יוהה","הוהי","הויה","ההוי","והיה","וההי","ויהה","היהו","היוה","ההיו"];
+
 const messageEl=document.getElementById("message");
 const titleEl=document.getElementById("title");
 const hourRangeEl=document.getElementById("hourRange");
 const clockEl=document.getElementById("clockContainer");
-const chimeAudio=document.getElementById("chimeAudio");
+const digitalClockEl=document.getElementById("digitalClock");
+const chimeEl=document.getElementById("chime");
 
 function getNameByHour(hour){
   return (hour>=18||hour<6)?{name:hour>=18?nightNames[hour-18]:nightNames[hour+6],type:"night"}:{name:dayNames[hour-6],type:"day"};
@@ -262,14 +244,13 @@ function updateSky(type){
     document.body.style.background="radial-gradient(circle at center,#e6f0ff,#99ccff)";
     clockEl.style.background="radial-gradient(circle at 50% 50%, #d9f0ff,#4169e1)";
     stars.style.display="none";
-  } else {
+  }else{
     document.body.style.background="radial-gradient(circle at center,#0a0f2c,#000033)";
     clockEl.style.background="radial-gradient(circle at 50% 50%, #111144,#000022)";
     stars.style.display="block";
   }
 }
 
-let lastHour = -1;
 function updateName(){
   let hour=new Date().getHours();
   let {name,type}=getNameByHour(hour);
@@ -277,32 +258,31 @@ function updateName(){
   updateSky(type);
   messageEl.style.opacity=0;
   setTimeout(()=>{
-    messageEl.innerText=name;
+    messageEl.innerText=name; 
     messageEl.className=type;
     messageEl.style.opacity=1;
   },400);
-
-  // Play chime once per hour
-  if(hour !== lastHour){
-    chimeAudio.play().catch(()=>{});
-    lastHour = hour;
-    showNotification(name);
-  }
 }
 
-// --- CLOCK ---
+// --- Clock hands ---
 function updateClock(){
   const now=new Date();
   const sec=now.getSeconds()+now.getMilliseconds()/1000;
   const min=now.getMinutes()+sec/60;
   const hr=(now.getHours()%12)+min/60;
+
   document.getElementById("secondHand").style.transform=`translateX(-50%) rotate(${sec*6}deg)`;
   document.getElementById("minuteHand").style.transform=`translateX(-50%) rotate(${min*6}deg)`;
   document.getElementById("hourHand").style.transform=`translateX(-50%) rotate(${hr*30}deg)`;
-  document.getElementById("digitalClock").innerText=`${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}:${now.getSeconds().toString().padStart(2,'0')}`;
+  digitalClockEl.innerText=`${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}:${now.getSeconds().toString().padStart(2,'0')}`;
+
+  // play chime at 0 seconds of the hour
+  if(now.getMinutes()===0 && Math.floor(now.getSeconds())===0){
+    chimeEl.play();
+  }
 }
 
-// --- NUMBERS ---
+// --- Clock numbers ---
 function createClockNumbers(){
   for(let i=1;i<=12;i++){
     const num=document.createElement("div");
@@ -318,7 +298,7 @@ function createClockNumbers(){
   }
 }
 
-// --- STARS ---
+// --- Stars ---
 const stars=document.getElementById("stars");
 for(let i=0;i<100;i++){
   const star=document.createElement("div");
@@ -331,9 +311,10 @@ for(let i=0;i<100;i++){
   stars.appendChild(star);
 }
 
-// --- BOTTOM TABLE ---
+// --- Hour table ---
 function generateHourTable(){
   const table=document.getElementById("hourTable");
+  table.innerHTML="";
   for(let h=0;h<24;h++){
     const {name}=getNameByHour(h);
     const span=document.createElement("span");
@@ -342,36 +323,13 @@ function generateHourTable(){
   }
 }
 
-// --- NOTIFICATIONS ---
-function requestNotificationPermission(){
-  if(!("Notification" in window)) return;
-  if(Notification.permission==="default"){
-    Notification.requestPermission().then(p=>{
-      if(p==="granted") console.log("Notifications granted");
-    });
-  }
-}
-function showNotification(name){
-  if(Notification.permission==="granted"){
-    new Notification("שם לפי שעה", { body: `שם השעה: ${name}`, icon:"/icon.png" });
-  }
-}
-
-// --- INIT ---
+// --- Initialize ---
 createClockNumbers();
 updateName();
 updateClock();
 generateHourTable();
 setInterval(updateClock,50);
-setInterval(updateName,1000*60);
-requestNotificationPermission();
-
-// --- SERVICE WORKER ---
-if('serviceWorker' in navigator){
-  navigator.serviceWorker.register('sw.js').then(reg=>{
-    console.log("Service Worker registered", reg);
-  }).catch(err=>console.error("SW failed:", err));
-}
+setInterval(updateName,60000);
 </script>
 </body>
 </html>

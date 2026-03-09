@@ -3,58 +3,141 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>שם לפי שעה - Sacred Scroll</title>
-<link rel="manifest" href="manifest.json">
+<title>שם לפי שעה</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Hebrew:wght@400;700&display=swap" rel="stylesheet">
 <style>
-/* Same styling as before */
-body { margin:0; height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center; background: radial-gradient(circle at center, #0a0f2c 0%, #000 70%), url('https://i.imgur.com/yVhfhwK.png') center/cover no-repeat; font-family: 'Noto Serif Hebrew', Arial, sans-serif; color:white; overflow:hidden; padding:20px;}
-h1 { font-weight:400; letter-spacing:4px; opacity:0.7; font-size:2.5rem; text-shadow:0 0 10px #fff; margin-bottom:40px;}
-#message { font-family:'Noto Serif Hebrew', serif; font-size:5rem; letter-spacing:12px; text-align:center; opacity:0; transition:opacity 1s ease-in-out;}
-.night { color:#8ad1ff; text-shadow:0 0 5px #8ad1ff,0 0 15px #8ad1ff,0 0 30px #5abfff,0 0 60px #4fa8ff,0 0 100px #3b82ff; animation:glowPulse 3s ease-in-out infinite alternate;}
-.day { color:#ffd700; text-shadow:0 0 5px #ffd700,0 0 15px #ffd700,0 0 30px #ffcc00,0 0 60px #ffb800,0 0 100px #ffaa00; animation:glowPulse 3s ease-in-out infinite alternate;}
-@keyframes glowPulse {from{text-shadow:0 0 5px currentColor,0 0 15px currentColor,0 0 30px currentColor,0 0 60px currentColor,0 0 100px currentColor;} to{text-shadow:0 0 10px currentColor,0 0 25px currentColor,0 0 50px currentColor,0 0 100px currentColor,0 0 200px currentColor;}}
-#stars { position:absolute;width:100%;height:100%;top:0;left:0;background:transparent;pointer-events:none; z-index:-1;}
-.star {position:absolute;background:white;border-radius:50%;opacity:0.8;animation:twinkle 2s infinite alternate;}
-@keyframes twinkle{0%{opacity:0.2;transform:scale(0.5);}50%{opacity:1;transform:scale(1);}100%{opacity:0.2;transform:scale(0.5);}}
-#hourTable { position:absolute;bottom:0;width:100%;background:rgba(0,0,0,0.2);overflow-x:auto;white-space:nowrap;padding:5px 0;font-size:0.8rem;text-align:center;color:rgba(255,255,255,0.6);}
+body{
+  margin:0; height:100vh; display:flex; flex-direction:column; justify-content:flex-start; align-items:center;
+  font-family:'Noto Serif Hebrew',serif; overflow:hidden; color:white; padding-top:20px;
+  background: radial-gradient(circle at center,#0a0f2c,#000); transition: background 1s;
+}
+#title{ font-size:2rem; margin:20px 0; text-align:center; z-index:1; text-shadow:0 0 15px #4169e1;}
+#hourRange{ dir:ltr; }
+#stars{ position:absolute;width:100%;height:100%;top:0;left:0; pointer-events:none; z-index:-1;}
+.star{ position:absolute; background:white; border-radius:50%; opacity:0.8; animation:twinkle 2s infinite alternate;}
+@keyframes twinkle{0%{opacity:0.2}100%{opacity:1}}
+#clockContainer{
+  position:relative; width:320px; height:320px; border-radius:50%;
+  background: radial-gradient(circle at center,#002366 0%, #001144 100%);
+  box-shadow: inset -12px -12px 25px rgba(0,0,0,0.5), inset 12px 12px 25px rgba(65,105,225,0.2), 0 12px 35px rgba(0,0,0,0.7);
+  margin-bottom:20px; display:flex; align-items:center; justify-content:center; overflow:hidden; transition: background 1s;
+}
+#clockContainer::before{
+  content:""; position:absolute; width:100%; height:100%; border-radius:50%;
+  background: repeating-linear-gradient(0deg, rgba(255,255,255,0.03), rgba(255,255,255,0.03) 1px, transparent 1px, transparent 2px);
+  pointer-events:none;
+}
+#lightRay{ position:absolute; width:100%; height:100%; border-radius:50%; background: linear-gradient(90deg, rgba(255,255,255,0.0) 0%, rgba(255,255,255,0.15) 50%, rgba(255,255,255,0.0) 100%); transform: rotate(45deg); pointer-events:none; animation:rayMove 8s infinite linear; mix-blend-mode:screen;}
+@keyframes rayMove{0%{transform:rotate(45deg) translateX(-150%);}100%{transform:rotate(45deg) translateX(150%);}}
+#clockContainer::after{
+  content:""; position:absolute; width:100%; height:100%; border-radius:50%; border:12px solid #4169e1;
+  box-shadow: inset 0 0 8px rgba(255,255,255,0.3), 0 0 10px rgba(0,0,0,0.7); pointer-events:none; animation:bezelShimmer 4s infinite linear;
+}
+@keyframes bezelShimmer{0%{box-shadow: inset 0 0 8px rgba(255,255,255,0.1),0 0 10px rgba(0,0,0,0.7);}50%{box-shadow: inset 0 0 16px rgba(255,255,255,0.3),0 0 12px rgba(0,0,0,0.8);}100%{box-shadow: inset 0 0 8px rgba(255,255,255,0.1),0 0 10px rgba(0,0,0,0.7);}}
+.number{ position:absolute; font-weight:bold; font-size:1.8rem; width:30px; height:30px; line-height:30px; text-align:center; transform-origin:center center; color:#c0e0ff;
+  background: linear-gradient(135deg, #e0f7ff, #4169e1); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  text-shadow:0 1px 1px rgba(0,0,0,0.5),0 -1px 1px rgba(255,255,255,0.6),0 0 5px #aaddff,0 0 10px #87cefa,0 0 20px #4169e1;
+  animation:markerShimmer 3s infinite linear;}
+@keyframes markerShimmer{0%,100%{text-shadow:0 1px 1px rgba(0,0,0,0.5),0 -1px 1px rgba(255,255,255,0.6),0 0 5px #aaddff,0 0 10px #87cefa,0 0 20px #4169e1;}50%{text-shadow:0 2px 2px rgba(0,0,0,0.6),0 -2px 2px rgba(255,255,255,0.8),0 0 8px #b0e0ff,0 0 15px #87cefa,0 0 30px #4169e1;}}
+.hand{ position:absolute; bottom:50%; left:50%; transform-origin:bottom center; border-radius:3px; box-shadow:0 2px 6px rgba(0,0,0,0.5); transition: transform 0.05s linear; background: linear-gradient(45deg,#87cefa,#1e3aa0); animation:handShimmer 3s infinite;}
+#hourHand{width:12px;height:70px;} #minuteHand{width:8px;height:100px;} #secondHand{width:3px;height:110px;background:#1e90ff;box-shadow:0 1px 3px rgba(0,0,0,0.5);}
+@keyframes handShimmer{0%,100%{background-position:0 0;}50%{background-position:50% 50%;}}
+#centerDot{position:absolute;width:18px;height:18px;background:radial-gradient(circle,#87cefa,#1e3aa0);border-radius:50%;top:50%;left:50%;transform:translate(-50%,-50%);box-shadow:0 4px 8px rgba(0,0,0,0.6), inset 0 2px 4px rgba(173,216,230,0.5);}
+#digitalClock{margin-top:12px;font-size:2.4rem;text-shadow:0 0 20px #4169e1;z-index:1;}
+#message{font-size:5rem;letter-spacing:12px;opacity:0;transition:opacity 1s;z-index:1;}
+.day{color:#add8e6;text-shadow:0 0 20px #add8e6,0 0 60px #87cefa;}
+.night{color:#87cefa;text-shadow:0 0 20px #87cefa,0 0 60px #4169e1;}
+#hourTable{position:absolute;bottom:0;width:100%;background:rgba(0,0,0,0.25);overflow-x:auto;white-space:nowrap;padding:5px 0;font-size:0.8rem;text-align:center;}
 #hourTable span{display:inline-block;padding:0 10px;}
 </style>
 </head>
 <body>
-<h1>שם לפי שעה</h1>
+<div id="clockContainer">
+  <div id="hourHand" class="hand"></div>
+  <div id="minuteHand" class="hand"></div>
+  <div id="secondHand" class="hand"></div>
+  <div id="centerDot"></div>
+  <div id="lightRay"></div>
+</div>
+<div id="title">שם לפי שעה <span id="hourRange" dir="ltr"></span></div>
+<div id="digitalClock"></div>
 <div id="message"></div>
 <div id="stars"></div>
 <div id="hourTable"></div>
 
 <script>
-// --- Names ---
 const nightNames=["אדני","אדינ","אניד","דניא","דנאי","דינא","נדאי","נדיא","נאדי","דאינ","דאני","דיאנ"];
 const dayNames=["יהוה","יההו","יוהה","הוהי","הויה","ההוי","והיה","וההי","ויהה","היהו","היוה","ההיו"];
+const messageEl=document.getElementById("message");
+const hourRangeEl=document.getElementById("hourRange");
+const clockEl=document.getElementById("clockContainer");
 
-const messageEl=document.getElementById('message');
-const hourTableEl=document.getElementById('hourTable');
+let lastNotifiedHour=null;
+const notificationSound=new Audio("https://www.soundjay.com/buttons/sounds/button-09.mp3");
 
-function getNameByHour(hour){if(hour>=18||hour<6)return{ name: hour>=18?nightNames[hour-18]:nightNames[hour+6], type:'night'}; return{ name: dayNames[hour-6], type:'day'};}
-function updateName(){const hour=new Date().getHours(); const {name,type}=getNameByHour(hour); messageEl.style.opacity=0; setTimeout(()=>{messageEl.innerText=name; messageEl.className=type; messageEl.style.opacity=1;},500);}
-function generateHourTable(){hourTableEl.innerHTML=''; for(let h=0;h<24;h++){const{name}=getNameByHour(h); const span=document.createElement('span'); const hourStr=h.toString().padStart(2,'0')+":00"; span.innerText=`${hourStr} - ${name}`; hourTableEl.appendChild(span);}}
+function getNameByHour(hour){return (hour>=18||hour<6)?{name:hour>=18?nightNames[hour-18]:nightNames[hour+6],type:"night"}:{name:dayNames[hour-6],type:"day"};}
 
-const starsEl=document.getElementById('stars');
-for(let i=0;i<100;i++){const star=document.createElement('div'); star.className='star'; const size=Math.random()*3+1; star.style.width=star.style.height=`${size}px`; star.style.top=`${Math.random()*100}%`; star.style.left=`${Math.random()*100}%`; star.style.animationDuration=`${Math.random()*3+2}s`; starsEl.appendChild(star);}
+function updateTitle(hour){let next=(hour+1)%24; hourRangeEl.innerText=`(${hour.toString().padStart(2,'0')}:00 - ${next.toString().padStart(2,'0')}:00)`;}
 
-// --- Notifications ---
-function requestNotificationPermission(){if(!("Notification"in window)){console.log("This browser does not support notifications.");return;} if(Notification.permission==="default"){Notification.requestPermission().then(p=>{if(p==="granted") subscribeToPush();});}else if(Notification.permission==="granted"){subscribeToPush();}}
+function updateSky(type){
+  const stars=document.getElementById("stars");
+  if(type==="day"){document.body.style.background="radial-gradient(circle at center,#e6f0ff,#99ccff)"; clockEl.style.background="radial-gradient(circle at 50% 50%, #d9f0ff,#4169e1)"; stars.style.display="none";}
+  else{document.body.style.background="radial-gradient(circle at center,#0a0f2c,#000033)"; clockEl.style.background="radial-gradient(circle at 50% 50%, #111144,#000022)"; stars.style.display="block";}
+}
 
-// Register service worker & subscribe
-function subscribeToPush(){navigator.serviceWorker.ready.then(reg=>{console.log("Service Worker ready:", reg); /* Here you would call your server to subscribe for push */});}
+function notifyHour(name){
+  if(Notification.permission==="granted"){
+    new Notification("שם לפי שעה",{body:`השם לשעה זו הוא: ${name}`,icon:"https://i.imgur.com/yVhfhwK.png"});
+    notificationSound.play().catch(e=>console.log("Sound failed",e));
+  }
+}
 
+function updateName(){
+  let hour=new Date().getHours();
+  let {name,type}=getNameByHour(hour);
+  updateTitle(hour); updateSky(type);
+  messageEl.style.opacity=0;
+  setTimeout(()=>{messageEl.innerText=name; messageEl.className=type; messageEl.style.opacity=1;},400);
+  if(hour!==lastNotifiedHour){notifyHour(name); lastNotifiedHour=hour;}
+}
+
+function updateClock(){
+  const now=new Date();
+  const sec=now.getSeconds()+now.getMilliseconds()/1000;
+  const min=now.getMinutes()+sec/60;
+  const hr=(now.getHours()%12)+min/60;
+  document.getElementById("secondHand").style.transform=`translateX(-50%) rotate(${sec*6}deg)`;
+  document.getElementById("minuteHand").style.transform=`translateX(-50%) rotate(${min*6}deg)`;
+  document.getElementById("hourHand").style.transform=`translateX(-50%) rotate(${hr*30}deg)`;
+  document.getElementById("digitalClock").innerText=`${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}:${now.getSeconds().toString().padStart(2,'0')}`;
+}
+
+function createClockNumbers(){
+  for(let i=1;i<=12;i++){
+    const num=document.createElement("div"); num.className="number"; num.innerText=i;
+    const angle=(i*30-90)*Math.PI/180; const radius=130;
+    const x=160+radius*Math.cos(angle)-15; const y=160+radius*Math.sin(angle)-15;
+    num.style.left=x+"px"; num.style.top=y+"px"; clockEl.appendChild(num);
+  }
+}
+
+const stars=document.getElementById("stars");
+for(let i=0;i<100;i++){const star=document.createElement("div"); star.className="star"; let size=Math.random()*3+1; star.style.width=size+"px"; star.style.height=size+"px"; star.style.top=Math.random()*100+"%"; star.style.left=Math.random()*100+"%"; stars.appendChild(star);}
+
+function generateHourTable(){
+  const table=document.getElementById("hourTable");
+  for(let h=0;h<24;h++){const {name}=getNameByHour(h); const span=document.createElement("span"); span.innerText=`${h.toString().padStart(2,'0')}:00 - ${name}`; table.appendChild(span);}
+}
+
+// Request permission for notifications
+if("Notification" in window && Notification.permission==="default"){Notification.requestPermission();}
+
+createClockNumbers();
 updateName();
+updateClock();
 generateHourTable();
-setInterval(updateName,60000);
-requestNotificationPermission();
-
-// --- Register Service Worker ---
-if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').then(reg=>console.log("Service Worker registered:", reg)).catch(err=>console.error("SW failed:",err));}
+setInterval(updateClock,50);
+setInterval(updateName,1000);
 </script>
 </body>
 </html>

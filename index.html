@@ -6,48 +6,204 @@
 <title>שם לפי שעה</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Hebrew:wght@400;700&display=swap" rel="stylesheet">
 <style>
-body{
-  margin:0; height:100vh; display:flex; flex-direction:column; justify-content:flex-start; align-items:center;
-  font-family:'Noto Serif Hebrew',serif; overflow:hidden; color:white; padding-top:20px;
-  background: radial-gradient(circle at center,#0a0f2c,#000); transition: background 1s;
+body {
+  margin:0;
+  height:100vh;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-start;
+  align-items:center;
+  font-family:'Noto Serif Hebrew',serif;
+  overflow:hidden;
+  color:white;
+  padding-top:20px;
+  background: radial-gradient(circle at center,#0a0f2c,#000033);
+  transition: background 1s;
 }
-#title{ font-size:2rem; margin:20px 0; text-align:center; z-index:1; text-shadow:0 0 15px #4169e1;}
-#hourRange{ dir:ltr; }
-#stars{ position:absolute;width:100%;height:100%;top:0;left:0; pointer-events:none; z-index:-1;}
-.star{ position:absolute; background:white; border-radius:50%; opacity:0.8; animation:twinkle 2s infinite alternate;}
-@keyframes twinkle{0%{opacity:0.2}100%{opacity:1}}
-#clockContainer{
-  position:relative; width:320px; height:320px; border-radius:50%;
-  background: radial-gradient(circle at center,#002366 0%, #001144 100%);
-  box-shadow: inset -12px -12px 25px rgba(0,0,0,0.5), inset 12px 12px 25px rgba(65,105,225,0.2), 0 12px 35px rgba(0,0,0,0.7);
-  margin-bottom:20px; display:flex; align-items:center; justify-content:center; overflow:hidden; transition: background 1s;
+
+/* TITLE */
+#title{
+  font-size:2rem;
+  margin:20px 0;
+  text-align:center;
+  z-index:1;
+  text-shadow:0 0 15px #4169e1;
 }
-#clockContainer::before{
-  content:""; position:absolute; width:100%; height:100%; border-radius:50%;
-  background: repeating-linear-gradient(0deg, rgba(255,255,255,0.03), rgba(255,255,255,0.03) 1px, transparent 1px, transparent 2px);
+#hourRange{
+  dir:ltr; /* ensures numbers display left-to-right */
+}
+
+/* STARS */
+#stars{
+  position:absolute;
+  width:100%;
+  height:100%;
+  top:0;
+  left:0;
   pointer-events:none;
+  z-index:-1;
 }
-#lightRay{ position:absolute; width:100%; height:100%; border-radius:50%; background: linear-gradient(90deg, rgba(255,255,255,0.0) 0%, rgba(255,255,255,0.15) 50%, rgba(255,255,255,0.0) 100%); transform: rotate(45deg); pointer-events:none; animation:rayMove 8s infinite linear; mix-blend-mode:screen;}
-@keyframes rayMove{0%{transform:rotate(45deg) translateX(-150%);}100%{transform:rotate(45deg) translateX(150%);}}
+.star{
+  position:absolute;
+  background:white;
+  border-radius:50%;
+  opacity:0.8;
+  animation:twinkle 2s infinite alternate;
+}
+@keyframes twinkle{0%{opacity:0.2}100%{opacity:1}}
+
+/* CLOCK CONTAINER */
+#clockContainer{
+  position:relative;
+  width:320px;
+  height:320px;
+  border-radius:50%;
+  background: radial-gradient(circle at 50% 50%, #d9f0ff,#4169e1);
+  box-shadow:
+    inset -12px -12px 25px rgba(0,0,0,0.5),
+    inset 12px 12px 25px rgba(65,105,225,0.2),
+    0 12px 35px rgba(0,0,0,0.7);
+  margin-bottom:20px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+  transition: background 1s;
+}
+
+/* SWEEPING LIGHT RAY */
+#lightRay{
+  position:absolute;
+  width:100%;
+  height:100%;
+  border-radius:50%;
+  background: linear-gradient(90deg, rgba(255,255,255,0.0) 0%, rgba(255,255,255,0.15) 50%, rgba(255,255,255,0.0) 100%);
+  transform: rotate(45deg);
+  pointer-events:none;
+  animation:rayMove 8s infinite linear;
+  mix-blend-mode:screen;
+}
+@keyframes rayMove{
+  0%{transform:rotate(45deg) translateX(-150%);}
+  100%{transform:rotate(45deg) translateX(150%);}
+}
+
+/* BEZEL */
 #clockContainer::after{
-  content:""; position:absolute; width:100%; height:100%; border-radius:50%; border:12px solid #4169e1;
-  box-shadow: inset 0 0 8px rgba(255,255,255,0.3), 0 0 10px rgba(0,0,0,0.7); pointer-events:none; animation:bezelShimmer 4s infinite linear;
+  content:"";
+  position:absolute;
+  width:100%;
+  height:100%;
+  border-radius:50%;
+  border:12px solid #4169e1;
+  box-shadow: inset 0 0 8px rgba(255,255,255,0.3), 0 0 10px rgba(0,0,0,0.7);
+  pointer-events:none;
+  animation:bezelShimmer 4s infinite linear;
 }
-@keyframes bezelShimmer{0%{box-shadow: inset 0 0 8px rgba(255,255,255,0.1),0 0 10px rgba(0,0,0,0.7);}50%{box-shadow: inset 0 0 16px rgba(255,255,255,0.3),0 0 12px rgba(0,0,0,0.8);}100%{box-shadow: inset 0 0 8px rgba(255,255,255,0.1),0 0 10px rgba(0,0,0,0.7);}}
-.number{ position:absolute; font-weight:bold; font-size:1.8rem; width:30px; height:30px; line-height:30px; text-align:center; transform-origin:center center; color:#c0e0ff;
-  background: linear-gradient(135deg, #e0f7ff, #4169e1); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  text-shadow:0 1px 1px rgba(0,0,0,0.5),0 -1px 1px rgba(255,255,255,0.6),0 0 5px #aaddff,0 0 10px #87cefa,0 0 20px #4169e1;
-  animation:markerShimmer 3s infinite linear;}
-@keyframes markerShimmer{0%,100%{text-shadow:0 1px 1px rgba(0,0,0,0.5),0 -1px 1px rgba(255,255,255,0.6),0 0 5px #aaddff,0 0 10px #87cefa,0 0 20px #4169e1;}50%{text-shadow:0 2px 2px rgba(0,0,0,0.6),0 -2px 2px rgba(255,255,255,0.8),0 0 8px #b0e0ff,0 0 15px #87cefa,0 0 30px #4169e1;}}
-.hand{ position:absolute; bottom:50%; left:50%; transform-origin:bottom center; border-radius:3px; box-shadow:0 2px 6px rgba(0,0,0,0.5); transition: transform 0.05s linear; background: linear-gradient(45deg,#87cefa,#1e3aa0); animation:handShimmer 3s infinite;}
-#hourHand{width:12px;height:70px;} #minuteHand{width:8px;height:100px;} #secondHand{width:3px;height:110px;background:#1e90ff;box-shadow:0 1px 3px rgba(0,0,0,0.5);}
-@keyframes handShimmer{0%,100%{background-position:0 0;}50%{background-position:50% 50%;}}
-#centerDot{position:absolute;width:18px;height:18px;background:radial-gradient(circle,#87cefa,#1e3aa0);border-radius:50%;top:50%;left:50%;transform:translate(-50%,-50%);box-shadow:0 4px 8px rgba(0,0,0,0.6), inset 0 2px 4px rgba(173,216,230,0.5);}
-#digitalClock{margin-top:12px;font-size:2.4rem;text-shadow:0 0 20px #4169e1;z-index:1;}
-#message{font-size:5rem;letter-spacing:12px;opacity:0;transition:opacity 1s;z-index:1;}
-.day{color:#add8e6;text-shadow:0 0 20px #add8e6,0 0 60px #87cefa;}
-.night{color:#87cefa;text-shadow:0 0 20px #87cefa,0 0 60px #4169e1;}
-#hourTable{position:absolute;bottom:0;width:100%;background:rgba(0,0,0,0.25);overflow-x:auto;white-space:nowrap;padding:5px 0;font-size:0.8rem;text-align:center;}
+@keyframes bezelShimmer{
+  0%{box-shadow: inset 0 0 8px rgba(255,255,255,0.1), 0 0 10px rgba(0,0,0,0.7);}
+  50%{box-shadow: inset 0 0 16px rgba(255,255,255,0.3), 0 0 12px rgba(0,0,0,0.8);}
+  100%{box-shadow: inset 0 0 8px rgba(255,255,255,0.1), 0 0 10px rgba(0,0,0,0.7);}
+}
+
+/* CLOCK NUMBERS - metallic glow */
+.number{
+  position:absolute;
+  font-weight:bold;
+  font-size:1.8rem;
+  width:30px;
+  height:30px;
+  line-height:30px;
+  text-align:center;
+  transform-origin:center center;
+  color:#c0e0ff;
+  background: linear-gradient(135deg, #e0f7ff, #4169e1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow:
+    0 1px 1px rgba(0,0,0,0.5),
+    0 -1px 1px rgba(255,255,255,0.6),
+    0 0 5px #aaddff,
+    0 0 10px #87cefa,
+    0 0 20px #4169e1;
+  animation:markerShimmer 3s infinite linear;
+}
+@keyframes markerShimmer{
+  0%{background-position:0 0;}
+  50%{background-position:40% 40%;}
+  100%{background-position:0 0;}
+}
+
+/* HANDS */
+.hand{
+  position:absolute;
+  bottom:50%;
+  left:50%;
+  transform-origin:50% 90%; /* fixed for smooth rotation */
+  border-radius:3px;
+  box-shadow:0 2px 6px rgba(0,0,0,0.5);
+  transition: transform 0.05s linear;
+  background: linear-gradient(45deg,#87cefa,#1e3aa0);
+  animation:handShimmer 3s infinite;
+}
+#hourHand{width:12px;height:70px;}
+#minuteHand{width:8px;height:100px;}
+#secondHand{width:3px;height:110px;background:#1e90ff;box-shadow:0 1px 3px rgba(0,0,0,0.5);}
+
+/* CENTER PIN */
+#centerDot{
+  position:absolute;
+  width:18px;
+  height:18px;
+  background:radial-gradient(circle,#87cefa,#1e3aa0);
+  border-radius:50%;
+  top:50%; left:50%;
+  transform:translate(-50%,-50%);
+  box-shadow:0 4px 8px rgba(0,0,0,0.6), inset 0 2px 4px rgba(173,216,230,0.5);
+}
+
+/* DIGITAL CLOCK inside analog */
+#digitalClock{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  font-size:2.8rem;
+  color:white;
+  text-shadow:0 0 20px #4169e1;
+  z-index:1;
+  font-family:'Noto Serif Hebrew',serif;
+}
+
+/* NAME */
+#message{
+  font-size:5rem;
+  letter-spacing:12px;
+  opacity:0;
+  transition:opacity 1s;
+  z-index:1;
+}
+.day{
+  color:#add8e6;
+  text-shadow:0 0 20px #add8e6,0 0 60px #87cefa;
+}
+.night{
+  color:#87cefa;
+  text-shadow:0 0 20px #87cefa,0 0 60px #4169e1;
+}
+
+/* TABLE */
+#hourTable{
+  position:absolute;
+  bottom:0;
+  width:100%;
+  background:rgba(0,0,0,0.25);
+  overflow-x:auto;
+  white-space:nowrap;
+  padding:5px 0;
+  font-size:0.8rem;
+  text-align:center;
+}
 #hourTable span{display:inline-block;padding:0 10px;}
 </style>
 </head>
@@ -58,47 +214,60 @@ body{
   <div id="secondHand" class="hand"></div>
   <div id="centerDot"></div>
   <div id="lightRay"></div>
+  <div id="digitalClock"></div>
 </div>
 <div id="title">שם לפי שעה <span id="hourRange" dir="ltr"></span></div>
-<div id="digitalClock"></div>
 <div id="message"></div>
 <div id="stars"></div>
 <div id="hourTable"></div>
+
+<audio id="chimeSound" src="chime.mp3"></audio>
 
 <script>
 const nightNames=["אדני","אדינ","אניד","דניא","דנאי","דינא","נדאי","נדיא","נאדי","דאינ","דאני","דיאנ"];
 const dayNames=["יהוה","יההו","יוהה","הוהי","הויה","ההוי","והיה","וההי","ויהה","היהו","היוה","ההיו"];
 const messageEl=document.getElementById("message");
+const titleEl=document.getElementById("title");
 const hourRangeEl=document.getElementById("hourRange");
 const clockEl=document.getElementById("clockContainer");
+const digitalClockEl=document.getElementById("digitalClock");
+const audio=document.getElementById("chimeSound");
 
-let lastNotifiedHour=null;
-const notificationSound=new Audio("https://www.soundjay.com/buttons/sounds/button-09.mp3");
+function getNameByHour(hour){
+  return (hour>=18||hour<6)?{name:hour>=18?nightNames[hour-18]:nightNames[hour+6],type:"night"}:{name:dayNames[hour-6],type:"day"};
+}
 
-function getNameByHour(hour){return (hour>=18||hour<6)?{name:hour>=18?nightNames[hour-18]:nightNames[hour+6],type:"night"}:{name:dayNames[hour-6],type:"day"};}
-
-function updateTitle(hour){let next=(hour+1)%24; hourRangeEl.innerText=`(${hour.toString().padStart(2,'0')}:00 - ${next.toString().padStart(2,'0')}:00)`;}
+function updateTitle(hour){
+  let next=(hour+1)%24;
+  let start=hour.toString().padStart(2,'0')+":00";
+  let end=next.toString().padStart(2,'0')+":00";
+  hourRangeEl.innerText=`(${start} - ${end})`;
+}
 
 function updateSky(type){
   const stars=document.getElementById("stars");
-  if(type==="day"){document.body.style.background="radial-gradient(circle at center,#e6f0ff,#99ccff)"; clockEl.style.background="radial-gradient(circle at 50% 50%, #d9f0ff,#4169e1)"; stars.style.display="none";}
-  else{document.body.style.background="radial-gradient(circle at center,#0a0f2c,#000033)"; clockEl.style.background="radial-gradient(circle at 50% 50%, #111144,#000022)"; stars.style.display="block";}
-}
-
-function notifyHour(name){
-  if(Notification.permission==="granted"){
-    new Notification("שם לפי שעה",{body:`השם לשעה זו הוא: ${name}`,icon:"https://i.imgur.com/yVhfhwK.png"});
-    notificationSound.play().catch(e=>console.log("Sound failed",e));
+  if(type==="day"){
+    document.body.style.background="radial-gradient(circle at center,#e6f0ff,#99ccff)";
+    clockEl.style.background="radial-gradient(circle at 50% 50%, #d9f0ff,#4169e1)";
+    stars.style.display="none";
+  }else{
+    document.body.style.background="radial-gradient(circle at center,#0a0f2c,#000033)";
+    clockEl.style.background="radial-gradient(circle at 50% 50%, #111144,#000022)";
+    stars.style.display="block";
   }
 }
 
 function updateName(){
   let hour=new Date().getHours();
   let {name,type}=getNameByHour(hour);
-  updateTitle(hour); updateSky(type);
+  updateTitle(hour);
+  updateSky(type);
   messageEl.style.opacity=0;
-  setTimeout(()=>{messageEl.innerText=name; messageEl.className=type; messageEl.style.opacity=1;},400);
-  if(hour!==lastNotifiedHour){notifyHour(name); lastNotifiedHour=hour;}
+  setTimeout(()=>{
+    messageEl.innerText=name;
+    messageEl.className=type;
+    messageEl.style.opacity=1;
+  },400);
 }
 
 function updateClock(){
@@ -106,38 +275,83 @@ function updateClock(){
   const sec=now.getSeconds()+now.getMilliseconds()/1000;
   const min=now.getMinutes()+sec/60;
   const hr=(now.getHours()%12)+min/60;
-  document.getElementById("secondHand").style.transform=`translateX(-50%) rotate(${sec*6}deg)`;
-  document.getElementById("minuteHand").style.transform=`translateX(-50%) rotate(${min*6}deg)`;
-  document.getElementById("hourHand").style.transform=`translateX(-50%) rotate(${hr*30}deg)`;
-  document.getElementById("digitalClock").innerText=`${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}:${now.getSeconds().toString().padStart(2,'0')}`;
+  document.getElementById("secondHand").style.transform=`translate(-50%,-50%) rotate(${sec*6}deg)`;
+  document.getElementById("minuteHand").style.transform=`translate(-50%,-50%) rotate(${min*6}deg)`;
+  document.getElementById("hourHand").style.transform=`translate(-50%,-50%) rotate(${hr*30}deg)`;
+  digitalClockEl.innerText=`${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}:${now.getSeconds().toString().padStart(2,'0')}`;
 }
 
 function createClockNumbers(){
   for(let i=1;i<=12;i++){
-    const num=document.createElement("div"); num.className="number"; num.innerText=i;
-    const angle=(i*30-90)*Math.PI/180; const radius=130;
-    const x=160+radius*Math.cos(angle)-15; const y=160+radius*Math.sin(angle)-15;
-    num.style.left=x+"px"; num.style.top=y+"px"; clockEl.appendChild(num);
+    const num=document.createElement("div");
+    num.className="number";
+    num.innerText=i;
+    const angle=(i*30-90)*Math.PI/180;
+    const radius=130;
+    const x=160+radius*Math.cos(angle)-15;
+    const y=160+radius*Math.sin(angle)-15;
+    num.style.left=x+"px";
+    num.style.top=y+"px";
+    clockEl.appendChild(num);
   }
 }
 
-const stars=document.getElementById("stars");
-for(let i=0;i<100;i++){const star=document.createElement("div"); star.className="star"; let size=Math.random()*3+1; star.style.width=size+"px"; star.style.height=size+"px"; star.style.top=Math.random()*100+"%"; star.style.left=Math.random()*100+"%"; stars.appendChild(star);}
-
-function generateHourTable(){
-  const table=document.getElementById("hourTable");
-  for(let h=0;h<24;h++){const {name}=getNameByHour(h); const span=document.createElement("span"); span.innerText=`${h.toString().padStart(2,'0')}:00 - ${name}`; table.appendChild(span);}
+// Stars
+const stars=document.getElementById("stars"); 
+for(let i=0;i<100;i++){
+  const star=document.createElement("div"); 
+  star.className="star"; 
+  let size=Math.random()*3+1; 
+  star.style.width=size+"px"; 
+  star.style.height=size+"px"; 
+  star.style.top=Math.random()*100+"%"; 
+  star.style.left=Math.random()*100+"%"; 
+  stars.appendChild(star);
 }
 
-// Request permission for notifications
-if("Notification" in window && Notification.permission==="default"){Notification.requestPermission();}
+// Hour table
+function generateHourTable(){
+  const table=document.getElementById("hourTable"); 
+  table.innerHTML="";
+  for(let h=0;h<24;h++){
+    const {name}=getNameByHour(h); 
+    const span=document.createElement("span"); 
+    span.innerText=`${h.toString().padStart(2,'0')}:00 - ${name}`; 
+    table.appendChild(span);
+  }
+}
 
+// Hourly notification
+let lastNotifiedHour=-1;
+function notifyHour(){
+  const now=new Date();
+  const {name}=getNameByHour(now.getHours());
+  if(Notification.permission==="granted"){
+    new Notification("שם לפי שעה",{
+      body:`השעה: ${now.getHours().toString().padStart(2,'0')}:00\nשם: ${name}`
+    });
+    audio.play().catch(e=>console.log("Audio play failed",e));
+  }
+}
+
+if("Notification" in window && Notification.permission!=="granted"){
+  Notification.requestPermission();
+}
+
+// Init
 createClockNumbers();
 updateName();
 updateClock();
 generateHourTable();
 setInterval(updateClock,50);
-setInterval(updateName,1000);
+setInterval(updateName,60000);
+setInterval(()=>{
+  const now=new Date();
+  if(now.getMinutes()===0 && now.getHours()!==lastNotifiedHour){
+    lastNotifiedHour=now.getHours();
+    notifyHour();
+  }
+},60000);
 </script>
 </body>
 </html>

@@ -17,8 +17,8 @@ body{
   overflow:hidden;
   color:white;
   padding-top:20px;
+  background: radial-gradient(circle at center,#0a0f2c,#000);
   transition: background 1s;
-  background: radial-gradient(circle at center,#0a0f2c,#000); /* night default */
 }
 
 /* TITLE */
@@ -30,7 +30,7 @@ body{
   text-shadow:0 0 15px #4169e1;
 }
 #hourRange{
-  dir:ltr;
+  dir:ltr; /* ensures numbers display left-to-right */
 }
 
 /* STARS */
@@ -143,12 +143,6 @@ body{
     0 0 5px #aaddff,
     0 0 10px #87cefa,
     0 0 20px #4169e1;
-  animation:markerShimmer 3s infinite linear;
-}
-@keyframes markerShimmer{
-  0%{background-position:0 0;}
-  50%{background-position:40% 40%;}
-  100%{background-position:0 0;}
 }
 
 /* HANDS */
@@ -161,16 +155,10 @@ body{
   box-shadow:0 2px 6px rgba(0,0,0,0.5);
   transition: transform 0.05s linear;
   background: linear-gradient(45deg,#87cefa,#1e3aa0);
-  animation:handShimmer 3s infinite;
 }
 #hourHand{width:12px;height:70px;}
 #minuteHand{width:8px;height:100px;}
 #secondHand{width:3px;height:110px;background:#1e90ff;box-shadow:0 1px 3px rgba(0,0,0,0.5);}
-@keyframes handShimmer{
-  0%{background-position:0 0;}
-  50%{background-position:50% 50%;}
-  100%{background-position:0 0;}
-}
 
 /* CENTER PIN */
 #centerDot{
@@ -187,38 +175,33 @@ body{
 /* DIGITAL CLOCK inside analog */
 #digitalClock{
   position:absolute;
+  top:45%;
+  left:50%;
+  transform:translate(-50%,-50%);
   font-size:2.4rem;
+  color:white;
   text-shadow:0 0 20px #4169e1;
   z-index:2;
-  text-align:center;
+  pointer-events:none;
 }
 
-/* NAME - neon glow restored */
+/* NAME - neon glow */
 #message{
   font-size:5rem;
   letter-spacing:12px;
   opacity:0;
   transition:opacity 1s;
-  z-index:1;
+  z-index:3;
   text-align:center;
-}
-.day{
-  color:#222;
+  color:#00f0ff;
   text-shadow:
-    0 0 5px #444,
-    0 0 10px #666,
-    0 0 20px #888,
-    0 0 40px #aaa,
-    0 0 80px #ccc;
-}
-.night{
-  color:#add8e6;
-  text-shadow:
-    0 0 5px #add8e6,
-    0 0 10px #87cefa,
-    0 0 20px #4169e1,
-    0 0 40px #4169e1,
-    0 0 80px #1e3aa0;
+    0 0 5px #00f0ff,
+    0 0 10px #00f0ff,
+    0 0 20px #00f0ff,
+    0 0 40px #00ffff,
+    0 0 60px #00ffff,
+    0 0 80px #00ffff,
+    0 0 100px #00ffff;
 }
 
 /* TABLE */
@@ -237,19 +220,19 @@ body{
 </style>
 </head>
 <body>
+<audio id="chime" src="chime.mp3" preload="auto"></audio>
 <div id="clockContainer">
   <div id="hourHand" class="hand"></div>
   <div id="minuteHand" class="hand"></div>
   <div id="secondHand" class="hand"></div>
   <div id="centerDot"></div>
-  <div id="digitalClock"></div>
   <div id="lightRay"></div>
+  <div id="digitalClock"></div>
 </div>
 <div id="title">שם לפי שעה <span id="hourRange" dir="ltr"></span></div>
 <div id="message"></div>
 <div id="stars"></div>
 <div id="hourTable"></div>
-<audio id="chime" src="chime.mp3" preload="auto"></audio>
 
 <script>
 const nightNames=["אדני","אדינ","אניד","דניא","דנאי","דינא","נדאי","נדיא","נאדי","דאינ","דאני","דיאנ"];
@@ -258,8 +241,7 @@ const messageEl=document.getElementById("message");
 const titleEl=document.getElementById("title");
 const hourRangeEl=document.getElementById("hourRange");
 const clockEl=document.getElementById("clockContainer");
-const digitalEl=document.getElementById("digitalClock");
-const chime=document.getElementById("chime");
+const chimeEl=document.getElementById("chime");
 
 function getNameByHour(hour){
   return (hour>=18||hour<6)?{name:hour>=18?nightNames[hour-18]:nightNames[hour+6],type:"night"}:{name:dayNames[hour-6],type:"day"};
@@ -275,8 +257,8 @@ function updateTitle(hour){
 function updateSky(type){
   const stars=document.getElementById("stars");
   if(type==="day"){
-    document.body.style.background="linear-gradient(to top, #fceabb, #f8b500)";
-    clockEl.style.background="radial-gradient(circle at 50% 50%, #fff4e0,#4169e1)";
+    document.body.style.background="linear-gradient(to bottom, #fceabb, #99ccff)";
+    clockEl.style.background="radial-gradient(circle at 50% 50%, #fff0cc,#4169e1)";
     stars.style.display="none";
   }else{
     document.body.style.background="radial-gradient(circle at center,#0a0f2c,#000033)";
@@ -285,21 +267,24 @@ function updateSky(type){
   }
 }
 
+let lastHour=null;
 function updateName(){
-  let hour=new Date().getHours();
-  let {name,type}=getNameByHour(hour);
-  updateTitle(hour);
-  updateSky(type);
-  messageEl.style.opacity=0;
-  setTimeout(()=>{
-    messageEl.innerText=name;
-    messageEl.className=type;
-    messageEl.style.opacity=1;
-    chime.play().catch(()=>{}); // play chime when name changes
+  const now=new Date();
+  let hour=now.getHours();
+  if(hour!==lastHour){
+    const {name,type}=getNameByHour(hour);
+    updateTitle(hour);
+    updateSky(type);
+    messageEl.style.opacity=0;
+    setTimeout(()=>{messageEl.innerText=name; messageEl.style.opacity=1;},400);
+    lastHour=hour;
+    // notification + sound
     if(Notification.permission==="granted"){
-      new Notification("Kavanot", {body:name});
+      new Notification("Kavanot", {body:`Hour changed: ${name}`});
     }
-  },400);
+    chimeEl.currentTime=0;
+    chimeEl.play();
+  }
 }
 
 function updateClock(){
@@ -310,7 +295,7 @@ function updateClock(){
   document.getElementById("secondHand").style.transform=`translateX(-50%) rotate(${sec*6}deg)`;
   document.getElementById("minuteHand").style.transform=`translateX(-50%) rotate(${min*6}deg)`;
   document.getElementById("hourHand").style.transform=`translateX(-50%) rotate(${hr*30}deg)`;
-  digitalEl.innerText=`${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}:${now.getSeconds().toString().padStart(2,'0')}`;
+  document.getElementById("digitalClock").innerText=`${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}:${now.getSeconds().toString().padStart(2,'0')}`;
 }
 
 function createClockNumbers(){
@@ -328,7 +313,6 @@ function createClockNumbers(){
   }
 }
 
-// stars
 const stars=document.getElementById("stars"); 
 for(let i=0;i<100;i++){
   const star=document.createElement("div"); 
@@ -351,17 +335,17 @@ function generateHourTable(){
   }
 }
 
+// request notification permission
+if("Notification" in window && Notification.permission!=="granted"){
+  Notification.requestPermission();
+}
+
 createClockNumbers();
 updateName();
 updateClock();
 generateHourTable();
 setInterval(updateClock,50);
-setInterval(updateName,60000);
-
-// request notification permission
-if("Notification" in window){
-  if(Notification.permission!=="granted") Notification.requestPermission();
-}
+setInterval(updateName,1000); // check every second for exact hour change
 </script>
 </body>
 </html>

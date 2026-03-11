@@ -17,8 +17,24 @@ body{
   overflow:hidden;
   color:white;
   padding-top:20px;
-  transition: background 1s;
   background: radial-gradient(circle at center,#0a0f2c,#000);
+  transition: background 1s;
+}
+
+/* TAP OVERLAY */
+#tapOverlay{
+  position:fixed;
+  top:0; left:0;
+  width:100%; height:100%;
+  background:rgba(0,0,0,0.7);
+  color:white;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:1.5rem;
+  z-index:1000;
+  text-align:center;
+  cursor:pointer;
 }
 
 /* TITLE */
@@ -30,7 +46,7 @@ body{
   text-shadow:0 0 15px #4169e1;
 }
 #hourRange{
-  dir:ltr; /* ensures numbers display left-to-right */
+  dir:ltr;
 }
 
 /* STARS */
@@ -70,8 +86,6 @@ body{
   overflow:hidden;
   transition: background 1s;
 }
-
-/* DIAL TEXTURE */
 #clockContainer::before{
   content:"";
   position:absolute;
@@ -143,6 +157,12 @@ body{
     0 0 5px #aaddff,
     0 0 10px #87cefa,
     0 0 20px #4169e1;
+  animation:markerShimmer 3s infinite linear;
+}
+@keyframes markerShimmer{
+  0%{background-position:0 0;}
+  50%{background-position:40% 40%;}
+  100%{background-position:0 0;}
 }
 
 /* HANDS */
@@ -155,10 +175,16 @@ body{
   box-shadow:0 2px 6px rgba(0,0,0,0.5);
   transition: transform 0.05s linear;
   background: linear-gradient(45deg,#87cefa,#1e3aa0);
+  animation:handShimmer 3s infinite;
 }
 #hourHand{width:12px;height:70px;}
 #minuteHand{width:8px;height:100px;}
 #secondHand{width:3px;height:110px;background:#1e90ff;box-shadow:0 1px 3px rgba(0,0,0,0.5);}
+@keyframes handShimmer{
+  0%{background-position:0 0;}
+  50%{background-position:50% 50%;}
+  100%{background-position:0 0;}
+}
 
 /* CENTER PIN */
 #centerDot{
@@ -175,13 +201,12 @@ body{
 /* DIGITAL CLOCK */
 #digitalClock{
   position:absolute;
-  font-size:2rem;
-  text-shadow:0 0 20px #4169e1;
-  z-index:2;
   top:50%;
   left:50%;
   transform:translate(-50%,-50%);
-  pointer-events:none;
+  font-size:2rem;
+  text-shadow:0 0 20px #4169e1;
+  z-index:1;
 }
 
 /* NAME */
@@ -191,11 +216,11 @@ body{
   opacity:0;
   transition:opacity 1s;
   z-index:1;
-  transform:translateZ(0);
+  text-shadow: 0 0 15px #0000ff, 0 0 30px #4169e1;
 }
 .day{
   color:black;
-  text-shadow:0 0 15px rgba(0,0,0,0.5),0 0 30px rgba(0,0,0,0.3);
+  text-shadow:0 0 10px #000,0 0 25px #4169e1;
 }
 .night{
   color:#87cefa;
@@ -218,6 +243,9 @@ body{
 </style>
 </head>
 <body>
+
+<div id="tapOverlay">הקש כאן כדי להפעיל צלילים</div>
+
 <div id="clockContainer">
   <div id="hourHand" class="hand"></div>
   <div id="minuteHand" class="hand"></div>
@@ -226,24 +254,33 @@ body{
   <div id="lightRay"></div>
   <div id="digitalClock"></div>
 </div>
+
 <div id="title">שם לפי שעה <span id="hourRange" dir="ltr"></span></div>
 <div id="message"></div>
 <div id="stars"></div>
 <div id="hourTable"></div>
 
-<audio id="chime" src="chime.mp3" preload="auto"></audio>
+<audio id="chimeAudio" src="chime.mp3" preload="auto"></audio>
 
 <script>
 const nightNames=["אדני","אדינ","אניד","דניא","דנאי","דינא","נדאי","נדיא","נאדי","דאינ","דאני","דיאנ"];
 const dayNames=["יהוה","יההו","יוהה","הוהי","הויה","ההוי","והיה","וההי","ויהה","היהו","היוה","ההיו"];
+
 const messageEl=document.getElementById("message");
 const titleEl=document.getElementById("title");
 const hourRangeEl=document.getElementById("hourRange");
 const clockEl=document.getElementById("clockContainer");
-const chimeAudio=document.getElementById("chime");
+const chimeAudio=document.getElementById("chimeAudio");
+const tapOverlay=document.getElementById("tapOverlay");
 
+tapOverlay.addEventListener("click", () => {
+  chimeAudio.play().catch(()=>{});
+  tapOverlay.style.display="none";
+});
+
+// Clock and name
 function getNameByHour(hour){
-  return (hour>=18||hour<6) ? {name:hour>=18?nightNames[hour-18]:nightNames[hour+6],type:"night"} : {name:dayNames[hour-6],type:"day"};
+  return (hour>=18||hour<6)?{name:hour>=18?nightNames[hour-18]:nightNames[hour+6],type:"night"}:{name:dayNames[hour-6],type:"day"};
 }
 
 function updateTitle(hour){
@@ -256,43 +293,42 @@ function updateTitle(hour){
 function updateSky(type){
   const stars=document.getElementById("stars");
   if(type==="day"){
-    document.body.style.background="radial-gradient(circle at center,#87ceeb,#ccefff)";
-    clockEl.style.background="radial-gradient(circle at 50% 50%, #a0d8ff,#4169e1)";
+    document.body.style.background="radial-gradient(circle at center,#87ceeb,#b0e0e6)";
+    clockEl.style.background="radial-gradient(circle at 50% 50%, #cce6ff,#87cefa)";
     stars.style.display="block";
-    stars.style.opacity="0.2";
   }else{
     document.body.style.background="radial-gradient(circle at center,#0a0f2c,#000)";
     clockEl.style.background="radial-gradient(circle at 50% 50%, #111144,#000022)";
     stars.style.display="block";
-    stars.style.opacity="1";
   }
 }
 
+let lastHour=-1;
 function updateName(){
   let hour=new Date().getHours();
-  let {name,type}=getNameByHour(hour);
-  updateTitle(hour);
-  updateSky(type);
-  messageEl.style.opacity=0;
-  setTimeout(()=>{
-    messageEl.innerText=name;
-    messageEl.className=type;
-    messageEl.style.opacity=1;
-    chimeAudio.play().catch(()=>{}); // play sound if allowed
-  },400);
+  if(hour!==lastHour){
+    lastHour=hour;
+    let {name,type}=getNameByHour(hour);
+    updateTitle(hour);
+    updateSky(type);
+    messageEl.style.opacity=0;
+    setTimeout(()=>{messageEl.innerText=name; messageEl.className=type; messageEl.style.opacity=1;},400);
+    chimeAudio.play().catch(()=>{});
+  }
 }
 
 function updateClock(){
   const now=new Date();
-  const sec=now.getSeconds();
+  const sec=now.getSeconds()+now.getMilliseconds()/1000;
   const min=now.getMinutes()+sec/60;
   const hr=(now.getHours()%12)+min/60;
   document.getElementById("secondHand").style.transform=`translateX(-50%) rotate(${sec*6}deg)`;
   document.getElementById("minuteHand").style.transform=`translateX(-50%) rotate(${min*6}deg)`;
   document.getElementById("hourHand").style.transform=`translateX(-50%) rotate(${hr*30}deg)`;
-  document.getElementById("digitalClock").innerText=`${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}:${sec.toString().padStart(2,'0')}`;
+  document.getElementById("digitalClock").innerText=`${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}:${now.getSeconds().toString().padStart(2,'0')}`;
 }
 
+// Clock numbers
 function createClockNumbers(){
   for(let i=1;i<=12;i++){
     const num=document.createElement("div");
@@ -308,6 +344,7 @@ function createClockNumbers(){
   }
 }
 
+// Stars
 const stars=document.getElementById("stars"); 
 for(let i=0;i<100;i++){
   const star=document.createElement("div"); 
@@ -320,6 +357,7 @@ for(let i=0;i<100;i++){
   stars.appendChild(star);
 }
 
+// Hour table
 function generateHourTable(){
   const table=document.getElementById("hourTable"); 
   for(let h=0;h<24;h++){
@@ -334,8 +372,8 @@ createClockNumbers();
 updateName();
 updateClock();
 generateHourTable();
-setInterval(updateClock,1000);
-setInterval(updateName,60000);
+setInterval(updateClock,50);
+setInterval(updateName,1000); // check every second for hour change
 </script>
 </body>
 </html>

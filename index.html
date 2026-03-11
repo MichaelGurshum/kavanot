@@ -17,8 +17,8 @@ body{
   overflow:hidden;
   color:white;
   padding-top:20px;
-  background: radial-gradient(circle at center,#0a0f2c,#000);
   transition: background 1s;
+  background: radial-gradient(circle at center,#0a0f2c,#000);
 }
 
 /* TITLE */
@@ -123,7 +123,7 @@ body{
   100%{box-shadow: inset 0 0 8px rgba(255,255,255,0.1), 0 0 10px rgba(0,0,0,0.7);}
 }
 
-/* CLOCK NUMBERS - 3D metallic glow */
+/* CLOCK NUMBERS */
 .number{
   position:absolute;
   font-weight:bold;
@@ -172,36 +172,34 @@ body{
   box-shadow:0 4px 8px rgba(0,0,0,0.6), inset 0 2px 4px rgba(173,216,230,0.5);
 }
 
-/* DIGITAL CLOCK inside analog */
+/* DIGITAL CLOCK */
 #digitalClock{
   position:absolute;
-  top:45%;
-  left:50%;
-  transform:translate(-50%,-50%);
-  font-size:2.4rem;
-  color:white;
+  font-size:2rem;
   text-shadow:0 0 20px #4169e1;
   z-index:2;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
   pointer-events:none;
 }
 
-/* NAME - neon glow */
+/* NAME */
 #message{
   font-size:5rem;
   letter-spacing:12px;
   opacity:0;
   transition:opacity 1s;
-  z-index:3;
-  text-align:center;
-  color:#00f0ff;
-  text-shadow:
-    0 0 5px #00f0ff,
-    0 0 10px #00f0ff,
-    0 0 20px #00f0ff,
-    0 0 40px #00ffff,
-    0 0 60px #00ffff,
-    0 0 80px #00ffff,
-    0 0 100px #00ffff;
+  z-index:1;
+  transform:translateZ(0);
+}
+.day{
+  color:black;
+  text-shadow:0 0 15px rgba(0,0,0,0.5),0 0 30px rgba(0,0,0,0.3);
+}
+.night{
+  color:#87cefa;
+  text-shadow:0 0 20px #87cefa,0 0 60px #4169e1;
 }
 
 /* TABLE */
@@ -220,7 +218,6 @@ body{
 </style>
 </head>
 <body>
-<audio id="chime" src="chime.mp3" preload="auto"></audio>
 <div id="clockContainer">
   <div id="hourHand" class="hand"></div>
   <div id="minuteHand" class="hand"></div>
@@ -234,6 +231,8 @@ body{
 <div id="stars"></div>
 <div id="hourTable"></div>
 
+<audio id="chime" src="chime.mp3" preload="auto"></audio>
+
 <script>
 const nightNames=["אדני","אדינ","אניד","דניא","דנאי","דינא","נדאי","נדיא","נאדי","דאינ","דאני","דיאנ"];
 const dayNames=["יהוה","יההו","יוהה","הוהי","הויה","ההוי","והיה","וההי","ויהה","היהו","היוה","ההיו"];
@@ -241,10 +240,10 @@ const messageEl=document.getElementById("message");
 const titleEl=document.getElementById("title");
 const hourRangeEl=document.getElementById("hourRange");
 const clockEl=document.getElementById("clockContainer");
-const chimeEl=document.getElementById("chime");
+const chimeAudio=document.getElementById("chime");
 
 function getNameByHour(hour){
-  return (hour>=18||hour<6)?{name:hour>=18?nightNames[hour-18]:nightNames[hour+6],type:"night"}:{name:dayNames[hour-6],type:"day"};
+  return (hour>=18||hour<6) ? {name:hour>=18?nightNames[hour-18]:nightNames[hour+6],type:"night"} : {name:dayNames[hour-6],type:"day"};
 }
 
 function updateTitle(hour){
@@ -257,45 +256,41 @@ function updateTitle(hour){
 function updateSky(type){
   const stars=document.getElementById("stars");
   if(type==="day"){
-    document.body.style.background="linear-gradient(to bottom, #fceabb, #99ccff)";
-    clockEl.style.background="radial-gradient(circle at 50% 50%, #fff0cc,#4169e1)";
-    stars.style.display="none";
+    document.body.style.background="radial-gradient(circle at center,#87ceeb,#ccefff)";
+    clockEl.style.background="radial-gradient(circle at 50% 50%, #a0d8ff,#4169e1)";
+    stars.style.display="block";
+    stars.style.opacity="0.2";
   }else{
-    document.body.style.background="radial-gradient(circle at center,#0a0f2c,#000033)";
+    document.body.style.background="radial-gradient(circle at center,#0a0f2c,#000)";
     clockEl.style.background="radial-gradient(circle at 50% 50%, #111144,#000022)";
     stars.style.display="block";
+    stars.style.opacity="1";
   }
 }
 
-let lastHour=null;
 function updateName(){
-  const now=new Date();
-  let hour=now.getHours();
-  if(hour!==lastHour){
-    const {name,type}=getNameByHour(hour);
-    updateTitle(hour);
-    updateSky(type);
-    messageEl.style.opacity=0;
-    setTimeout(()=>{messageEl.innerText=name; messageEl.style.opacity=1;},400);
-    lastHour=hour;
-    // notification + sound
-    if(Notification.permission==="granted"){
-      new Notification("Kavanot", {body:`Hour changed: ${name}`});
-    }
-    chimeEl.currentTime=0;
-    chimeEl.play();
-  }
+  let hour=new Date().getHours();
+  let {name,type}=getNameByHour(hour);
+  updateTitle(hour);
+  updateSky(type);
+  messageEl.style.opacity=0;
+  setTimeout(()=>{
+    messageEl.innerText=name;
+    messageEl.className=type;
+    messageEl.style.opacity=1;
+    chimeAudio.play().catch(()=>{}); // play sound if allowed
+  },400);
 }
 
 function updateClock(){
   const now=new Date();
-  const sec=now.getSeconds()+now.getMilliseconds()/1000;
+  const sec=now.getSeconds();
   const min=now.getMinutes()+sec/60;
   const hr=(now.getHours()%12)+min/60;
   document.getElementById("secondHand").style.transform=`translateX(-50%) rotate(${sec*6}deg)`;
   document.getElementById("minuteHand").style.transform=`translateX(-50%) rotate(${min*6}deg)`;
   document.getElementById("hourHand").style.transform=`translateX(-50%) rotate(${hr*30}deg)`;
-  document.getElementById("digitalClock").innerText=`${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}:${now.getSeconds().toString().padStart(2,'0')}`;
+  document.getElementById("digitalClock").innerText=`${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}:${sec.toString().padStart(2,'0')}`;
 }
 
 function createClockNumbers(){
@@ -335,17 +330,12 @@ function generateHourTable(){
   }
 }
 
-// request notification permission
-if("Notification" in window && Notification.permission!=="granted"){
-  Notification.requestPermission();
-}
-
 createClockNumbers();
 updateName();
 updateClock();
 generateHourTable();
-setInterval(updateClock,50);
-setInterval(updateName,1000); // check every second for exact hour change
+setInterval(updateClock,1000);
+setInterval(updateName,60000);
 </script>
 </body>
 </html>

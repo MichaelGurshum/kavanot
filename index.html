@@ -13,27 +13,37 @@
 body{
   margin:0;
   font-family:'Frank Ruhl Libre', serif;
-  background-image:url("background.jpeg");
-  background-size:cover;
-  background-position:center;
-  background-repeat:no-repeat;
-  background-attachment:fixed;
+  background-color:#000; /* dark night background */
   overflow:hidden;
   text-align:center;
   color:white;
   position:relative;
 }
 
-/* dark overlay to make background darker */
-body::after{
+/* ---------- STARS ---------- */
+body::before{
   content:"";
   position:fixed;
   top:0;
   left:0;
   width:100%;
   height:100%;
-  background:rgba(0,0,0,0.4); /* increased darkness */
-  pointer-events:none;
+  background:transparent;
+  box-shadow:
+    20px 50px white,
+    100px 200px white,
+    250px 150px white,
+    400px 300px white,
+    600px 80px white,
+    700px 400px white,
+    800px 200px white,
+    900px 350px white,
+    1000px 100px white;
+  animation:twinkle 10s infinite;
+}
+@keyframes twinkle{
+  0%,100%{opacity:0.8;}
+  50%{opacity:0.2;}
 }
 
 /* ---------- NAME ---------- */
@@ -42,7 +52,7 @@ body::after{
   font-weight:900;
   letter-spacing:18px;
   margin-top:18vh;
-  color:#fff9b0; /* brighter yellow-white for contrast */
+  color:#fff9b0;
   text-align:center;
   text-shadow:
     0 0 10px #fff9b0,

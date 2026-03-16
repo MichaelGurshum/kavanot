@@ -82,12 +82,14 @@ body::after{
 /* ---------- CLOCK ---------- */
 #clockContainer{
   position:absolute;
-  bottom:20px; /* moved lower to avoid overlapping the name */
+  bottom:20px;
   width:100%;
   display:flex;
   flex-direction:column;
   align-items:center;
 }
+
+/* comment out analog clock styles
 .clock{
   width:170px;
   height:170px;
@@ -98,7 +100,6 @@ body::after{
     0 0 15px rgba(255,255,255,0.9),
     0 0 25px rgba(255,255,200,0.9);
 }
-/* center pin */
 .clock::after{
   content:"";
   position:absolute;
@@ -111,7 +112,6 @@ body::after{
   transform:translate(-50%,-50%);
   box-shadow:0 0 15px white;
 }
-/* hands */
 .hand{
   position:absolute;
   bottom:50%;
@@ -123,10 +123,10 @@ body::after{
 .hour{ width:6px; height:45px; background:white; }
 .minute{ width:4px; height:65px; background:white; }
 .second{ width:2px; height:75px; background:#ffd700; }
+*/
 
 /* digital clock */
 #digitalClock{
-  margin-top:15px;
   font-size:28px;
   text-shadow:
     0 0 10px white,
@@ -139,11 +139,13 @@ body::after{
 <div id="message"></div>
 
 <div id="clockContainer">
+  <!-- analog clock removed temporarily
   <div class="clock">
     <div class="hand hour" id="hourHand"></div>
     <div class="hand minute" id="minuteHand"></div>
     <div class="hand second" id="secondHand"></div>
   </div>
+  -->
   <div id="digitalClock"></div>
 </div>
 
@@ -184,12 +186,7 @@ function updateClock(){
   const sec=now.getSeconds();
   const min=now.getMinutes();
   const hr=now.getHours()%12;
-  const secDeg=sec*6;
-  const minDeg=min*6 + sec*0.1;
-  const hrDeg=hr*30 + min*0.5;
-  document.getElementById("secondHand").style.transform=`translateX(-50%) rotate(${secDeg}deg)`;
-  document.getElementById("minuteHand").style.transform=`translateX(-50%) rotate(${minDeg}deg)`;
-  document.getElementById("hourHand").style.transform=`translateX(-50%) rotate(${hrDeg}deg)`;
+  // analog clock disabled
   document.getElementById("digitalClock").textContent=now.toLocaleTimeString();
 }
 

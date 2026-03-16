@@ -9,15 +9,39 @@
 <link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;700;900&display=swap" rel="stylesheet">
 
 <style>
-/* ---------- BODY & BACKGROUND ---------- */
 body {
   margin: 0;
   font-family: 'Frank Ruhl Libre', serif;
-  background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url("background.jpeg") center/cover no-repeat;
   overflow: hidden;
   text-align: center;
   color: white;
   position: relative;
+}
+
+/* Background image container */
+#background {
+  position: fixed;
+  top:0; left:0;
+  width: 100%;
+  height: 100%;
+  background: url("background.jpeg") center/cover no-repeat;
+  z-index: 0;
+}
+
+/* Dark overlay behind content, but above background */
+#overlay {
+  position: fixed;
+  top:0; left:0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.7); /* 70% black */
+  z-index: 1;
+}
+
+/* Content container above overlay */
+#content {
+  position: relative;
+  z-index: 2;
 }
 
 /* ---------- NAME ---------- */
@@ -41,26 +65,8 @@ body {
   transition: opacity .4s;
 }
 @keyframes holyGlow {
-  0% {
-    text-shadow:
-      0 0 10px #fff9b0,
-      0 0 20px #fff38a,
-      0 0 40px #ffe45c,
-      0 0 80px #ffd83b,
-      0 0 120px #ffc800,
-      0 0 160px #ffc800,
-      0 0 200px #ffc800;
-  }
-  100% {
-    text-shadow:
-      0 0 20px #fff9b0,
-      0 0 40px #fff38a,
-      0 0 80px #ffe45c,
-      0 0 140px #ffd83b,
-      0 0 200px #ffc800,
-      0 0 240px #ffc800,
-      0 0 280px #ffc800;
-  }
+  0% { text-shadow: 0 0 10px #fff9b0,0 0 20px #fff38a,0 0 40px #ffe45c,0 0 80px #ffd83b,0 0 120px #ffc800,0 0 160px #ffc800,0 0 200px #ffc800;}
+  100% { text-shadow: 0 0 20px #fff9b0,0 0 40px #fff38a,0 0 80px #ffe45c,0 0 140px #ffd83b,0 0 200px #ffc800,0 0 240px #ffc800,0 0 280px #ffc800;}
 }
 
 /* ---------- CLOCK ---------- */
@@ -73,15 +79,13 @@ body {
   align-items: center;
 }
 
-/* digital clock */
+/* Digital clock */
 #digitalClock {
   font-size: 28px;
-  text-shadow:
-    0 0 10px white,
-    0 0 20px #ffe680;
+  text-shadow: 0 0 10px white, 0 0 20px #ffe680;
 }
 
-/* button example (if any) */
+/* Example button */
 button {
   font-size: 16px;
   padding: 8px 16px;
@@ -100,30 +104,32 @@ button:hover {
 </head>
 <body>
 
-<div id="message"></div>
+<div id="background"></div>
+<div id="overlay"></div>
 
-<div id="clockContainer">
-  <!-- analog clock commented out -->
-  <!-- <div class="clock"> ... </div> -->
-  <div id="digitalClock"></div>
+<div id="content">
+  <div id="message"></div>
+
+  <div id="clockContainer">
+    <!-- analog clock commented out -->
+    <!-- <div class="clock"> ... </div> -->
+    <div id="digitalClock"></div>
+  </div>
+
+  <audio id="chime" src="chime.mp3" preload="auto"></audio>
 </div>
 
-<audio id="chime" src="chime.mp3" preload="auto"></audio>
-
 <script>
-/* ---------- NAMES ---------- */
 const nightNames=["אדני","אדינ","אניד","דניא","דנאי","דינא","נדאי","נדיא","נאדי","דאינ","דאני","דיאנ"];
 const dayNames=["יהוה","יההו","יוהה","הוהי","הויה","ההוי","והיה","וההי","ויהה","היהו","היוה","ההיו"];
 let lastHour=-1;
 
-/* ---------- GET NAME ---------- */
 function getName(hour){
   if(hour>=18) return nightNames[hour-18];
   if(hour<6) return nightNames[hour+6];
   return dayNames[hour-6];
 }
 
-/* ---------- UPDATE NAME ---------- */
 function updateName(){
   let hour=new Date().getHours();
   if(hour!==lastHour){
@@ -139,13 +145,11 @@ function updateName(){
   }
 }
 
-/* ---------- DIGITAL CLOCK ---------- */
 function updateClock(){
   const now=new Date();
-  document.getElementById("digitalClock").textContent=now.toLocaleTimeString();
+  document.getElementById("digitalClock").textContent = now.toLocaleTimeString();
 }
 
-/* ---------- LOOP ---------- */
 function tick(){
   updateClock();
   updateName();

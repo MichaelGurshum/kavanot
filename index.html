@@ -1,17 +1,18 @@
 <!DOCTYPE html>
-<html lang="he">
+<html lang="he" dir="rtl">
 <head>
-
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>שם לפי שעה</title>
 
 <style>
 
+/* ---------- BACKGROUND ---------- */
+
 body{
 margin:0;
-font-family:Arial;
+font-family:Arial, Helvetica, sans-serif;
 background-image:url("background.jpeg");
 background-size:cover;
 background-position:center;
@@ -22,71 +23,81 @@ text-align:center;
 color:white;
 }
 
-/* NAME */
+/* slight overlay for better glow visibility */
+
+body::after{
+content:"";
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.25);
+pointer-events:none;
+}
+
+/* ---------- NAME ---------- */
 
 #message{
 
-font-size:8vw;
-margin-top:22vh;
-letter-spacing:10px;
+font-size:12vw;
+font-weight:900;
+letter-spacing:18px;
 
-color:#fff9d6;
+margin-top:18vh;
+
+color:#fff8c6;
+
+text-align:center;
+
+/* radiant glow */
 
 text-shadow:
+0 0 5px #fffce0,
 0 0 10px #fff9b0,
-0 0 25px #fff6a0,
-0 0 40px #ffe96b,
-0 0 70px #ffd84a,
-0 0 100px #ffcc00;
+0 0 20px #fff38a,
+0 0 40px #ffe45c,
+0 0 80px #ffd83b,
+0 0 120px #ffc800,
+0 0 160px #ffc800;
 
-animation:glowPulse 3s infinite alternate;
+filter:drop-shadow(0 0 25px #ffd83b);
+
+animation:holyGlow 3s ease-in-out infinite alternate;
 
 transition:opacity .4s;
 
 }
 
-/* TITLE */
+/* glow animation */
 
-#title{
+@keyframes holyGlow{
 
-font-size:3vw;
-margin-top:10px;
-
+0%{
 text-shadow:
-0 0 6px #fff8c0,
-0 0 12px #ffe680;
-
-}
-
-/* GLOW */
-
-@keyframes glowPulse{
-
-from{
-
-text-shadow:
+0 0 5px #fffce0,
 0 0 10px #fff9b0,
-0 0 25px #fff6a0,
-0 0 40px #ffe96b,
-0 0 70px #ffd84a,
-0 0 100px #ffcc00;
-
+0 0 20px #fff38a,
+0 0 40px #ffe45c,
+0 0 80px #ffd83b,
+0 0 120px #ffc800,
+0 0 160px #ffc800;
 }
 
-to{
-
+100%{
 text-shadow:
+0 0 10px #fffce0,
 0 0 20px #fff9b0,
-0 0 40px #fff6a0,
-0 0 70px #ffe96b,
-0 0 100px #ffd84a,
-0 0 140px #ffcc00;
-
+0 0 40px #fff38a,
+0 0 70px #ffe45c,
+0 0 120px #ffd83b,
+0 0 160px #ffc800,
+0 0 220px #ffc800;
 }
 
 }
 
-/* CLOCK */
+/* ---------- CLOCK ---------- */
 
 #clockContainer{
 
@@ -101,36 +112,85 @@ align-items:center;
 
 .clock{
 
-width:160px;
-height:160px;
+width:170px;
+height:170px;
+
 border:6px solid white;
 border-radius:50%;
+
 position:relative;
 
 box-shadow:
-0 0 10px rgba(255,255,255,.8),
-0 0 20px rgba(255,255,200,.8);
+0 0 10px rgba(255,255,255,0.8),
+0 0 20px rgba(255,255,200,0.8);
 
 }
+
+/* center pin */
+
+.clock::after{
+
+content:"";
+
+position:absolute;
+
+width:12px;
+height:12px;
+
+background:white;
+
+border-radius:50%;
+
+top:50%;
+left:50%;
+
+transform:translate(-50%,-50%);
+
+box-shadow:0 0 10px white;
+
+}
+
+/* hands */
 
 .hand{
 
 position:absolute;
-background:white;
-top:50%;
+
+bottom:50%;
 left:50%;
-transform-origin:bottom;
-transform:translateX(-50%);
+
+transform-origin:bottom center;
+
+transform:translateX(-50%) rotate(0deg);
+
+border-radius:3px;
 
 }
 
-.hour{width:6px;height:40px;}
-.minute{width:4px;height:60px;}
-.second{width:2px;height:70px;background:#ffd700;}
+.hour{
+width:6px;
+height:45px;
+background:white;
+}
+
+.minute{
+width:4px;
+height:65px;
+background:white;
+}
+
+.second{
+width:2px;
+height:75px;
+background:#ffd700;
+}
+
+/* digital clock */
 
 #digitalClock{
 
 margin-top:15px;
+
 font-size:28px;
 
 text-shadow:
@@ -145,7 +205,6 @@ text-shadow:
 <body>
 
 <div id="message"></div>
-<div id="title"></div>
 
 <div id="clockContainer">
 
@@ -165,7 +224,7 @@ text-shadow:
 
 <script>
 
-/* NAMES */
+/* ---------- NAMES ---------- */
 
 const nightNames=[
 "אדני","אדינ","אניד","דניא","דנאי","דינא",
@@ -179,27 +238,17 @@ const dayNames=[
 
 let lastHour=-1;
 
-/* NAME BY HOUR */
+/* ---------- GET NAME ---------- */
 
 function getName(hour){
 
-if(hour>=18){
-
-return nightNames[hour-18];
-
-}
-
-if(hour<6){
-
-return nightNames[hour+6];
-
-}
-
+if(hour>=18) return nightNames[hour-18];
+if(hour<6) return nightNames[hour+6];
 return dayNames[hour-6];
 
 }
 
-/* UPDATE NAME */
+/* ---------- UPDATE NAME ---------- */
 
 function updateName(){
 
@@ -228,7 +277,7 @@ document.getElementById("chime").play().catch(()=>{});
 
 }
 
-/* CLOCK */
+/* ---------- CLOCK ---------- */
 
 function updateClock(){
 
@@ -250,7 +299,7 @@ document.getElementById("digitalClock").textContent=now.toLocaleTimeString();
 
 }
 
-/* LOOP */
+/* ---------- LOOP ---------- */
 
 function tick(){
 

@@ -1,335 +1,269 @@
 <!DOCTYPE html>
-<html lang="he" dir="rtl">
+<html lang="he">
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
 <title>שם לפי שעה</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Hebrew:wght@400;700&display=swap" rel="stylesheet">
+
 <style>
+
 body{
-  margin:0;
-  height:100vh;
-  display:flex;
-  flex-direction:column;
-  justify-content:flex-start;
-  align-items:center;
-  font-family:'Noto Serif Hebrew',serif;
-  overflow:hidden;
-  color:white;
-  padding-top:20px;
-  background: radial-gradient(circle at center,#0a0f2c,#000);
-  transition: background 1s;
+margin:0;
+font-family:Arial;
+background-image:url("background.jpeg");
+background-size:cover;
+background-position:center;
+background-repeat:no-repeat;
+background-attachment:fixed;
+overflow:hidden;
+text-align:center;
+color:white;
 }
-/* TITLE */
-#title{
-  font-size:2rem;
-  margin:20px 0;
-  text-align:center;
-  z-index:1;
-  text-shadow:0 0 15px #4169e1;
-}
-#hourRange{
-  dir:ltr; 
-}
-/* STARS */
-#stars{
-  position:absolute;
-  width:100%;
-  height:100%;
-  top:0;
-  left:0;
-  pointer-events:none;
-  z-index:-1;
-}
-.star{
-  position:absolute;
-  background:white;
-  border-radius:50%;
-  opacity:0.8;
-  animation:twinkle 2s infinite alternate;
-}
-@keyframes twinkle{0%{opacity:0.2}100%{opacity:1}}
-/* CLOCK CONTAINER */
-#clockContainer{
-  position:relative;
-  width:320px;
-  height:320px;
-  border-radius:50%;
-  background: radial-gradient(circle at center,#002366 0%, #001144 100%);
-  box-shadow:
-    inset -12px -12px 25px rgba(0,0,0,0.5),
-    inset 12px 12px 25px rgba(65,105,225,0.2),
-    0 12px 35px rgba(0,0,0,0.7);
-  margin-bottom:20px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  overflow:hidden;
-  transition: background 1s;
-}
-/* DIAL TEXTURE */
-#clockContainer::before{
-  content:"";
-  position:absolute;
-  width:100%;
-  height:100%;
-  border-radius:50%;
-  background: repeating-linear-gradient(
-    0deg,
-    rgba(255,255,255,0.03),
-    rgba(255,255,255,0.03) 1px,
-    transparent 1px,
-    transparent 2px
-  );
-  pointer-events:none;
-}
-/* SWEEPING LIGHT RAY */
-#lightRay{
-  position:absolute;
-  width:100%;
-  height:100%;
-  border-radius:50%;
-  background: linear-gradient(90deg, rgba(255,255,255,0.0) 0%, rgba(255,255,255,0.15) 50%, rgba(255,255,255,0.0) 100%);
-  transform: rotate(45deg);
-  pointer-events:none;
-  animation:rayMove 8s infinite linear;
-  mix-blend-mode:screen;
-}
-@keyframes rayMove{
-  0%{transform:rotate(45deg) translateX(-150%);}
-  100%{transform:rotate(45deg) translateX(150%);}
-}
-/* BEZEL */
-#clockContainer::after{
-  content:"";
-  position:absolute;
-  width:100%;
-  height:100%;
-  border-radius:50%;
-  border:12px solid #4169e1;
-  box-shadow: inset 0 0 8px rgba(255,255,255,0.3), 0 0 10px rgba(0,0,0,0.7);
-  pointer-events:none;
-  animation:bezelShimmer 4s infinite linear;
-}
-@keyframes bezelShimmer{
-  0%{box-shadow: inset 0 0 8px rgba(255,255,255,0.1), 0 0 10px rgba(0,0,0,0.7);}
-  50%{box-shadow: inset 0 0 16px rgba(255,255,255,0.3), 0 0 12px rgba(0,0,0,0.8);}
-  100%{box-shadow: inset 0 0 8px rgba(255,255,255,0.1), 0 0 10px rgba(0,0,0,0.7);}
-}
-/* CLOCK NUMBERS */
-.number{
-  position:absolute;
-  font-weight:bold;
-  font-size:1.8rem;
-  width:30px;
-  height:30px;
-  line-height:30px;
-  text-align:center;
-  transform-origin:center center;
-  color:#c0e0ff;
-  background: linear-gradient(135deg, #e0f7ff, #4169e1);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  text-shadow:
-    0 1px 1px rgba(0,0,0,0.5),
-    0 -1px 1px rgba(255,255,255,0.6),
-    0 0 5px #aaddff,
-    0 0 10px #87cefa,
-    0 0 20px #4169e1;
-  animation:markerShimmer 3s infinite linear;
-}
-@keyframes markerShimmer{
-  0%{background-position:0 0; text-shadow:0 1px 1px rgba(0,0,0,0.5),0 -1px 1px rgba(255,255,255,0.6),0 0 5px #aaddff,0 0 10px #87cefa,0 0 20px #4169e1;}
-  50%{background-position:40% 40%; text-shadow:0 2px 2px rgba(0,0,0,0.6),0 -2px 2px rgba(255,255,255,0.8),0 0 8px #b0e0ff,0 0 15px #87cefa,0 0 30px #4169e1;}
-  100%{background-position:0 0; text-shadow:0 1px 1px rgba(0,0,0,0.5),0 -1px 1px rgba(255,255,255,0.6),0 0 5px #aaddff,0 0 10px #87cefa,0 0 20px #4169e1;}
-}
-/* HANDS */
-.hand{
-  position:absolute;
-  bottom:50%;
-  left:50%;
-  transform-origin:bottom center;
-  border-radius:3px;
-  box-shadow:0 2px 6px rgba(0,0,0,0.5);
-  transition: transform 0.05s linear;
-  background: linear-gradient(45deg,#87cefa,#1e3aa0);
-  animation:handShimmer 3s infinite;
-}
-#hourHand{width:12px;height:70px;}
-#minuteHand{width:8px;height:100px;}
-#secondHand{width:3px;height:110px;background:#1e90ff;box-shadow:0 1px 3px rgba(0,0,0,0.5);}
-@keyframes handShimmer{0%{background-position:0 0;}50%{background-position:50% 50%;}100%{background-position:0 0;}}
-/* CENTER PIN */
-#centerDot{
-  position:absolute;
-  width:18px;
-  height:18px;
-  background:radial-gradient(circle,#87cefa,#1e3aa0);
-  border-radius:50%;
-  top:50%; left:50%;
-  transform:translate(-50%,-50%);
-  box-shadow:0 4px 8px rgba(0,0,0,0.6), inset 0 2px 4px rgba(173,216,230,0.5);
-}
-/* DIGITAL CLOCK */
-#digitalClock{
-  position:absolute;
-  font-size:2rem;
-  color:white;
-  text-shadow:0 0 15px #4169e1;
-  z-index:1;
-}
+
 /* NAME */
+
 #message{
-  font-size:5rem;
-  letter-spacing:12px;
-  opacity:0;
-  transition:opacity 1s;
-  z-index:1;
-  text-shadow:0 0 20px #00ffff,0 0 40px #00ffff,0 0 60px #00ffff;
+
+font-size:8vw;
+margin-top:22vh;
+letter-spacing:10px;
+
+color:#fff9d6;
+
+text-shadow:
+0 0 10px #fff9b0,
+0 0 25px #fff6a0,
+0 0 40px #ffe96b,
+0 0 70px #ffd84a,
+0 0 100px #ffcc00;
+
+animation:glowPulse 3s infinite alternate;
+
+transition:opacity .4s;
+
 }
-.day{
-  color:black;
+
+/* TITLE */
+
+#title{
+
+font-size:3vw;
+margin-top:10px;
+
+text-shadow:
+0 0 6px #fff8c0,
+0 0 12px #ffe680;
+
 }
-.night{
-  color:#add8e6;
-  text-shadow:0 0 20px #add8e6,0 0 60px #87cefa;
+
+/* GLOW */
+
+@keyframes glowPulse{
+
+from{
+
+text-shadow:
+0 0 10px #fff9b0,
+0 0 25px #fff6a0,
+0 0 40px #ffe96b,
+0 0 70px #ffd84a,
+0 0 100px #ffcc00;
+
 }
-/* TABLE */
-#hourTable{
-  position:absolute;
-  bottom:0;
-  width:100%;
-  background:rgba(0,0,0,0.25);
-  overflow-x:auto;
-  white-space:nowrap;
-  padding:5px 0;
-  font-size:0.8rem;
-  text-align:center;
+
+to{
+
+text-shadow:
+0 0 20px #fff9b0,
+0 0 40px #fff6a0,
+0 0 70px #ffe96b,
+0 0 100px #ffd84a,
+0 0 140px #ffcc00;
+
 }
-#hourTable span{display:inline-block;padding:0 10px;}
+
+}
+
+/* CLOCK */
+
+#clockContainer{
+
+position:absolute;
+bottom:40px;
+width:100%;
+display:flex;
+flex-direction:column;
+align-items:center;
+
+}
+
+.clock{
+
+width:160px;
+height:160px;
+border:6px solid white;
+border-radius:50%;
+position:relative;
+
+box-shadow:
+0 0 10px rgba(255,255,255,.8),
+0 0 20px rgba(255,255,200,.8);
+
+}
+
+.hand{
+
+position:absolute;
+background:white;
+top:50%;
+left:50%;
+transform-origin:bottom;
+transform:translateX(-50%);
+
+}
+
+.hour{width:6px;height:40px;}
+.minute{width:4px;height:60px;}
+.second{width:2px;height:70px;background:#ffd700;}
+
+#digitalClock{
+
+margin-top:15px;
+font-size:28px;
+
+text-shadow:
+0 0 6px white,
+0 0 10px #ffe680;
+
+}
+
 </style>
 </head>
-<body>
-<div id="clockContainer">
-  <div id="hourHand" class="hand"></div>
-  <div id="minuteHand" class="hand"></div>
-  <div id="secondHand" class="hand"></div>
-  <div id="centerDot"></div>
-  <div id="lightRay"></div>
-  <div id="digitalClock"></div>
-</div>
-<div id="title">שם לפי שעה <span id="hourRange" dir="ltr"></span></div>
-<div id="message"></div>
-<div id="stars"></div>
-<div id="hourTable"></div>
 
-<audio id="chimeAudio" src="chime.mp3" preload="auto"></audio>
+<body>
+
+<div id="message"></div>
+<div id="title"></div>
+
+<div id="clockContainer">
+
+<div class="clock">
+
+<div class="hand hour" id="hourHand"></div>
+<div class="hand minute" id="minuteHand"></div>
+<div class="hand second" id="secondHand"></div>
+
+</div>
+
+<div id="digitalClock"></div>
+
+</div>
+
+<audio id="chime" src="chime.mp3" preload="auto"></audio>
 
 <script>
-const nightNames=["אדני","אדינ","אניד","דניא","דנאי","דינא","נדאי","נדיא","נאדי","דאינ","דאני","דיאנ"];
-const dayNames=["יהוה","יההו","יוהה","הוהי","הויה","ההוי","והיה","וההי","ויהה","היהו","היוה","ההיו"];
-const messageEl=document.getElementById("message");
-const titleEl=document.getElementById("title");
-const hourRangeEl=document.getElementById("hourRange");
-const clockEl=document.getElementById("clockContainer");
-const chimeAudio=document.getElementById("chimeAudio");
+
+/* NAMES */
+
+const nightNames=[
+"אדני","אדינ","אניד","דניא","דנאי","דינא",
+"נדאי","נדיא","נאדי","דאינ","דאני","דיאנ"
+];
+
+const dayNames=[
+"יהוה","יההו","יוהה","הוהי","הויה","ההוי",
+"והיה","וההי","ויהה","היהו","היוה","ההיו"
+];
+
 let lastHour=-1;
 
-function getNameByHour(hour){
-  return (hour>=18||hour<6)?{name:hour>=18?nightNames[hour-18]:nightNames[hour+6],type:"night"}:{name:dayNames[hour-6],type:"day"};
+/* NAME BY HOUR */
+
+function getName(hour){
+
+if(hour>=18){
+
+return nightNames[hour-18];
+
 }
 
-function updateTitle(hour){
-  let next=(hour+1)%24;
-  let start=hour.toString().padStart(2,'0')+":00";
-  let end=next.toString().padStart(2,'0')+":00";
-  hourRangeEl.innerText=`(${start} - ${end})`;
+if(hour<6){
+
+return nightNames[hour+6];
+
 }
 
-function updateSky(type){
-  const stars=document.getElementById("stars");
-  if(type==="day"){
-    document.body.style.background="radial-gradient(circle at center,#87ceeb,#b0e0e6)";
-    clockEl.style.background="radial-gradient(circle at 50% 50%, #a0d0ff,#4169e1)";
-    stars.style.display="block";
-  }else{
-    document.body.style.background="radial-gradient(circle at center,#0a0f2c,#000)";
-    clockEl.style.background="radial-gradient(circle at 50% 50%, #111144,#000022)";
-    stars.style.display="block";
-  }
+return dayNames[hour-6];
+
 }
+
+/* UPDATE NAME */
 
 function updateName(){
-  let hour=new Date().getHours();
-  if(hour!==lastHour){
-    lastHour=hour;
-    let {name,type}=getNameByHour(hour);
-    updateTitle(hour);
-    updateSky(type);
-    messageEl.style.opacity=0;
-    setTimeout(()=>{
-      messageEl.innerText=name; 
-      messageEl.className=type; 
-      messageEl.style.opacity=1;
-    },400);
-    chimeAudio.play().catch(()=>{});
-  }
+
+let hour=new Date().getHours();
+
+if(hour!==lastHour){
+
+lastHour=hour;
+
+let name=getName(hour);
+
+let message=document.getElementById("message");
+
+message.style.opacity=0;
+
+setTimeout(()=>{
+
+message.innerText=name;
+message.style.opacity=1;
+
+},300);
+
+document.getElementById("chime").play().catch(()=>{});
+
 }
+
+}
+
+/* CLOCK */
 
 function updateClock(){
-  const now=new Date();
-  const sec=now.getSeconds()+now.getMilliseconds()/1000;
-  const min=now.getMinutes()+sec/60;
-  const hr=(now.getHours()%12)+min/60;
-  document.getElementById("secondHand").style.transform=`translateX(-50%) rotate(${sec*6}deg)`;
-  document.getElementById("minuteHand").style.transform=`translateX(-50%) rotate(${min*6}deg)`;
-  document.getElementById("hourHand").style.transform=`translateX(-50%) rotate(${hr*30}deg)`;
-  document.getElementById("digitalClock").innerText=`${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}:${now.getSeconds().toString().padStart(2,'0')}`;
+
+const now=new Date();
+
+const sec=now.getSeconds();
+const min=now.getMinutes();
+const hr=now.getHours()%12;
+
+const secDeg=sec*6;
+const minDeg=min*6 + sec*0.1;
+const hrDeg=hr*30 + min*0.5;
+
+document.getElementById("secondHand").style.transform=`translateX(-50%) rotate(${secDeg}deg)`;
+document.getElementById("minuteHand").style.transform=`translateX(-50%) rotate(${minDeg}deg)`;
+document.getElementById("hourHand").style.transform=`translateX(-50%) rotate(${hrDeg}deg)`;
+
+document.getElementById("digitalClock").textContent=now.toLocaleTimeString();
+
 }
 
-function createClockNumbers(){
-  for(let i=1;i<=12;i++){
-    const num=document.createElement("div");
-    num.className="number";
-    num.innerText=i;
-    const angle=(i*30-90)*Math.PI/180;
-    const radius=130;
-    const x=160+radius*Math.cos(angle)-15;
-    const y=160+radius*Math.sin(angle)-15;
-    num.style.left=x+"px";
-    num.style.top=y+"px";
-    clockEl.appendChild(num);
-  }
-}
+/* LOOP */
 
-const stars=document.getElementById("stars"); 
-for(let i=0;i<100;i++){
-  const star=document.createElement("div"); 
-  star.className="star"; 
-  let size=Math.random()*3+1; 
-  star.style.width=size+"px"; 
-  star.style.height=size+"px"; 
-  star.style.top=Math.random()*100+"%"; 
-  star.style.left=Math.random()*100+"%"; 
-  stars.appendChild(star);
-}
+function tick(){
 
-function generateHourTable(){
-  const table=document.getElementById("hourTable"); 
-  for(let h=0;h<24;h++){
-    const {name}=getNameByHour(h); 
-    const span=document.createElement("span"); 
-    span.innerText=`${h.toString().padStart(2,'0')}:00 - ${name}`; 
-    table.appendChild(span);
-  }
-}
-
-createClockNumbers();
-updateName();
 updateClock();
-generateHourTable();
-setInterval(updateClock,50);
-setInterval(updateName,1000);
+updateName();
+
+}
+
+setInterval(tick,1000);
+
+tick();
+
 </script>
+
 </body>
 </html>

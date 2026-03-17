@@ -44,10 +44,10 @@ body::before {
     margin-top: 18vh;
     font-weight: bold;
     white-space: nowrap;
-    direction: rtl;  /* fix Hebrew letter order */
+    direction: rtl;
 }
 
-/* Fire + glow using layered spans for Display2Go */
+/* Fire + glow + outer glow for Display2Go */
 .fire-layer {
     display: inline-block;
     position: relative;
@@ -61,7 +61,8 @@ body::before {
         0 0 5px #fff,
         0 0 10px yellow,
         0 0 15px orange,
-        0 0 20px gold;
+        0 0 25px gold,
+        0 0 30px orange; /* outer glow */
 }
 
 .fire-layer .glow {
@@ -133,16 +134,14 @@ body::before {
 <div id="bottomStrip"></div>
 
 <script>
-const nightNames = [
-"אדני אינד","אדינ אידנ","אניד אנדי","דניא ינדא",
-"דנאי ינאד","דינא ידנא","נדאי ניאד","נדיא נידא",
-"נאדי נאיד","דאינ יאדנ","דאני יאנד","דיאנ ידאנ"
-];
-
-const dayNames = [
-"יהוה אהיה","יההו אההי","יוהה איהה","הוהי היהא",
-"הויה היאה","ההוי ההיא","והיה יהאה","וההי יההא",
-"ויהה יאהה","היהו האהי","היוה האיה","ההיו ההאי"
+// 24-hour exact mapping for main display names
+const hourNames = [
+  "אדני אינד","אדינ אידנ","אניד אנדי","דניא ינדא",
+  "דנאי ינאד","דינא ידנא","נדאי ניאד","נדיא נידא",
+  "נאדי נאיד","דאינ יאדנ","דאני יאנד","דיאנ ידאנ",
+  "יהוה אהיה","יההו אההי","יוהה איהה","הוהי היהא",
+  "הויה היאה","ההוי ההיא","והיה יהאה","וההי יההא",
+  "ויהה יאהה","היהו האהי","היוה האיה","ההיו ההאי"
 ];
 
 /* Add dashes between letters within each word */
@@ -150,20 +149,18 @@ function addDashes(name) {
     return name.split(" ").map(word => word.split("").join("-")).join(" ");
 }
 
-/* Create fire + glow layers for Display2Go */
+/* Create fire + glow layers */
 function addFireGlow(name){
     return name.split(" ").map(word=>{
-        // Reverse letters for proper RTL display
-        const letters = word.split("").reverse();
-        return letters.map((letter,i)=>{
-            let dash = (i<letters.length-1) ? "-" : "";
+        return word.split("").map((letter,i)=>{
+            let dash = (i<word.length-1) ? "-" : "";
             return `<span class="fire-layer">
                         <span class="base">${letter}</span>
                         <span class="glow">${letter}</span>
                         <span class="spark">${letter}</span>
                     </span>${dash}`;
         }).join("");
-    }).join(" "); // single space between words
+    }).join(" ");
 }
 
 function formatTime(hour, min, sec) {
@@ -178,13 +175,7 @@ function formatHour(hour){
 }
 
 function getName(hour){
-    if(hour>=18 || hour<6){
-        let index = hour>=18 ? hour-18 : hour+6;
-        return nightNames[index % 12];
-    } else {
-        let index = hour-6;
-        return dayNames[index % 12];
-    }
+    return hourNames[hour % 24];
 }
 
 function buildStrip(currentHour){

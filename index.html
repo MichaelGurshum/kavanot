@@ -44,6 +44,7 @@ body::before {
     margin-top: 18vh;
     font-weight: bold;
     white-space: nowrap;
+    direction: rtl;  /* fix Hebrew letter order */
 }
 
 /* Fire + glow using layered spans for Display2Go */
@@ -152,8 +153,10 @@ function addDashes(name) {
 /* Create fire + glow layers for Display2Go */
 function addFireGlow(name){
     return name.split(" ").map(word=>{
-        return word.split("").map((letter,i)=>{
-            let dash = (i<word.length-1) ? "-" : "";
+        // Reverse letters for proper RTL display
+        const letters = word.split("").reverse();
+        return letters.map((letter,i)=>{
+            let dash = (i<letters.length-1) ? "-" : "";
             return `<span class="fire-layer">
                         <span class="base">${letter}</span>
                         <span class="glow">${letter}</span>

@@ -1,230 +1,192 @@
 <!DOCTYPE html>
-<html lang="he" dir="rtl">
+<html lang="he">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>שם לפי שעה</title>
 
-<!-- Scripture-like font -->
-<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;700;900&display=swap" rel="stylesheet">
-
 <style>
-html, body {
-  margin:0;
-  padding:0;
-  height:100%;
-  font-family:'Frank Ruhl Libre', serif;
-  overflow:hidden;
-  background:#000;
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'David Libre', serif;
+    background: black;
+    color: white;
+    text-align: center;
+    overflow: hidden;
 }
 
-#background {
-  position:fixed;
-  top:0; left:0;
-  width:100%;
-  height:100%;
-  background: url("background.jpeg") center center / cover no-repeat;
-  z-index:0;
+/* Background stars */
+body::before {
+    content: "";
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(white 1px, transparent 1px);
+    background-size: 3px 3px;
+    opacity: 0.25;
+    z-index: -1;
 }
 
-#overlay {
-  position:fixed;
-  top:0; left:0;
-  width:100%;
-  height:100%;
-  background-color: rgba(0,0,0,0.7);
-  z-index:1;
-}
-
-#content {
-  position:relative;
-  z-index:2;
-  display:flex;
-  flex-direction:column;
-  justify-content:space-between;
-  height:100%;
-  align-items:center;
-  padding:20px 10px;
-  box-sizing:border-box;
-}
-
-/* ---------- TITLE ---------- */
+/* Title */
 #title {
-  font-size:2rem;
-  font-weight:bold;
-  color:#fff9b0;
-  text-shadow:0 0 6px #ffd83b;
-  text-align:center;
-  margin-top:10px;
+    font-size: 5vw;
+    margin-top: 20px;
+    text-shadow: 0 0 10px gold, 0 0 20px gold;
 }
 
-/* ---------- MAIN NAME ---------- */
-#message {
-  font-size:10vw;
-  font-weight:900;
-  letter-spacing:12px;
-  color:#fff9b0;
-  text-align:center;
-  word-break:break-word;
-  text-shadow:
-    0 0 10px #fff9b0,
-    0 0 20px #fff38a,
-    0 0 40px #ffe45c,
-    0 0 80px #ffd83b,
-    0 0 120px #ffc800;
-  filter: drop-shadow(0 0 30px #ffd83b);
-  animation:holyGlow 3s ease-in-out infinite alternate;
-  margin-top:5vh;
-}
-@keyframes holyGlow{
-  0%{ text-shadow:0 0 10px #fff9b0,0 0 20px #fff38a,0 0 40px #ffe45c,0 0 80px #ffd83b,0 0 120px #ffc800;}
-  100%{ text-shadow:0 0 20px #fff9b0,0 0 40px #fff38a,0 0 80px #ffe45c,0 0 140px #ffd83b,0 0 200px #ffc800;}
+/* Clock */
+#clock {
+    font-size: 4vw;
+    margin-top: 10px;
 }
 
-/* ---------- DIGITAL CLOCK ---------- */
-#clockContainer {
-  font-size:28px;
-  text-shadow:0 0 10px white,0 0 20px #ffe680;
-  margin-top:10px;
-  text-align:center;
+/* Name container */
+#nameContainer {
+    position: absolute;
+    top: 30%;
+    width: 100%;
+    transform: translateY(-50%);
 }
 
-/* ---------- BOTTOM NAME LIST ---------- */
-#nameList {
-  width:90%;
-  text-align:center;
-  font-size:1rem;
-  color:#fff;
-  text-shadow:0 0 4px #ffd83b;
-  margin-bottom:10px;
-  display:flex;
-  flex-wrap:wrap;
-  justify-content:center;
-  gap:6px;
-}
-.hourName {
-  padding:2px 6px;
-  border-radius:4px;
-  background-color: rgba(255,255,255,0.1);
-}
-.currentHour {
-  background-color: rgba(255,255,255,0.5);
-  font-weight:bold;
+/* Main name */
+.nameMain {
+    font-size: 10vw;
+    font-weight: bold;
+    text-shadow:
+        0 0 10px #fff,
+        0 0 20px gold,
+        0 0 40px gold;
 }
 
-/* ---------- BUTTON ---------- */
-button {
-  font-size:16px;
-  padding:8px 16px;
-  margin:10px;
-  border:none;
-  border-radius:6px;
-  background-color: rgba(255,255,255,0.2);
-  color:#fff;
-  text-shadow:0 0 6px #fff;
-  cursor:pointer;
+/* Second name */
+.nameSub {
+    font-size: 6vw;
+    margin-top: 15px;
+    text-shadow:
+        0 0 8px #fff,
+        0 0 15px gold;
 }
-button:hover { background-color: rgba(255,255,255,0.4);}
+
+/* Time range */
+#timeRange {
+    position: absolute;
+    bottom: 10%;
+    width: 100%;
+    font-size: 3vw;
+}
+
+/* Table */
+#table {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    max-height: 20%;
+    overflow-y: auto;
+    font-size: 2vw;
+    direction: rtl;
+}
 </style>
 </head>
+
 <body>
 
-<div id="background"></div>
-<div id="overlay"></div>
+<div id="title">שם לפי שעה</div>
+<div id="clock"></div>
 
-<div id="content">
-  <div id="title">שם לפי שעה</div>
-  <div id="message"></div>
-
-  <div id="clockContainer">
-    <div id="digitalClock"></div>
-  </div>
-
-  <div id="nameList"></div>
-
-  <audio id="chime" src="chime.mp3" preload="auto"></audio>
+<div id="nameContainer">
+    <div id="nameMain" class="nameMain"></div>
+    <div id="nameSub" class="nameSub"></div>
 </div>
 
+<div id="timeRange"></div>
+<div id="table"></div>
+
 <script>
-const nightNames=["אדני","אדינ","אניד","דניא","דנאי","דינא","נדאי","נדיא","נאדי","דאינ","דאני","דיאנ"];
-const dayNames=["יהוה","יההו","יוהה","הוהי","הויה","ההוי","והיה","וההי","ויהה","היהו","היוה","ההיו"];
-let lastHour=-1;
+const nightNames = [
+"אדני אינד","אדינ אידנ","אניד אנדי","דניא ינדא",
+"דנאי ינאד","דינא ידנא","נדאי ניאד","נדיא נידא",
+"נאדי נאיד","דאינ יאדנ","דאני יאנד","דיאנ ידאנ"
+];
 
-// populate bottom name list
-function populateNameList(){
-  let container=document.getElementById("nameList");
-  container.innerHTML="";
-  for(let i=0;i<24;i++){
-    let span=document.createElement("span");
-    span.className="hourName";
-    let name;
-    if(i>=18||i<6){
-      name=nightNames[(i+6)%12];
+const dayNames = [
+"יהוה אהיה","יההו אההי","יוהה איהה","הוהי היהא",
+"הויה היאה","ההוי ההיא","והיה יהאה","וההי יההא",
+"ויהה יאהה","היהו האהי","היוה האיה","ההיו ההאי"
+];
+
+function formatHour(hour) {
+    let h = hour % 12;
+    if (h === 0) h = 12;
+    return h + (hour < 12 ? " AM" : " PM");
+}
+
+function updateClock() {
+    const now = new Date();
+    let hours = now.getHours();
+    let minutes = now.getMinutes().toString().padStart(2, '0');
+    let seconds = now.getSeconds().toString().padStart(2, '0');
+
+    document.getElementById("clock").innerText =
+        formatHour(hours) + ":" + minutes + ":" + seconds;
+
+    let index;
+    let names;
+
+    if (hours >= 18 || hours < 6) {
+        // Night: 6PM–6AM
+        index = (hours >= 18) ? hours - 18 : hours + 6;
+        names = nightNames;
     } else {
-      name=dayNames[i-6];
+        // Day: 6AM–6PM
+        index = hours - 6;
+        names = dayNames;
     }
-    span.textContent=`${i}:00 ${name}`;
-    span.id=`hour${i}`;
-    container.appendChild(span);
-  }
+
+    const current = names[index % 12];
+    const parts = current.split(" ");
+
+    document.getElementById("nameMain").innerText = parts[0];
+    document.getElementById("nameSub").innerText = parts[1];
+
+    // FIXED time range (correct direction)
+    let startHour = hours;
+    let endHour = (hours + 1) % 24;
+
+    document.getElementById("timeRange").innerText =
+        formatHour(startHour) + " - " + formatHour(endHour);
+
+    updateTable(hours);
 }
 
-// get current hour name
-function getName(hour){
-  if(hour>=18) return nightNames[hour-18];
-  if(hour<6) return nightNames[hour+6];
-  return dayNames[hour-6];
+function updateTable(currentHour) {
+    let html = "";
+
+    for (let i = 0; i < 24; i++) {
+        let index;
+        let names;
+
+        if (i >= 18 || i < 6) {
+            index = (i >= 18) ? i - 18 : i + 6;
+            names = nightNames;
+        } else {
+            index = i - 6;
+            names = dayNames;
+        }
+
+        html += `
+        <div>
+            ${formatHour(i)} - ${formatHour((i + 1) % 24)}
+            : ${names[index % 12]}
+        </div>`;
+    }
+
+    document.getElementById("table").innerHTML = html;
 }
 
-// format hour in 24->12
-function formatHour(hour){
-  let h=hour%12;
-  if(h===0) h=12;
-  let ampm=hour<12?'AM':'PM';
-  return `${h} ${ampm}`;
-}
-
-// update main name and highlight bottom list and title
-function updateName(){
-  let hour=new Date().getHours();
-  if(hour!==lastHour){
-    lastHour=hour;
-    let name=getName(hour);
-    let message=document.getElementById("message");
-    message.style.opacity=0;
-    setTimeout(()=>{
-      message.innerText=name;
-      message.style.opacity=1;
-    },200);
-
-    // highlight bottom list
-    document.querySelectorAll(".hourName").forEach(el=>el.classList.remove("currentHour"));
-    let current=document.getElementById(`hour${hour}`);
-    if(current) current.classList.add("currentHour");
-
-    // update title with current hour range
-    let nextHour=(hour+1)%24;
-    document.getElementById("title").textContent=`שם לפי שעה: ${formatHour(hour)} – ${formatHour(nextHour)}`;
-
-    document.getElementById("chime").play().catch(()=>{});
-  }
-}
-
-// digital clock
-function updateClock(){
-  const now=new Date();
-  document.getElementById("digitalClock").textContent = now.toLocaleTimeString();
-}
-
-// loop
-function tick(){
-  updateClock();
-  updateName();
-}
-
-populateNameList();
-setInterval(tick,1000);
-tick();
+setInterval(updateClock, 1000);
+updateClock();
 </script>
 
 </body>

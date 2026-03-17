@@ -8,18 +8,18 @@
 body {
     margin: 0;
     font-family: 'Frank Ruhl Libre', serif;
-    color: white;
     text-align: center;
     background: url("background.jpeg") no-repeat center center fixed;
     background-size: cover;
+    color: white;
 }
 
-/* Overlay for contrast */
+/* Dark overlay so name and clock pop */
 body::before {
     content: "";
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.6);
+    background: rgba(0,0,0,0.7);
 }
 
 #content {
@@ -33,34 +33,57 @@ body::before {
     text-shadow: 0 0 10px gold;
 }
 
-/* Clock now matches name size */
+/* Clock will match name size dynamically */
 #clock {
     margin-top: 5px;
 }
 
-/* Main name with fire + glow */
+/* Main name container */
 #name {
     font-size: 9vw;
     margin-top: 18vh;
     font-weight: bold;
-    transition: opacity 0.3s ease;
+    white-space: nowrap;
 }
 
-/* Each letter spans for fire-glow */
-#name span {
+/* Fire + glow using layered spans for Display2Go */
+.fire-layer {
     display: inline-block;
-    color: yellow;
-    text-shadow: 0 0 5px #fff, 0 0 10px orange, 0 0 15px red, 0 0 25px gold;
-    animation: fireFlicker 0.6s infinite;
+    position: relative;
+    margin: 0 1px;
 }
 
-/* Fire flicker animation */
-@keyframes fireFlicker {
-    0% { text-shadow: 0 0 5px #fff,0 0 10px orange,0 0 15px red,0 0 25px gold; transform: translateY(0);}
-    25% { text-shadow: 0 0 7px #fff,0 0 12px orange,0 0 18px red,0 0 30px gold; transform: translateY(-1px);}
-    50% { text-shadow: 0 0 10px #fff,0 0 15px orange,0 0 20px red,0 0 35px gold; transform: translateY(-2px);}
-    75% { text-shadow: 0 0 7px #fff,0 0 12px orange,0 0 18px red,0 0 30px gold; transform: translateY(-1px);}
-    100% { text-shadow: 0 0 5px #fff,0 0 10px orange,0 0 15px red,0 0 25px gold; transform: translateY(0);}
+.fire-layer .base {
+    color: yellow;
+    font-weight: bold;
+}
+
+.fire-layer .glow {
+    position: absolute;
+    top: 0; left: 0;
+    color: orange;
+    opacity: 0.5;
+    animation: glowFlicker 0.6s infinite;
+}
+
+.fire-layer .spark {
+    position: absolute;
+    top: 0; left: 0;
+    color: red;
+    opacity: 0.3;
+    animation: glowFlickerAlt 0.7s infinite alternate;
+}
+
+@keyframes glowFlicker {
+  0% { opacity: 0.3; }
+  50% { opacity: 0.8; }
+  100% { opacity: 0.3; }
+}
+
+@keyframes glowFlickerAlt {
+  0% { opacity: 0.2; }
+  50% { opacity: 0.6; }
+  100% { opacity: 0.2; }
 }
 
 #timeRange {
@@ -94,7 +117,6 @@ body::before {
 }
 </style>
 </head>
-
 <body>
 <div id="content">
     <div id="title">שם לפי שעה</div>
@@ -122,14 +144,17 @@ function addDashes(name) {
     return name.split(" ").map(word => word.split("").join("-")).join(" ");
 }
 
-/* Fire + glow with random delays per letter */
-function addFireGlow(name) {
-    return name.split(" ").map(word =>
-        word.split("").map(letter => {
-            const delay = (Math.random() * 0.5).toFixed(2) + "s"; // random delay
-            return `<span style="animation-delay:${delay}">${letter}</span>`;
-        }).join("-")
-    ).join(" ");
+/* Create fire + glow layers for Display2Go */
+function addFireGlow(name){
+    return name.split(" ").map(word=>{
+        return word.split("").map(letter=>{
+            return `<span class="fire-layer">
+                        <span class="base">${letter}</span>
+                        <span class="glow">${letter}</span>
+                        <span class="spark">${letter}</span>
+                    </span>`;
+        }).join("-");
+    }).join(" ");
 }
 
 function formatTime(hour, min, sec) {
@@ -138,12 +163,12 @@ function formatTime(hour, min, sec) {
     return `${h}:${min}:${sec} ${ampm}`;
 }
 
-function formatHour(hour) {
+function formatHour(hour){
     let h = hour % 12; if(h==0) h=12;
     return h + (hour<12 ? " AM":" PM");
 }
 
-function getName(hour) {
+function getName(hour){
     if(hour>=18 || hour<6){
         let index = hour>=18 ? hour-18 : hour+6;
         return nightNames[index % 12];
@@ -153,7 +178,6 @@ function getName(hour) {
     }
 }
 
-/* Bottom strip */
 function buildStrip(currentHour){
     let html="";
     for(let i=0;i<24;i++){
@@ -170,7 +194,7 @@ function updateClock(){
     const nameEl=document.getElementById("name");
     const clockEl=document.getElementById("clock");
 
-    // Match clock size to name
+    // Clock font-size = main name font-size
     const nameSize = window.getComputedStyle(nameEl).fontSize;
     clockEl.style.fontSize = nameSize;
 

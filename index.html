@@ -25,7 +25,7 @@ body::before {
     background: rgba(0,0,0,0.6);
 }
 
-/* Main wrapper */
+/* Wrapper */
 #content {
     position: relative;
     z-index: 1;
@@ -34,9 +34,8 @@ body::before {
 /* Title */
 #title {
     font-size: 5vw;
-    margin-top: 15px;
+    margin-top: 20px;
     text-shadow: 0 0 10px gold;
-    letter-spacing: 2px;
 }
 
 /* Clock */
@@ -45,10 +44,10 @@ body::before {
     margin-top: 5px;
 }
 
-/* Name (Premium Glow + Animation) */
+/* Main Name */
 #name {
-    font-size: 8vw;
-    margin-top: 10vh;
+    font-size: 9vw;
+    margin-top: 18vh;
     font-weight: bold;
 
     text-shadow:
@@ -56,7 +55,7 @@ body::before {
         0 0 20px gold,
         0 0 40px gold;
 
-    transition: all 0.5s ease;
+    transition: opacity 0.5s ease;
     animation: glowPulse 3s infinite alternate;
 }
 
@@ -78,36 +77,9 @@ body::before {
 
 /* Time Range */
 #timeRange {
-    margin-top: 10px;
+    margin-top: 15px;
     font-size: 3vw;
     direction: ltr;
-}
-
-/* Table */
-#table {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    max-height: 30%;
-    overflow-y: auto;
-    background: rgba(0,0,0,0.6);
-    font-size: 2.5vw;
-    direction: ltr;
-}
-
-/* Table rows */
-.row {
-    padding: 6px 0;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-    transition: all 0.3s ease;
-}
-
-/* 🔥 ACTIVE HOUR HIGHLIGHT */
-.active {
-    background: rgba(255,215,0,0.2);
-    color: gold;
-    font-weight: bold;
-    box-shadow: 0 0 10px gold;
 }
 </style>
 </head>
@@ -122,7 +94,6 @@ body::before {
 <div id="name"></div>
 
 <div id="timeRange"></div>
-<div id="table"></div>
 
 </div>
 
@@ -139,23 +110,22 @@ const dayNames = [
 "ויהה יאהה","היהו האהי","היוה האיה","ההיו ההאי"
 ];
 
-/* Format Time */
+/* Format full time */
 function formatTime(hour, min, sec) {
     let h = hour % 12;
     if (h === 0) h = 12;
-
     let ampm = hour < 12 ? "AM" : "PM";
-
     return `${h}:${min}:${sec} ${ampm}`;
 }
 
+/* Format hour */
 function formatHour(hour) {
     let h = hour % 12;
     if (h === 0) h = 12;
     return h + (hour < 12 ? " AM" : " PM");
 }
 
-/* Get Name */
+/* Get correct name */
 function getName(hour) {
     if (hour >= 18 || hour < 6) {
         let index = (hour >= 18) ? hour - 18 : hour + 6;
@@ -166,7 +136,7 @@ function getName(hour) {
     }
 }
 
-/* Update UI */
+/* Update everything */
 function updateClock() {
     const now = new Date();
 
@@ -177,7 +147,7 @@ function updateClock() {
     document.getElementById("clock").innerText =
         formatTime(h, m, s);
 
-    // ✨ Smooth name change
+    // Smooth name transition
     const nameEl = document.getElementById("name");
     nameEl.style.opacity = 0;
 
@@ -189,25 +159,6 @@ function updateClock() {
     let next = (h + 1) % 24;
     document.getElementById("timeRange").innerText =
         formatHour(h) + " - " + formatHour(next);
-
-    updateTable(h);
-}
-
-/* Table with active highlight */
-function updateTable(currentHour) {
-    let html = "";
-
-    for (let i = 0; i < 24; i++) {
-        let next = (i + 1) % 24;
-
-        let activeClass = (i === currentHour) ? "row active" : "row";
-
-        html += `<div class="${activeClass}">
-            ${formatHour(i)} - ${formatHour(next)} : ${getName(i)}
-        </div>`;
-    }
-
-    document.getElementById("table").innerHTML = html;
 }
 
 setInterval(updateClock, 1000);

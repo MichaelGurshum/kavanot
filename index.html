@@ -49,20 +49,24 @@ body::before {
     font-size: 9vw;
     margin-top: 18vh;
     font-weight: bold;
+
     text-shadow:
         0 0 10px #fff,
         0 0 20px gold,
         0 0 40px gold;
+
     transition: opacity 0.5s ease;
+    animation: glowPulse 3s infinite alternate;
 }
 
 /* Glow animation */
 @keyframes glowPulse {
-    from { text-shadow: 0 0 10px #fff, 0 0 20px gold; }
-    to { text-shadow: 0 0 20px #fff, 0 0 40px gold; }
-}
-#name {
-    animation: glowPulse 3s infinite alternate;
+    from {
+        text-shadow: 0 0 10px #fff, 0 0 20px gold;
+    }
+    to {
+        text-shadow: 0 0 20px #fff, 0 0 40px gold;
+    }
 }
 
 /* Time range */
@@ -72,7 +76,7 @@ body::before {
     direction: ltr;
 }
 
-/* 🔥 Bottom strip (compact like before) */
+/* Bottom strip */
 #bottomStrip {
     position: fixed;
     bottom: 0;
@@ -83,7 +87,7 @@ body::before {
     padding: 6px 0;
 }
 
-/* Individual names */
+/* Items */
 .hourItem {
     display: inline-block;
     margin: 0 8px;
@@ -91,7 +95,7 @@ body::before {
     opacity: 0.7;
 }
 
-/* Active hour highlight */
+/* Active */
 .active {
     color: gold;
     font-weight: bold;
@@ -129,6 +133,15 @@ const dayNames = [
 "ויהה יאהה","היהו האהי","היוה האיה","ההיו ההאי"
 ];
 
+/* 🔥 Add dashes between letters */
+function addDashes(name) {
+    return name
+        .split(" ")
+        .map(word => word.split("").join("-"))
+        .join(" ");
+}
+
+/* Format full time */
 function formatTime(hour, min, sec) {
     let h = hour % 12;
     if (h === 0) h = 12;
@@ -136,12 +149,14 @@ function formatTime(hour, min, sec) {
     return `${h}:${min}:${sec} ${ampm}`;
 }
 
+/* Format hour */
 function formatHour(hour) {
     let h = hour % 12;
     if (h === 0) h = 12;
     return h + (hour < 12 ? " AM" : " PM");
 }
 
+/* Get correct name */
 function getName(hour) {
     if (hour >= 18 || hour < 6) {
         let index = (hour >= 18) ? hour - 18 : hour + 6;
@@ -152,21 +167,22 @@ function getName(hour) {
     }
 }
 
-/* Bottom strip builder */
+/* Bottom strip */
 function buildStrip(currentHour) {
     let html = "";
 
     for (let i = 0; i < 24; i++) {
         let cls = (i === currentHour) ? "hourItem active" : "hourItem";
+
         html += `<span class="${cls}">
-            ${formatHour(i)} ${getName(i)}
+            ${formatHour(i)} ${addDashes(getName(i))}
         </span>`;
     }
 
     document.getElementById("bottomStrip").innerHTML = html;
 }
 
-/* Update UI */
+/* Update */
 function updateClock() {
     const now = new Date();
 
@@ -177,12 +193,11 @@ function updateClock() {
     document.getElementById("clock").innerText =
         formatTime(h, m, s);
 
-    // smooth transition
     const nameEl = document.getElementById("name");
     nameEl.style.opacity = 0;
 
     setTimeout(() => {
-        nameEl.innerText = getName(h);
+        nameEl.innerText = addDashes(getName(h));
         nameEl.style.opacity = 1;
     }, 200);
 

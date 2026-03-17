@@ -49,37 +49,54 @@ body::before {
     font-size: 9vw;
     margin-top: 18vh;
     font-weight: bold;
-
     text-shadow:
         0 0 10px #fff,
         0 0 20px gold,
         0 0 40px gold;
-
     transition: opacity 0.5s ease;
-    animation: glowPulse 3s infinite alternate;
 }
 
 /* Glow animation */
 @keyframes glowPulse {
-    from {
-        text-shadow:
-            0 0 10px #fff,
-            0 0 20px gold,
-            0 0 30px gold;
-    }
-    to {
-        text-shadow:
-            0 0 20px #fff,
-            0 0 40px gold,
-            0 0 60px gold;
-    }
+    from { text-shadow: 0 0 10px #fff, 0 0 20px gold; }
+    to { text-shadow: 0 0 20px #fff, 0 0 40px gold; }
+}
+#name {
+    animation: glowPulse 3s infinite alternate;
 }
 
-/* Time Range */
+/* Time range */
 #timeRange {
-    margin-top: 15px;
+    margin-top: 10px;
     font-size: 3vw;
     direction: ltr;
+}
+
+/* 🔥 Bottom strip (compact like before) */
+#bottomStrip {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    overflow-x: auto;
+    white-space: nowrap;
+    background: rgba(0,0,0,0.5);
+    padding: 6px 0;
+}
+
+/* Individual names */
+.hourItem {
+    display: inline-block;
+    margin: 0 8px;
+    font-size: 2.8vw;
+    opacity: 0.7;
+}
+
+/* Active hour highlight */
+.active {
+    color: gold;
+    font-weight: bold;
+    opacity: 1;
+    text-shadow: 0 0 10px gold;
 }
 </style>
 </head>
@@ -97,6 +114,8 @@ body::before {
 
 </div>
 
+<div id="bottomStrip"></div>
+
 <script>
 const nightNames = [
 "אדני אינד","אדינ אידנ","אניד אנדי","דניא ינדא",
@@ -110,7 +129,6 @@ const dayNames = [
 "ויהה יאהה","היהו האהי","היוה האיה","ההיו ההאי"
 ];
 
-/* Format full time */
 function formatTime(hour, min, sec) {
     let h = hour % 12;
     if (h === 0) h = 12;
@@ -118,14 +136,12 @@ function formatTime(hour, min, sec) {
     return `${h}:${min}:${sec} ${ampm}`;
 }
 
-/* Format hour */
 function formatHour(hour) {
     let h = hour % 12;
     if (h === 0) h = 12;
     return h + (hour < 12 ? " AM" : " PM");
 }
 
-/* Get correct name */
 function getName(hour) {
     if (hour >= 18 || hour < 6) {
         let index = (hour >= 18) ? hour - 18 : hour + 6;
@@ -136,7 +152,21 @@ function getName(hour) {
     }
 }
 
-/* Update everything */
+/* Bottom strip builder */
+function buildStrip(currentHour) {
+    let html = "";
+
+    for (let i = 0; i < 24; i++) {
+        let cls = (i === currentHour) ? "hourItem active" : "hourItem";
+        html += `<span class="${cls}">
+            ${formatHour(i)} ${getName(i)}
+        </span>`;
+    }
+
+    document.getElementById("bottomStrip").innerHTML = html;
+}
+
+/* Update UI */
 function updateClock() {
     const now = new Date();
 
@@ -147,7 +177,7 @@ function updateClock() {
     document.getElementById("clock").innerText =
         formatTime(h, m, s);
 
-    // Smooth name transition
+    // smooth transition
     const nameEl = document.getElementById("name");
     nameEl.style.opacity = 0;
 
@@ -159,6 +189,8 @@ function updateClock() {
     let next = (h + 1) % 24;
     document.getElementById("timeRange").innerText =
         formatHour(h) + " - " + formatHour(next);
+
+    buildStrip(h);
 }
 
 setInterval(updateClock, 1000);

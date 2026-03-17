@@ -3,9 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>שם לפי שעה</title>
-
 <style>
 body {
     margin: 0;
@@ -16,7 +14,7 @@ body {
     background-size: cover;
 }
 
-/* Overlay */
+/* Overlay for contrast */
 body::before {
     content: "";
     position: fixed;
@@ -24,64 +22,53 @@ body::before {
     background: rgba(0,0,0,0.6);
 }
 
-/* Wrapper */
 #content {
     position: relative;
     z-index: 1;
 }
 
-/* Title */
 #title {
     font-size: 5vw;
     margin-top: 20px;
     text-shadow: 0 0 10px gold;
 }
 
-/* Clock */
+/* Clock now matches name size */
 #clock {
-    font-size: 4vw;
     margin-top: 5px;
 }
 
-/* Main Name Fire + Glow Effect */
+/* Main name with fire + glow */
 #name {
     font-size: 9vw;
     margin-top: 18vh;
     font-weight: bold;
-    transition: opacity 0.5s ease;
+    transition: opacity 0.3s ease;
 }
 
-/* Each letter span */
+/* Each letter spans for fire-glow */
 #name span {
     display: inline-block;
     color: yellow;
     text-shadow: 0 0 5px #fff, 0 0 10px orange, 0 0 15px red, 0 0 25px gold;
-    animation: fireGlow 0.7s infinite;
+    animation: fireFlicker 0.6s infinite;
 }
 
-@keyframes fireGlow {
-    0% {
-        text-shadow: 0 0 5px #fff, 0 0 10px orange, 0 0 15px red, 0 0 25px gold;
-        transform: translateY(0);
-    }
-    50% {
-        text-shadow: 0 0 10px #fff, 0 0 15px orange, 0 0 20px red, 0 0 35px gold;
-        transform: translateY(-2px);
-    }
-    100% {
-        text-shadow: 0 0 5px #fff, 0 0 10px orange, 0 0 15px red, 0 0 25px gold;
-        transform: translateY(0);
-    }
+/* Fire flicker animation */
+@keyframes fireFlicker {
+    0% { text-shadow: 0 0 5px #fff,0 0 10px orange,0 0 15px red,0 0 25px gold; transform: translateY(0);}
+    25% { text-shadow: 0 0 7px #fff,0 0 12px orange,0 0 18px red,0 0 30px gold; transform: translateY(-1px);}
+    50% { text-shadow: 0 0 10px #fff,0 0 15px orange,0 0 20px red,0 0 35px gold; transform: translateY(-2px);}
+    75% { text-shadow: 0 0 7px #fff,0 0 12px orange,0 0 18px red,0 0 30px gold; transform: translateY(-1px);}
+    100% { text-shadow: 0 0 5px #fff,0 0 10px orange,0 0 15px red,0 0 25px gold; transform: translateY(0);}
 }
 
-/* Time range */
 #timeRange {
     margin-top: 10px;
     font-size: 3vw;
     direction: ltr;
 }
 
-/* Bottom strip */
 #bottomStrip {
     position: fixed;
     bottom: 0;
@@ -92,7 +79,6 @@ body::before {
     padding: 6px 0;
 }
 
-/* Items */
 .hourItem {
     display: inline-block;
     margin: 0 8px;
@@ -100,7 +86,6 @@ body::before {
     opacity: 0.7;
 }
 
-/* Active hour highlight */
 .active {
     color: gold;
     font-weight: bold;
@@ -111,18 +96,12 @@ body::before {
 </head>
 
 <body>
-
 <div id="content">
-
-<div id="title">שם לפי שעה</div>
-<div id="clock"></div>
-
-<div id="name"></div>
-
-<div id="timeRange"></div>
-
+    <div id="title">שם לפי שעה</div>
+    <div id="clock"></div>
+    <div id="name"></div>
+    <div id="timeRange"></div>
 </div>
-
 <div id="bottomStrip"></div>
 
 <script>
@@ -140,83 +119,77 @@ const dayNames = [
 
 /* Add dashes between letters */
 function addDashes(name) {
-    return name
-        .split(" ")
-        .map(word => word.split("").join("-"))
-        .join(" ");
+    return name.split(" ").map(word => word.split("").join("-")).join(" ");
 }
 
-/* Wrap letters in spans for fire + glow */
+/* Fire + glow with random delays per letter */
 function addFireGlow(name) {
     return name.split(" ").map(word =>
-        word.split("").map(letter =>
-            `<span>${letter}</span>`
-        ).join("-")
+        word.split("").map(letter => {
+            const delay = (Math.random() * 0.5).toFixed(2) + "s"; // random delay
+            return `<span style="animation-delay:${delay}">${letter}</span>`;
+        }).join("-")
     ).join(" ");
 }
 
 function formatTime(hour, min, sec) {
-    let h = hour % 12;
-    if (h === 0) h = 12;
-    let ampm = hour < 12 ? "AM" : "PM";
+    let h = hour % 12; if(h==0) h=12;
+    let ampm = hour<12 ? "AM":"PM";
     return `${h}:${min}:${sec} ${ampm}`;
 }
 
 function formatHour(hour) {
-    let h = hour % 12;
-    if (h === 0) h = 12;
-    return h + (hour < 12 ? " AM" : " PM");
+    let h = hour % 12; if(h==0) h=12;
+    return h + (hour<12 ? " AM":" PM");
 }
 
 function getName(hour) {
-    if (hour >= 18 || hour < 6) {
-        let index = (hour >= 18) ? hour - 18 : hour + 6;
+    if(hour>=18 || hour<6){
+        let index = hour>=18 ? hour-18 : hour+6;
         return nightNames[index % 12];
     } else {
-        let index = hour - 6;
+        let index = hour-6;
         return dayNames[index % 12];
     }
 }
 
 /* Bottom strip */
-function buildStrip(currentHour) {
-    let html = "";
-    for (let i = 0; i < 24; i++) {
-        let cls = (i === currentHour) ? "hourItem active" : "hourItem";
-        html += `<span class="${cls}">
-            ${formatHour(i)} ${addDashes(getName(i))}
-        </span>`;
+function buildStrip(currentHour){
+    let html="";
+    for(let i=0;i<24;i++){
+        let cls=(i===currentHour)?"hourItem active":"hourItem";
+        html+=`<span class="${cls}">${formatHour(i)} ${addDashes(getName(i))}</span>`;
     }
-    document.getElementById("bottomStrip").innerHTML = html;
+    document.getElementById("bottomStrip").innerHTML=html;
 }
 
-/* Update UI */
-function updateClock() {
-    const now = new Date();
-    let h = now.getHours();
-    let m = String(now.getMinutes()).padStart(2, '0');
-    let s = String(now.getSeconds()).padStart(2, '0');
+function updateClock(){
+    const now=new Date();
+    let h=now.getHours(), m=String(now.getMinutes()).padStart(2,'0'), s=String(now.getSeconds()).padStart(2,'0');
 
-    document.getElementById("clock").innerText = formatTime(h, m, s);
+    const nameEl=document.getElementById("name");
+    const clockEl=document.getElementById("clock");
 
-    const nameEl = document.getElementById("name");
-    nameEl.style.opacity = 0;
+    // Match clock size to name
+    const nameSize = window.getComputedStyle(nameEl).fontSize;
+    clockEl.style.fontSize = nameSize;
 
-    setTimeout(() => {
-        nameEl.innerHTML = addFireGlow(getName(h));
-        nameEl.style.opacity = 1;
-    }, 200);
+    clockEl.innerText=formatTime(h,m,s);
 
-    let next = (h + 1) % 24;
-    document.getElementById("timeRange").innerText =
-        formatHour(h) + " - " + formatHour(next);
+    nameEl.style.opacity=0;
+    setTimeout(()=>{
+        nameEl.innerHTML=addFireGlow(getName(h));
+        nameEl.style.opacity=1;
+    },200);
+
+    let next=(h+1)%24;
+    document.getElementById("timeRange").innerText=formatHour(h)+" - "+formatHour(next);
 
     buildStrip(h);
 }
 
-setInterval(updateClock, 1000);
+setInterval(updateClock,1000);
 updateClock();
 </script>
-
 </body>
 </html>

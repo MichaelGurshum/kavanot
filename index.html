@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>שם לפי שעה</title>
+
 <style>
 body {
     margin: 0;
@@ -14,7 +15,7 @@ body {
     color: white;
 }
 
-/* Dark overlay so name and clock pop */
+/* Dark overlay */
 body::before {
     content: "";
     position: fixed;
@@ -33,21 +34,24 @@ body::before {
     text-shadow: 0 0 10px gold;
 }
 
-/* Clock will match name size dynamically */
 #clock {
-    margin-top: 5px;
+    margin-top: 10px;
 }
 
-/* Main name container */
 #name {
     font-size: 9vw;
-    margin-top: 18vh;
+    margin-top: 12vh;
     font-weight: bold;
-    white-space: nowrap;
     direction: rtl;
 }
 
-/* Fire + glow + outer glow for Display2Go */
+/* Each word stacked */
+.name-line {
+    display: block;
+    margin: 10px 0;
+}
+
+/* Strong steady glow */
 .fire-layer {
     display: inline-block;
     position: relative;
@@ -55,42 +59,34 @@ body::before {
 }
 
 .fire-layer .base {
-    color: yellow;
+    color: #FFD700;
     font-weight: bold;
     text-shadow:
-        0 0 5px #fff,
-        0 0 10px yellow,
-        0 0 15px orange,
-        0 0 25px gold,
-        0 0 30px orange; /* outer glow */
+        0 0 4px #fff,
+        0 0 8px #FFD700,
+        0 0 12px orange,
+        0 0 18px gold,
+        0 0 25px orange;
 }
 
 .fire-layer .glow {
     position: absolute;
-    top: 0; left: 0;
+    top: 0;
+    left: 0;
     color: orange;
-    opacity: 0.5;
-    animation: glowFlicker 0.6s infinite;
+    opacity: 0.4;
+    text-shadow:
+        0 0 10px orange,
+        0 0 20px gold,
+        0 0 30px orange;
 }
 
 .fire-layer .spark {
     position: absolute;
-    top: 0; left: 0;
+    top: 0;
+    left: 0;
     color: red;
-    opacity: 0.3;
-    animation: glowFlickerAlt 0.7s infinite alternate;
-}
-
-@keyframes glowFlicker {
-  0% { opacity: 0.3; }
-  50% { opacity: 0.8; }
-  100% { opacity: 0.3; }
-}
-
-@keyframes glowFlickerAlt {
-  0% { opacity: 0.2; }
-  50% { opacity: 0.6; }
-  100% { opacity: 0.2; }
+    opacity: 0.25;
 }
 
 #timeRange {
@@ -124,63 +120,72 @@ body::before {
 }
 </style>
 </head>
+
 <body>
+
 <div id="content">
     <div id="title">שם לפי שעה</div>
     <div id="clock"></div>
     <div id="name"></div>
     <div id="timeRange"></div>
 </div>
+
 <div id="bottomStrip"></div>
 
 <script>
-// 24-hour exact mapping for main display names
+
+/* ✅ CORRECT mapping (midnight = index 0) */
 const hourNames = [
-  "נדאי ניאד", // 0
-  "נדיא נידא", // 1
-  "נאדי נאיד", // 2
-  "דאינ יאדנ", // 3
-  "דאני יאנד", // 4
-  "דיאנ ידאנ", // 5
-  "יהוה אהיה", // 6 AM
-  "יההו אההי", // 7
-  "יוהה איהה", // 8
-  "הוהי היהא", // 9
-  "הויה היאה", // 10
-  "ההוי ההיא", // 11
-  "והיה יהאה", // 12 PM
-  "וההי יההא", // 13
-  "ויהה יאהה", // 14
-  "היהו האהי", // 15
-  "היוה האיה", // 16
-  "ההיו ההאי", // 17
-  "אדני אינד", // 18 → 6 PM
-  "אדינ אידנ", // 19
-  "אניד אנדי", // 20
-  "דניא ינדא", // 21
-  "דנאי ינאד", // 22
-  "דינא ידנא"  // 23
+  "נדאי ניאד",
+  "נדיא נידא",
+  "נאדי נאיד",
+  "דאינ יאדנ",
+  "דאני יאנד",
+  "דיאנ ידאנ",
+  "יהוה אהיה",
+  "יההו אההי",
+  "יוהה איהה",
+  "הוהי היהא",
+  "הויה היאה",
+  "ההוי ההיא",
+  "והיה יהאה",
+  "וההי יההא",
+  "ויהה יאהה",
+  "היהו האהי",
+  "היוה האיה",
+  "ההיו ההאי",
+  "אדני אינד",
+  "אדינ אידנ",
+  "אניד אנדי",
+  "דניא ינדא",
+  "דנאי ינאד",
+  "דינא ידנא"
 ];
 
-/* Add dashes between letters within each word */
+/* Bottom strip formatting */
 function addDashes(name) {
     return name.split(" ").map(word => word.split("").join("-")).join(" ");
 }
 
-/* Create fire + glow layers */
+/* Stacked glowing name */
 function addFireGlow(name){
-    return name.split(" ").map(word=>{
-        return word.split("").map((letter,i)=>{
-            let dash = (i<word.length-1) ? "-" : "";
-            return `<span class="fire-layer">
-                        <span class="base">${letter}</span>
-                        <span class="glow">${letter}</span>
-                        <span class="spark">${letter}</span>
-                    </span>${dash}`;
-        }).join("");
-    }).join(" ");
+    const words = name.split(" ");
+
+    return words.map(word=>{
+        return `<div class="name-line">` +
+            word.split("").map((letter,i)=>{
+                let dash = (i<word.length-1) ? "-" : "";
+                return `<span class="fire-layer">
+                            <span class="base">${letter}</span>
+                            <span class="glow">${letter}</span>
+                            <span class="spark">${letter}</span>
+                        </span>${dash}`;
+            }).join("") +
+        `</div>`;
+    }).join("");
 }
 
+/* Time formatting */
 function formatTime(hour, min, sec) {
     let h = hour % 12; if(h==0) h=12;
     let ampm = hour<12 ? "AM":"PM";
@@ -193,9 +198,10 @@ function formatHour(hour){
 }
 
 function getName(hour){
-    return hourNames[hour]; // direct mapping
+    return hourNames[hour];
 }
 
+/* Bottom strip */
 function buildStrip(currentHour){
     let html="";
     for(let i=0;i<24;i++){
@@ -205,33 +211,39 @@ function buildStrip(currentHour){
     document.getElementById("bottomStrip").innerHTML=html;
 }
 
+/* MAIN CLOCK UPDATE */
 function updateClock(){
-    const now=new Date();
-    let h=now.getHours(), m=String(now.getMinutes()).padStart(2,'0'), s=String(now.getSeconds()).padStart(2,'0');
 
-    const nameEl=document.getElementById("name");
-    const clockEl=document.getElementById("clock");
+    // ✅ FORCE New York timezone (VERY IMPORTANT)
+    const now = new Date(new Date().toLocaleString("en-US", { timeZone: "America/New_York" }));
 
-    // Clock font-size = main name font-size
+    let h = now.getHours();
+    let m = String(now.getMinutes()).padStart(2,'0');
+    let s = String(now.getSeconds()).padStart(2,'0');
+
+    const nameEl = document.getElementById("name");
+    const clockEl = document.getElementById("clock");
+
+    // Match clock size to name
     const nameSize = window.getComputedStyle(nameEl).fontSize;
     clockEl.style.fontSize = nameSize;
 
-    clockEl.innerText=formatTime(h,m,s);
+    clockEl.innerText = formatTime(h,m,s);
 
-    nameEl.style.opacity=0;
-    setTimeout(()=>{
-        nameEl.innerHTML=addFireGlow(getName(h));
-        nameEl.style.opacity=1;
-    },200);
+    // Show correct name
+    nameEl.innerHTML = addFireGlow(getName(h));
 
-    let next=(h+1)%24;
-    document.getElementById("timeRange").innerText=formatHour(h)+" - "+formatHour(next);
+    let next = (h+1)%24;
+    document.getElementById("timeRange").innerText =
+        formatHour(h) + " - " + formatHour(next);
 
     buildStrip(h);
 }
 
 setInterval(updateClock,1000);
 updateClock();
+
 </script>
+
 </body>
 </html>

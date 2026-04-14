@@ -1,588 +1,249 @@
 <!DOCTYPE html>
-<html lang="he" dir="rtl">
+<html lang="he">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>מערכת זמן קבלית</title>
-<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@300;400;700;900&display=swap" rel="stylesheet">
+<title>שם לפי שעה</title>
+
 <style>
-
-/* ===== ROOT & RESET ===== */
-:root {
-  --gold: #FFD700;
-  --gold2: #FFA500;
-  --dark-gold: #b8860b;
-  --bg: #0a0800;
-  --bg2: #0f0d02;
-  --border: rgba(255,215,0,0.3);
-  --active-bg: rgba(255,215,0,0.18);
-  --glow-sm: 0 0 6px #FFD700, 0 0 12px #FFA500;
-  --glow-md: 0 0 10px #FFD700, 0 0 22px #FFA500, 0 0 40px #FF8C00;
-  --glow-lg: 0 0 12px #fff, 0 0 24px #FFD700, 0 0 45px #FFA500, 0 0 70px #FF8C00;
+body {
+    margin: 0;
+    font-family: 'Frank Ruhl Libre', serif;
+    text-align: center;
+    background: url("background.jpeg") no-repeat center center fixed;
+    background-size: cover;
+    color: white;
 }
 
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-html, body {
-  width: 100%; height: 100%;
-  background: var(--bg);
-  color: #f5e8a0;
-  font-family: 'Frank Ruhl Libre', serif;
-  direction: rtl;
-  overflow-x: hidden;
-}
-
+/* Dark overlay */
 body::before {
-  content: "";
-  position: fixed; inset: 0;
-  background:
-    radial-gradient(ellipse at 50% 0%, rgba(180,140,0,0.13) 0%, transparent 65%),
-    radial-gradient(ellipse at 10% 80%, rgba(100,70,0,0.10) 0%, transparent 50%),
-    radial-gradient(ellipse at 90% 90%, rgba(100,60,0,0.08) 0%, transparent 40%);
-  pointer-events: none; z-index: 0;
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
 }
 
-#wrap { position: relative; z-index: 1; padding: 18px 20px 100px; max-width: 1600px; margin: 0 auto; }
+#content {
+    position: relative;
+    z-index: 1;
+}
 
-/* ===== TOP HEADER ===== */
-#header { text-align: center; margin-bottom: 6px; }
+#title {
+    font-size: 5vw;
+    margin-top: 20px;
+    text-shadow: 0 0 10px gold;
+}
 
 #clock {
-  font-size: clamp(20px, 3.5vw, 52px);
-  color: #e8d06a;
-  letter-spacing: 4px;
-  text-shadow: var(--glow-sm);
-  font-weight: 300;
+    margin-top: 10px;
 }
 
-/* ===== HOUR NAME (BIG GLOW) ===== */
-#name-section {
-  text-align: center;
-  margin: 10px 0 8px;
-  min-height: 14vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 0 30px;
+#name {
+    font-size: 9vw;
+    margin-top: 12vh;
+    font-weight: bold;
+    direction: rtl;
 }
 
-.name-word {
-  display: inline-flex;
-  align-items: center;
-  gap: 2px;
+/* Each word stacked */
+.name-line {
+    display: block;
+    margin: 10px 0;
 }
 
-.fire-char {
-  position: relative;
-  display: inline-block;
-  font-size: clamp(36px, 7vw, 110px);
-  font-weight: 900;
-}
-.fire-char .base {
-  color: #FFE066;
-  text-shadow: var(--glow-lg);
-}
-.fire-char .glow {
-  position: absolute; top: 0; left: 0;
-  color: #FFA500;
-  opacity: 0.45;
-  text-shadow: 0 0 18px #FFA500, 0 0 35px #FF6600;
-}
-.fire-char .spark {
-  position: absolute; top: 0; left: 0;
-  color: #FF3300;
-  opacity: 0.18;
-}
-.dash {
-  color: var(--dark-gold);
-  font-size: clamp(18px, 3vw, 48px);
-  opacity: 0.6;
-  align-self: flex-end;
-  margin-bottom: 6px;
+/* Strong steady glow */
+.fire-layer {
+    display: inline-block;
+    position: relative;
+    margin: 0 1px;
 }
 
-/* ===== HEBREW DATE LINE ===== */
-#date-section {
-  text-align: center;
-  margin: 6px 0 14px;
-  line-height: 1.7;
-}
-#date-main {
-  font-size: clamp(16px, 2.4vw, 38px);
-  font-weight: 700;
-  color: var(--gold);
-  text-shadow: var(--glow-sm);
-}
-#date-sefira {
-  font-size: clamp(13px, 1.8vw, 28px);
-  color: #d4b860;
-  margin-top: 3px;
-}
-#date-summary {
-  font-size: clamp(11px, 1.4vw, 22px);
-  color: #a88d40;
-  margin-top: 4px;
-  direction: rtl;
+.fire-layer .base {
+    color: #FFD700;
+    font-weight: bold;
+    text-shadow:
+        0 0 4px #fff,
+        0 0 8px #FFD700,
+        0 0 12px orange,
+        0 0 18px gold,
+        0 0 25px orange;
 }
 
-/* ===== TABLES GRID ===== */
-#tables {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
-  margin-bottom: 14px;
+.fire-layer .glow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    color: orange;
+    opacity: 0.4;
+    text-shadow:
+        0 0 10px orange,
+        0 0 20px gold,
+        0 0 30px orange;
 }
 
-/* Wide rows spanning */
-.span2 { grid-column: span 2; }
-.span4 { grid-column: span 4; }
-
-.tbox {
-  border: 1px solid var(--border);
-  background: rgba(10,8,0,0.75);
-  border-radius: 6px;
-  overflow: hidden;
-  box-shadow: 0 0 14px rgba(200,160,0,0.07);
-}
-.tbox-title {
-  background: rgba(180,140,0,0.15);
-  color: var(--gold);
-  font-size: clamp(11px, 1.1vw, 18px);
-  font-weight: 700;
-  text-align: center;
-  padding: 5px 4px;
-  border-bottom: 1px solid var(--border);
-  text-shadow: var(--glow-sm);
-  letter-spacing: 1px;
-}
-.tbox-body {
-  padding: 4px 0;
+.fire-layer .spark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    color: red;
+    opacity: 0.25;
 }
 
-/* Table rows */
-.trow {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 8px;
-  padding: 3px 8px;
-  font-size: clamp(10px, 1vw, 16px);
-  border-bottom: 1px solid rgba(255,215,0,0.05);
-  transition: background 0.3s;
-}
-.trow:last-child { border-bottom: none; }
-
-.trow .num {
-  color: #a08020;
-  font-size: 0.82em;
-  min-width: 18px;
-  text-align: left;
-}
-.trow .label { flex: 1; text-align: center; }
-.trow .sefi {
-  color: #c0973a;
-  font-size: 0.82em;
-  min-width: 40px;
-  text-align: right;
+#timeRange {
+    margin-top: 10px;
+    font-size: 3vw;
+    direction: ltr;
 }
 
-/* Active / highlight */
-.trow.active {
-  background: var(--active-bg);
-  color: var(--gold);
-  font-weight: 700;
-  text-shadow: var(--glow-sm);
-  box-shadow: inset 0 0 18px rgba(255,215,0,0.12);
-}
-.trow.active .sefi { color: var(--gold); }
-.trow.active .num { color: #d4aa30; }
-
-/* ===== HOUR TABLE (wide, horizontal scroll on small screens) ===== */
-#hourTable .trow { font-size: clamp(8px, 0.85vw, 13px); padding: 2px 6px; }
-#hourTable .trow .label { font-size: clamp(8px, 0.9vw, 14px); direction: ltr; }
-
-/* ===== BOTTOM STRIP ===== */
 #bottomStrip {
-  position: fixed;
-  bottom: 0; left: 0; width: 100%;
-  background: rgba(5,4,0,0.92);
-  border-top: 1px solid var(--border);
-  padding: 5px 10px;
-  overflow-x: auto;
-  white-space: nowrap;
-  direction: ltr;
-  z-index: 100;
-}
-.stripItem {
-  display: inline-block;
-  margin: 0 10px;
-  font-size: clamp(10px, 1.5vw, 18px);
-  opacity: 0.55;
-  color: #c8a840;
-  direction: ltr;
-}
-.stripItem.active {
-  opacity: 1;
-  color: var(--gold);
-  font-weight: 700;
-  text-shadow: var(--glow-sm);
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    overflow-x: auto;
+    white-space: nowrap;
+    background: rgba(0,0,0,0.5);
+    padding: 6px 0;
 }
 
-/* ===== RESPONSIVE ===== */
-@media (max-width: 900px) {
-  #tables { grid-template-columns: repeat(2, 1fr); }
-  .span2 { grid-column: span 2; }
-  .span4 { grid-column: span 2; }
-}
-@media (max-width: 500px) {
-  #tables { grid-template-columns: 1fr 1fr; }
+.hourItem {
+    display: inline-block;
+    margin: 0 8px;
+    font-size: 2.8vw;
+    opacity: 0.7;
 }
 
+.active {
+    color: gold;
+    font-weight: bold;
+    opacity: 1;
+    text-shadow: 0 0 10px gold;
+}
 </style>
 </head>
+
 <body>
-<div id="wrap">
 
-  <!-- CLOCK -->
-  <div id="header">
-    <div id="clock">00:00:00</div>
-  </div>
-
-  <!-- BIG GLOWING HOUR NAME -->
-  <div id="name-section"></div>
-
-  <!-- FULL DATE + SEFIROT -->
-  <div id="date-section">
-    <div id="date-main"></div>
-    <div id="date-sefira"></div>
-    <div id="date-summary"></div>
-  </div>
-
-  <!-- TABLES -->
-  <div id="tables">
-
-    <!-- DAYS OF WEEK -->
-    <div class="tbox" id="boxDay">
-      <div class="tbox-title">יום</div>
-      <div class="tbox-body" id="dayTable"></div>
-    </div>
-
-    <!-- WEEKS OF MONTH -->
-    <div class="tbox" id="boxWeek">
-      <div class="tbox-title">שבוע</div>
-      <div class="tbox-body" id="weekTable"></div>
-    </div>
-
-    <!-- MONTHS -->
-    <div class="tbox span2" id="boxMonth">
-      <div class="tbox-title">חודש</div>
-      <div class="tbox-body" id="monthTable"></div>
-    </div>
-
-    <!-- YEAR LETTERS -->
-    <div class="tbox" id="boxYear">
-      <div class="tbox-title">שנה (אותיות)</div>
-      <div class="tbox-body" id="yearTable"></div>
-    </div>
-
-    <!-- SHMITA CYCLE -->
-    <div class="tbox" id="boxShmita">
-      <div class="tbox-title">שמיטה</div>
-      <div class="tbox-body" id="shmitaTable"></div>
-    </div>
-
-    <!-- YOVEL (current only) -->
-    <div class="tbox span2" id="boxYovel">
-      <div class="tbox-title">יובל</div>
-      <div class="tbox-body" id="yovelTable"></div>
-    </div>
-
-    <!-- HOURS TABLE -->
-    <div class="tbox span4" id="boxHour">
-      <div class="tbox-title">שעות</div>
-      <div class="tbox-body" id="hourTable"></div>
-    </div>
-
-  </div>
+<div id="content">
+    <div id="title">שם לפי שעה</div>
+    <div id="clock"></div>
+    <div id="name"></div>
+    <div id="timeRange"></div>
 </div>
 
-<!-- BOTTOM STRIP -->
 <div id="bottomStrip"></div>
 
 <script>
-/* =====================================================================
-   DATA
-===================================================================== */
 
+/* ✅ CORRECT mapping (midnight = index 0) */
 const hourNames = [
-  "נדאי ניאד","נדיא נידא","נאדי נאיד","דאינ יאדנ","דאני יאנד","דיאנ ידאנ",
-  "יהוה אהיה","יההו אההי","יוהה איהה","הוהי היהא","הויה היאה","ההוי ההיא",
-  "והיה יהאה","וההי יההא","ויהה יאהה","היהו האהי","היוה האיה","ההיו ההאי",
-  "אדני אינד","אדינ אידנ","אניד אנדי","דניא ינדא","דנאי ינאד","דינא ידנא"
+  "נדאי ניאד",
+  "נדיא נידא",
+  "נאדי נאיד",
+  "דאינ יאדנ",
+  "דאני יאנד",
+  "דיאנ ידאנ",
+  "יהוה אהיה",
+  "יההו אההי",
+  "יוהה איהה",
+  "הוהי היהא",
+  "הויה היאה",
+  "ההוי ההיא",
+  "והיה יהאה",
+  "וההי יההא",
+  "ויהה יאהה",
+  "היהו האהי",
+  "היוה האיה",
+  "ההיו ההאי",
+  "אדני אינד",
+  "אדינ אידנ",
+  "אניד אנדי",
+  "דניא ינדא",
+  "דנאי ינאד",
+  "דינא ידנא"
 ];
 
-const dayNames   = ['יום א','יום ב','יום ג','יום ד','יום ה','יום ו','שבת'];
-const daySefirot = ['חסד','גבורה','תפארת','נצח','הוד','יסוד','מלכות'];
-
-const monthNames = [
-  "תשרי","חשוון","כסלו","טבת","שבט","אדר",
-  "ניסן","אייר","סיוון","תמוז","אב","אלול"
-];
-// Sefirot for each month (position 0=Tishrei)
-const monthSefirot = [
-  "חסד","גבורה","תפארת","נצח","הוד","יסוד",
-  "חסד","גבורה","תפארת","נצח","הוד","יסוד"
-];
-// Partzuf system per month
-const monthSystem = [
-  "דז״א דמ״ה ומ״ה דב״ן",   // תשרי
-  "דז״א דמ״ה ומ״ה דב״ן",   // חשוון
-  "דז״א דמ״ה ומ״ה דב״ן",   // כסלו
-  "דז״א דמ״ה ומ״ה דב״ן",   // טבת
-  "דז״א דמ״ה ומ״ה דב״ן",   // שבט
-  "דז״א דמ״ה ומ״ה דב״ן",   // אדר
-  "דנוק׳ דב״ן דמ״ה וב״ן דב״ן", // ניסן
-  "דנוק׳ דב״ן דמ״ה וב״ן דב״ן", // אייר
-  "דנוק׳ דב״ן דמ״ה וב״ן דב״ן", // סיוון
-  "דנוק׳ דב״ן דמ״ה וב״ן דב״ן", // תמוז
-  "דנוק׳ דב״ן דמ״ה וב״ן דב״ן", // אב
-  "דנוק׳ דב״ן דמ״ה וב״ן דב״ן"  // אלול
-];
-
-// Week partzuf
-const weekPartzuf = ['אבא','אימא','ז״א','נוק׳','–','–'];
-
-// Shmita labels + sefirot
-const shmitaLabels = ['א','ב','ג','ד','ה','ו','שמיטה'];
-const shmitaSefirot= ['חסד','גבורה','תפארת','נצח','הוד','יסוד','מלכות'];
-
-// Year letter → sefira
-const letterSef = {
-  "א":"חסד","ב":"גבורה","ג":"תפארת","ד":"נצח",
-  "ה":"יסוד","ו":"מלכות","ז":"חסד","ח":"הוד",
-  "ט":"יסוד","י":"תפארת","כ":"נצח","ל":"הוד",
-  "מ":"יסוד","נ":"מלכות","ס":"חסד","ע":"גבורה",
-  "פ":"יסוד","צ":"תפארת","ק":"נצח","ר":"הוד",
-  "ש":"מלכות","ת":"הוד"
-};
-
-// Hour sefira cycle (repeating)
-const hourSefirot = ['חסד','גבורה','תפארת','נצח','הוד','יסוד','מלכות',
-                     'חסד','גבורה','תפארת','נצח','הוד','יסוד','מלכות',
-                     'חסד','גבורה','תפארת','נצח','הוד','יסוד','מלכות',
-                     'חסד','גבורה','תפארת'];
-
-/* =====================================================================
-   UTILITIES
-===================================================================== */
-
-function toHebNum(n) {
-  const t = ["","א","ב","ג","ד","ה","ו","ז","ח","ט",
-    "י","יא","יב","יג","יד","טו","טז","יז","יח","יט",
-    "כ","כא","כב","כג","כד","כה","כו","כז","כח","כט",
-    "ל","לא","לב","לג","לד","לה","לו","לז","לח","לט",
-    "מ","מא","מב","מג","מד","מה","מו","מז","מח","מט","נ"];
-  return t[n] || String(n);
+/* Bottom strip formatting */
+function addDashes(name) {
+    return name.split(" ").map(word => word.split("").join("-")).join(" ");
 }
 
-function getHebrewParts() {
-  const now = new Date();
-  const parts = new Intl.DateTimeFormat('he-u-ca-hebrew',{
-    day:'numeric', month:'long', year:'numeric'
-  }).formatToParts(now);
-  let d, m, y;
-  parts.forEach(p => {
-    if (p.type === 'day')   d = parseInt(p.value);
-    if (p.type === 'month') m = p.value;
-    if (p.type === 'year')  y = parseInt(p.value);
-  });
-  return { d, m, y };
-}
+/* Stacked glowing name */
+function addFireGlow(name){
+    const words = name.split(" ");
 
-function getMonthIndex(name) {
-  return monthNames.findIndex(mn => mn === name || name.includes(mn) || mn.includes(name));
-}
-
-function getWeekNum(day) { return Math.ceil(day / 7); }
-
-function formatHour12(h) {
-  let h12 = h % 12; if (h12 === 0) h12 = 12;
-  return h12 + (h < 12 ? " AM" : " PM");
-}
-
-/* =====================================================================
-   GLOWING NAME
-===================================================================== */
-function buildGlowName(nameStr) {
-  const words = nameStr.split(" ");
-  return words.map(word => {
-    const chars = word.split("").map((ch, i) => {
-      const dash = (i < word.length - 1) ? `<span class="dash">-</span>` : "";
-      return `<span class="fire-char">
-                <span class="base">${ch}</span>
-                <span class="glow">${ch}</span>
-                <span class="spark">${ch}</span>
-              </span>${dash}`;
+    return words.map(word=>{
+        return `<div class="name-line">` +
+            word.split("").map((letter,i)=>{
+                let dash = (i<word.length-1) ? "-" : "";
+                return `<span class="fire-layer">
+                            <span class="base">${letter}</span>
+                            <span class="glow">${letter}</span>
+                            <span class="spark">${letter}</span>
+                        </span>${dash}`;
+            }).join("") +
+        `</div>`;
     }).join("");
-    return `<span class="name-word">${chars}</span>`;
-  }).join(`<span style="display:inline-block;width:clamp(20px,3vw,50px)"></span>`);
 }
 
-/* =====================================================================
-   BUILD TABLES
-===================================================================== */
-function buildRow(num, label, sefi, active) {
-  const cls = active ? "trow active" : "trow";
-  const numHtml = num !== null ? `<span class="num">${num}</span>` : "";
-  const sefiHtml = sefi ? `<span class="sefi">${sefi}</span>` : "";
-  return `<div class="${cls}">${numHtml}<span class="label">${label}</span>${sefiHtml}</div>`;
+/* Time formatting */
+function formatTime(hour, min, sec) {
+    let h = hour % 12; if(h==0) h=12;
+    let ampm = hour<12 ? "AM":"PM";
+    return `${h}:${min}:${sec} ${ampm}`;
 }
 
-function buildDayTable(todayJs) {
-  return dayNames.map((d, i) => buildRow(null, d, daySefirot[i], i === todayJs)).join("");
+function formatHour(hour){
+    let h = hour % 12; if(h==0) h=12;
+    return h + (hour<12 ? " AM":" PM");
 }
 
-function buildWeekTable(currentWeek) {
-  let html = "";
-  for (let i = 1; i <= 4; i++) {
-    const p = weekPartzuf[i - 1] || "";
-    html += buildRow(toHebNum(i), `שבוע ${toHebNum(i)}`, p, i === currentWeek);
-  }
-  return html;
+function getName(hour){
+    return hourNames[hour];
 }
 
-function buildMonthTable(currentMonthIdx) {
-  return monthNames.map((m, i) =>
-    buildRow(null, m, monthSefirot[i], i === currentMonthIdx)
-  ).join("");
+/* Bottom strip */
+function buildStrip(currentHour){
+    let html="";
+    for(let i=0;i<24;i++){
+        let cls=(i===currentHour)?"hourItem active":"hourItem";
+        html+=`<span class="${cls}">${formatHour(i)} ${addDashes(getName(i))}</span>`;
+    }
+    document.getElementById("bottomStrip").innerHTML=html;
 }
 
-// Convert a Hebrew year number directly to Hebrew letter string e.g. 5785 → תשפה
-function yearToHebrewLetters(y) {
-  // Work in thousands remainder
-  y = y % 1000; // drop millennia (e.g. 5785 → 785)
-  const hundreds = ["","ק","ר","ש","ת","תק","תר","תש","תת","תתק"];
-  const tens     = ["","י","כ","ל","מ","נ","ס","ע","פ","צ"];
-  const ones     = ["","א","ב","ג","ד","ה","ו","ז","ח","ט"];
-  let h = Math.floor(y / 100);
-  let t = Math.floor((y % 100) / 10);
-  let o = y % 10;
-  // Avoid יה / יו
-  let result = hundreds[h];
-  if (t === 1 && o === 5) { result += "טו"; o = 0; t = 0; }
-  else if (t === 1 && o === 6) { result += "טז"; o = 0; t = 0; }
-  else { result += tens[t] + ones[o]; }
-  return result;
+/* MAIN CLOCK UPDATE */
+function updateClock(){
+
+    // ✅ FORCE New York timezone (VERY IMPORTANT)
+    const now = new Date(new Date().toLocaleString("en-US", { timeZone: "America/New_York" }));
+
+    let h = now.getHours();
+    let m = String(now.getMinutes()).padStart(2,'0');
+    let s = String(now.getSeconds()).padStart(2,'0');
+
+    const nameEl = document.getElementById("name");
+    const clockEl = document.getElementById("clock");
+
+    // Match clock size to name
+    const nameSize = window.getComputedStyle(nameEl).fontSize;
+    clockEl.style.fontSize = nameSize;
+
+    clockEl.innerText = formatTime(h,m,s);
+
+    // Show correct name
+    nameEl.innerHTML = addFireGlow(getName(h));
+
+    let next = (h+1)%24;
+    document.getElementById("timeRange").innerText =
+        formatHour(h) + " - " + formatHour(next);
+
+    buildStrip(h);
 }
 
-function buildYearTable(hebYear) {
-  const letters = yearToHebrewLetters(hebYear).split("");
-  if (!letters.length) return "<div class='trow'>—</div>";
-  return letters.map(l =>
-    buildRow(null, l, letterSef[l] || "", false)
-  ).join("");
-}
+setInterval(updateClock,1000);
+updateClock();
 
-function buildShmitaTable(yearMod7) {
-  return shmitaLabels.map((s, i) =>
-    buildRow(null, s, shmitaSefirot[i], i === yearMod7)
-  ).join("");
-}
-
-function buildYovelTable(yovelYear) {
-  // Only show the current year — single highlighted row
-  const label = `${toHebNum(yovelYear)}״ ליובל`;
-  return buildRow(null, label, "", true);
-}
-
-function buildHourTable(currentH) {
-  let html = "";
-  for (let i = 0; i < 24; i++) {
-    html += buildRow(toHebNum(i), hourNames[i], hourSefirot[i], i === currentH);
-  }
-  return html;
-}
-
-/* =====================================================================
-   MAIN UPDATE
-===================================================================== */
-function update() {
-  const now = new Date();
-  const h = now.getHours();
-  const m = String(now.getMinutes()).padStart(2, '0');
-  const s = String(now.getSeconds()).padStart(2, '0');
-
-  // Clock
-  let h12 = h % 12; if (!h12) h12 = 12;
-  const ampm = h < 12 ? "AM" : "PM";
-  document.getElementById("clock").textContent = `${h12}:${m}:${s} ${ampm}`;
-
-  // Name glow
-  document.getElementById("name-section").innerHTML = buildGlowName(hourNames[h]);
-
-  // Hebrew date
-  const heb = getHebrewParts();
-  const week = getWeekNum(heb.d);
-  const partzuf = weekPartzuf[week - 1] || "–";
-  const monthIdx = getMonthIndex(heb.m);
-  const monthSefi = monthSefirot[Math.max(0, monthIdx)];
-  const dayJs = now.getDay(); // 0=Sun
-  const daySef = daySefirot[dayJs];
-
-  // Year string
-  const letters = yearToHebrewLetters(heb.y).split("");
-  const yearSefi = letters.map(l => `${l}(${letterSef[l] || ""})`).join(" ");
-
-  // Shmita + yovel
-  const shmitaPos = heb.y % 7; // 0 = shmita
-  const shmitaLabel = shmitaLabels[shmitaPos] || "שמיטה";
-  const shmitaSefi  = shmitaSefirot[shmitaPos] || "";
-  const yovelYear   = heb.y % 50 || 50;
-
-  // System label
-  const sys = monthSystem[Math.max(0, monthIdx)];
-
-  // Date display
-  document.getElementById("date-main").innerHTML =
-    `יום ${dayNames[dayJs].replace("יום ","")} (${daySef}) &nbsp;·&nbsp; ` +
-    `שבוע ${toHebNum(week)} (${partzuf}) &nbsp;·&nbsp; ` +
-    `${heb.m} (${monthSefi}) &nbsp;·&nbsp; ` +
-    `שנה ${heb.y}`;
-
-  document.getElementById("date-sefira").innerHTML =
-    `[${sys}]`;
-
-  document.getElementById("date-summary").innerHTML =
-    `${yearSefi} &nbsp;|&nbsp; ` +
-    `שמיטה ${shmitaLabel}(${shmitaSefi}) &nbsp;|&nbsp; ` +
-    `שנה ${toHebNum(yovelYear)} ליובל &nbsp;|&nbsp; ` +
-    `שעה ${toHebNum(h)} (${hourSefirot[h]})`;
-
-  // Fill tables
-  document.getElementById("dayTable").innerHTML    = buildDayTable(dayJs);
-  document.getElementById("weekTable").innerHTML   = buildWeekTable(week);
-  document.getElementById("monthTable").innerHTML  = buildMonthTable(monthIdx);
-  document.getElementById("yearTable").innerHTML   = buildYearTable(heb.y);
-  document.getElementById("shmitaTable").innerHTML = buildShmitaTable(shmitaPos);
-  document.getElementById("yovelTable").innerHTML  = buildYovelTable(yovelYear);
-  document.getElementById("hourTable").innerHTML   = buildHourTable(h);
-
-  // Bottom strip
-  let strip = "";
-  for (let i = 0; i < 24; i++) {
-    const cls = i === h ? "stripItem active" : "stripItem";
-    strip += `<span class="${cls}">${formatHour12(i)} ${hourNames[i]}</span>`;
-  }
-  document.getElementById("bottomStrip").innerHTML = strip;
-
-  // Auto-scroll strip to active
-  const activeEl = document.querySelector(".stripItem.active");
-  if (activeEl) activeEl.scrollIntoView({ inline: "center", behavior: "smooth" });
-}
-
-setInterval(update, 1000);
-update();
 </script>
+
 </body>
 </html>

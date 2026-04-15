@@ -1,249 +1,336 @@
 <!DOCTYPE html>
-<html lang="he">
+<html lang="he" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>שם לפי שעה</title>
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>מערכת זמן קבלית</title>
+<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@300;400;700;900&display=swap" rel="stylesheet">
 <style>
-body {
-    margin: 0;
-    font-family: 'Frank Ruhl Libre', serif;
-    text-align: center;
-    background: url("background.jpeg") no-repeat center center fixed;
-    background-size: cover;
-    color: white;
+:root{--gold:#FFD700;--gold2:#FFA500;--bg:#050400;--text:#f0dfa0;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:'Frank Ruhl Libre',serif;}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse 90% 55% at 50% 28%,rgba(150,110,0,.10) 0%,transparent 70%);}
+#app{position:relative;z-index:1;width:100vw;height:100vh;display:flex;flex-direction:column;align-items:center;}
+
+/* TOP */
+#top{flex:0 0 auto;width:100%;text-align:center;padding:.8vh 2vw 0;}
+#clock{font-size:clamp(11px,3.4vw,28px);font-weight:300;letter-spacing:3px;color:#c09818;
+  text-shadow:0 0 8px #FFD700,0 0 18px #FFA500;}
+#name-wrap{margin:.35vh 0 .2vh;display:flex;align-items:center;justify-content:center;
+  flex-wrap:wrap;gap:0 2vw;min-height:6vh;}
+.name-word{display:inline-flex;align-items:center;gap:1px;}
+.fc{position:relative;font-size:clamp(22px,7vw,68px);font-weight:900;line-height:1;}
+.fc .b{color:#FFE566;text-shadow:0 0 8px #fff,0 0 20px #FFD700,0 0 40px #FFA500,0 0 65px #FF6600;}
+.fc .g{position:absolute;top:0;left:0;color:#FFA500;opacity:.38;text-shadow:0 0 18px #FF6600;}
+.fc .s{position:absolute;top:0;left:0;color:#FF2200;opacity:.13;}
+.dash-sep{color:#6a4c00;font-size:clamp(9px,2.3vw,20px);margin-bottom:3px;opacity:.42;}
+
+  #date-line {
+  font-size: clamp(7.5px, 1.75vw, 15px);
+  color: #b08818;
+  /* הוספת המרווח כאן: */
+  padding: 0 4px 2vh; /* הגדלתי מ-0.25vh ל-2vh */
+  margin-bottom: 10px; /* מרווח נוסף בין הטקסט ל-SVG */
+  line-height: 1.5;
+  text-shadow: 0 0 5px rgba(255,200,0,.22);
 }
 
-/* Dark overlay */
-body::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.7);
-}
+#date-line span{opacity:.62;font-size:.84em;}
 
-#content {
-    position: relative;
-    z-index: 1;
-}
+/* RINGS */
+#ring-wrap{flex:1 1 auto;width:100%;display:flex;align-items:center;justify-content:center;min-height:0;}
+#ring-svg{width:100%;height:100%;overflow:visible;}
 
-#title {
-    font-size: 5vw;
-    margin-top: 20px;
-    text-shadow: 0 0 10px gold;
-}
+/* HOUR WHEEL */
+#hour-wheel{flex:0 0 auto;width:100%;height:8.5vh;min-height:46px;overflow:hidden;position:relative;
+  background:rgba(0,0,0,.62);border-top:1px solid rgba(255,215,0,.2);display:flex;align-items:center;}
+#wheel-track{display:flex;align-items:center;position:absolute;left:0;gap:0;
+  transition:transform .65s cubic-bezier(.4,0,.2,1);}
+.wi{flex:0 0 auto;width:13vw;min-width:48px;text-align:center;padding:2px 1px;
+  border-right:1px solid rgba(255,215,0,.07);}
+.wi .wh{font-size:clamp(5.5px,1.3vw,10px);color:#604808;margin-bottom:1px;}
+.wi .wn{font-size:clamp(5.5px,1.4vw,11px);color:#806010;line-height:1.2;direction:rtl;}
+.wi .ws{font-size:clamp(4.5px,1vw,8.5px);color:#403005;}
+.wi.active .wh{color:var(--gold);text-shadow:0 0 6px #FFD700;}
+.wi.active .wn{color:var(--gold);font-weight:700;text-shadow:0 0 8px #FFD700,0 0 16px #FFA500;}
+.wi.active .ws{color:#c8a020;}
+#hour-wheel::before,#hour-wheel::after{content:"";position:absolute;top:0;bottom:0;width:15%;z-index:2;pointer-events:none;}
+#hour-wheel::before{left:0;background:linear-gradient(to right,var(--bg) 0%,transparent 100%);}
+#hour-wheel::after{right:0;background:linear-gradient(to left,var(--bg) 0%,transparent 100%);}
+#wheel-marker{position:absolute;top:0;bottom:0;left:50%;transform:translateX(-50%);
+  width:13vw;min-width:48px;border-left:1px solid rgba(255,215,0,.28);
+  border-right:1px solid rgba(255,215,0,.28);background:rgba(255,215,0,.04);pointer-events:none;z-index:1;}
 
-#clock {
-    margin-top: 10px;
-}
-
-#name {
-    font-size: 9vw;
-    margin-top: 12vh;
-    font-weight: bold;
-    direction: rtl;
-}
-
-/* Each word stacked */
-.name-line {
-    display: block;
-    margin: 10px 0;
-}
-
-/* Strong steady glow */
-.fire-layer {
-    display: inline-block;
-    position: relative;
-    margin: 0 1px;
-}
-
-.fire-layer .base {
-    color: #FFD700;
-    font-weight: bold;
-    text-shadow:
-        0 0 4px #fff,
-        0 0 8px #FFD700,
-        0 0 12px orange,
-        0 0 18px gold,
-        0 0 25px orange;
-}
-
-.fire-layer .glow {
-    position: absolute;
-    top: 0;
-    left: 0;
-    color: orange;
-    opacity: 0.4;
-    text-shadow:
-        0 0 10px orange,
-        0 0 20px gold,
-        0 0 30px orange;
-}
-
-.fire-layer .spark {
-    position: absolute;
-    top: 0;
-    left: 0;
-    color: red;
-    opacity: 0.25;
-}
-
-#timeRange {
-    margin-top: 10px;
-    font-size: 3vw;
-    direction: ltr;
-}
-
-#bottomStrip {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    overflow-x: auto;
-    white-space: nowrap;
-    background: rgba(0,0,0,0.5);
-    padding: 6px 0;
-}
-
-.hourItem {
-    display: inline-block;
-    margin: 0 8px;
-    font-size: 2.8vw;
-    opacity: 0.7;
-}
-
-.active {
-    color: gold;
-    font-weight: bold;
-    opacity: 1;
-    text-shadow: 0 0 10px gold;
-}
+/* SVG */
+.seg{stroke:#050400;stroke-width:1.4;}
+.seg-dim{fill:rgba(255,215,0,.045);}
+.seg-act{fill:rgba(255,200,0,.30);}
+.rl    {font-family:'Frank Ruhl Libre',serif;fill:rgba(185,142,14,.72);}
+.rl-act{font-family:'Frank Ruhl Libre',serif;fill:#FFE566;font-weight:700;}
+.rs    {font-family:'Frank Ruhl Libre',serif;fill:rgba(165,120,8,.50);}
+.rs-act{font-family:'Frank Ruhl Libre',serif;fill:rgba(255,210,70,.82);font-weight:700;}
+.c-main{font-family:'Frank Ruhl Libre',serif;fill:#FFE566;font-weight:900;text-anchor:middle;dominant-baseline:central;}
+.c-sub {font-family:'Frank Ruhl Libre',serif;fill:rgba(195,148,12,.82);text-anchor:middle;dominant-baseline:central;}
+.badge {font-family:'Frank Ruhl Libre',serif;fill:rgba(255,215,0,.38);text-anchor:middle;}
 </style>
 </head>
-
 <body>
-
-<div id="content">
-    <div id="title">שם לפי שעה</div>
-    <div id="clock"></div>
-    <div id="name"></div>
-    <div id="timeRange"></div>
+<div id="app">
+  <div id="top">
+    <div id="clock">12:00:00 PM</div>
+    <div id="name-wrap"></div>
+    <div id="date-line"></div>
+  </div>
+  <div id="ring-wrap">
+    <svg id="ring-svg" viewBox="0 0 440 440" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <filter id="glow1" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="4" result="b"/>
+          <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <filter id="glow2" x="-80%" y="-80%" width="260%" height="260%">
+          <feGaussianBlur stdDeviation="8" result="b"/>
+          <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <filter id="tglow" x="-40%" y="-40%" width="180%" height="180%">
+          <feGaussianBlur stdDeviation="2" result="b"/>
+          <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <filter id="tglow2" x="-60%" y="-60%" width="220%" height="220%">
+          <feGaussianBlur stdDeviation="3.5" result="b"/>
+          <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <g id="arcDefs"></g>
+      </defs>
+      <g id="rings"></g>
+      <circle cx="220" cy="220" r="52" fill="rgba(6,5,0,.94)" stroke="rgba(255,215,0,.18)" stroke-width="1.2"/>
+      <g id="cinfo"></g>
+    </svg>
+  </div>
+  <div id="hour-wheel">
+    <div id="wheel-marker"></div>
+    <div id="wheel-track"></div>
+  </div>
 </div>
 
-<div id="bottomStrip"></div>
-
 <script>
-
-/* ✅ CORRECT mapping (midnight = index 0) */
-const hourNames = [
-  "נדאי ניאד",
-  "נדיא נידא",
-  "נאדי נאיד",
-  "דאינ יאדנ",
-  "דאני יאנד",
-  "דיאנ ידאנ",
-  "יהוה אהיה",
-  "יההו אההי",
-  "יוהה איהה",
-  "הוהי היהא",
-  "הויה היאה",
-  "ההוי ההיא",
-  "והיה יהאה",
-  "וההי יההא",
-  "ויהה יאהה",
-  "היהו האהי",
-  "היוה האיה",
-  "ההיו ההאי",
-  "אדני אינד",
-  "אדינ אידנ",
-  "אניד אנדי",
-  "דניא ינדא",
-  "דנאי ינאד",
-  "דינא ידנא"
+/* DATA */
+const hourNames=[
+  "נדאי ניאד","נדיא נידא","נאדי נאיד","דאינ יאדנ","דאני יאנד","דיאנ ידאנ",
+  "יהוה אהיה","יההו אההי","יוהה איהה","הוהי היהא","הויה היאה","ההוי ההיא",
+  "והיה יהאה","וההי יההא","ויהה יאהה","היהו האהי","היוה האיה","ההיו ההאי",
+  "אדני אינד","אדינ אידנ","אניד אנדי","דניא ינדא","דנאי ינאד","דינא ידנא"
 ];
+const hourSefirot=['חסד','גבורה','תפארת','נצח','הוד','יסוד','מלכות','חסד','גבורה','תפארת','נצח','הוד','יסוד','מלכות','חסד','גבורה','תפארת','נצח','הוד','יסוד','מלכות','חסד','גבורה','תפארת'];
+const dayNames=['יום א','יום ב','יום ג','יום ד','יום ה','יום ו','שבת'];
+const daySefirot=['חסד','גבורה','תפארת','נצח','הוד','יסוד','מלכות'];
+const monthNames=['תשרי','חשוון','כסלו','טבת','שבט','אדר','ניסן','אייר','סיוון','תמוז','אב','אלול'];
+const monthSefirot=['חסד','גבורה','תפארת','נצח','הוד','יסוד','חסד','גבורה','תפארת','נצח','הוד','יסוד'];
+const weekPartzuf=['אבא','אימא','ז״א','נוק׳'];
+const shmitaLabels=['א','ב','ג','ד','ה','ו','שמיטה'];
+const shmitaSefirot=['חסד','גבורה','תפארת','נצח','הוד','יסוד','מלכות'];
+const letterSef={"א":"חסד","ב":"גבורה","ג":"תפארת","ד":"נצח","ה":"יסוד","ו":"מלכות","ז":"חסד","ח":"הוד","ט":"יסוד","י":"תפארת","כ":"נצח","ל":"הוד","מ":"יסוד","נ":"מלכות","ס":"חסד","ע":"גבורה","פ":"יסוד","צ":"תפארת","ק":"נצח","ר":"הוד","ש":"מלכות","ת":"הוד"};
 
-/* Bottom strip formatting */
-function addDashes(name) {
-    return name.split(" ").map(word => word.split("").join("-")).join(" ");
+/* UTILS */
+const NS="http://www.w3.org/2000/svg";
+function mkEl(tag,attrs){const e=document.createElementNS(NS,tag);for(const[k,v]of Object.entries(attrs||{}))e.setAttribute(k,v);return e;}
+function toHebNum(n){const t=["","א","ב","ג","ד","ה","ו","ז","ח","ט","י","יא","יב","יג","יד","טו","טז","יז","יח","יט","כ","כא","כב","כג","כד","כה","כו","כז","כח","כט","ל","לא","לב","לג","לד","לה","לו","לז","לח","לט","מ","מא","מב","מג","מד","מה","מו","מז","מח","מט","נ"];return t[n]||String(n);}
+function yearLetters(y){y=y%1000;const h=["","ק","ר","ש","ת","תק","תר","תש","תת","תתק"],t=["","י","כ","ל","מ","נ","ס","ע","פ","צ"],o=["","א","ב","ג","ד","ה","ו","ז","ח","ט"];let hh=Math.floor(y/100),tt=Math.floor((y%100)/10),oo=y%10,r=h[hh];if(tt===1&&oo===5)r+="טו";else if(tt===1&&oo===6)r+="טז";else r+=t[tt]+o[oo];return r;}
+function getHebParts(){const now=new Date(),parts=new Intl.DateTimeFormat('he-u-ca-hebrew',{day:'numeric',month:'long',year:'numeric'}).formatToParts(now);let d,m,y;parts.forEach(p=>{if(p.type==='day')d=parseInt(p.value);if(p.type==='month')m=p.value;if(p.type==='year')y=parseInt(p.value);});return{d,m,y};}
+function getMonthIdx(name){return monthNames.findIndex(mn=>mn===name||name.includes(mn)||mn.includes(name));}
+function pxy(cx,cy,r,deg){const a=(deg-90)*Math.PI/180;return{x:cx+r*Math.cos(a),y:cy+r*Math.sin(a)};}
+
+/* SEGMENT PATH */
+function spath(cx,cy,r1,r2,s,e){
+  const G=1.0,ss=s+G/2,ee=e-G/2,lg=(ee-ss)>180?1:0;
+  const a=pxy(cx,cy,r2,ss),b=pxy(cx,cy,r2,ee),c=pxy(cx,cy,r1,ee),d=pxy(cx,cy,r1,ss);
+  return`M${a.x},${a.y}A${r2},${r2} 0 ${lg} 1 ${b.x},${b.y}L${c.x},${c.y}A${r1},${r1} 0 ${lg} 0 ${d.x},${d.y}Z`;
 }
 
-/* Stacked glowing name */
-function addFireGlow(name){
-    const words = name.split(" ");
+/* CURVED TEXT */
+let _pid=0;
+function curvedText(parentG,defs,cx,cy,r,s,e,text,cls,fs,filterStr){
+  const id="p"+(++_pid);
+  const mid=(s+e)/2;
+  const bottom=(mid>90&&mid<270);
 
-    return words.map(word=>{
-        return `<div class="name-line">` +
-            word.split("").map((letter,i)=>{
-                let dash = (i<word.length-1) ? "-" : "";
-                return `<span class="fire-layer">
-                            <span class="base">${letter}</span>
-                            <span class="glow">${letter}</span>
-                            <span class="spark">${letter}</span>
-                        </span>${dash}`;
-            }).join("") +
-        `</div>`;
-    }).join("");
+  let d;
+  if(!bottom){
+    // CW arc s→e
+    const p1=pxy(cx,cy,r,s),p2=pxy(cx,cy,r,e);
+    const lg=(e-s)>180?1:0;
+    d=`M${p1.x},${p1.y}A${r},${r} 0 ${lg} 1 ${p2.x},${p2.y}`;
+  } else {
+    // CCW arc e→s (flips text to be upright on bottom half)
+    const p1=pxy(cx,cy,r,e),p2=pxy(cx,cy,r,s);
+    const lg=(e-s)>180?1:0;
+    d=`M${p1.x},${p1.y}A${r},${r} 0 ${lg} 0 ${p2.x},${p2.y}`;
+  }
+
+  // FIX: Document is RTL, so we do NOT reverse the string manually.
+  const str = text;
+
+  defs.appendChild(mkEl("path",{id,d,fill:"none"}));
+
+  const tEl=mkEl("text",{class:cls,"font-size":fs});
+  if(filterStr) tEl.setAttribute("filter",filterStr);
+  const tp=mkEl("textPath",{href:`#${id}`,startOffset:"50%","text-anchor":"middle"});
+  tp.textContent=str;
+  tEl.appendChild(tp);
+  parentG.appendChild(tEl);
 }
 
-/* Time formatting */
-function formatTime(hour, min, sec) {
-    let h = hour % 12; if(h==0) h=12;
-    let ampm = hour<12 ? "AM":"PM";
-    return `${h}:${min}:${sec} ${ampm}`;
-}
+/* DRAW ONE RING */
+function drawRing(g,defs,cx,cy,r1,r2,items){
+  const n=items.length, step=360/n, rH=r2-r1;
+  const rMid=(r1+r2)/2;
 
-function formatHour(hour){
-    let h = hour % 12; if(h==0) h=12;
-    return h + (hour<12 ? " AM":" PM");
-}
-
-function getName(hour){
-    return hourNames[hour];
-}
-
-/* Bottom strip */
-function buildStrip(currentHour){
-    let html="";
-    for(let i=0;i<24;i++){
-        let cls=(i===currentHour)?"hourItem active":"hourItem";
-        html+=`<span class="${cls}">${formatHour(i)} ${addDashes(getName(i))}</span>`;
+  items.forEach((item,i)=>{
+    const s=i*step, e=s+step;
+    if(item.active){
+      g.appendChild(mkEl("path",{d:spath(cx,cy,r1-2,r2+3,s,e),fill:"rgba(255,200,0,.11)",filter:"url(#glow2)"}));
     }
-    document.getElementById("bottomStrip").innerHTML=html;
+    const seg=mkEl("path",{d:spath(cx,cy,r1,r2,s,e),class:"seg "+(item.active?"seg-act":"seg-dim")});
+    if(item.active)seg.setAttribute("filter","url(#glow1)");
+    g.appendChild(seg);
+
+    const arcAvail = 2*Math.PI*rMid*(step/360);
+    const mainLen  = item.label.length || 1;
+    const CRAT=0.62;
+    const fsMainByArc  = arcAvail / (mainLen * CRAT);
+    const fsMainByHeight = rH * 0.50;
+    const fsMain = Math.min(Math.max(fsMainByArc, 5), fsMainByHeight);
+
+    const rMain = r1 + rH*0.68;
+    const rSefi = r1 + rH*0.30;
+
+    const mCls = item.active ? "rl-act" : "rl";
+    const mFlt = item.active ? "url(#tglow2)" : null;
+    curvedText(g,defs,cx,cy,rMain,s,e,item.label,mCls,fsMain,mFlt);
+
+    if(item.sefi){
+      const sefiLen = item.sefi.length || 1;
+      const fsSefiByArc = arcAvail / (sefiLen * CRAT);
+      const fsSefiByHeight = rH * 0.32;
+      const fsSefi = Math.min(Math.max(fsSefiByArc, 4), fsSefiByHeight);
+      const sCls = item.active ? "rs-act" : "rs";
+      curvedText(g,defs,cx,cy,rSefi,s,e,item.sefi,sCls,fsSefi,null);
+    }
+  });
 }
 
-/* MAIN CLOCK UPDATE */
-function updateClock(){
-
-    // ✅ FORCE New York timezone (VERY IMPORTANT)
-    const now = new Date(new Date().toLocaleString("en-US", { timeZone: "America/New_York" }));
-
-    let h = now.getHours();
-    let m = String(now.getMinutes()).padStart(2,'0');
-    let s = String(now.getSeconds()).padStart(2,'0');
-
-    const nameEl = document.getElementById("name");
-    const clockEl = document.getElementById("clock");
-
-    // Match clock size to name
-    const nameSize = window.getComputedStyle(nameEl).fontSize;
-    clockEl.style.fontSize = nameSize;
-
-    clockEl.innerText = formatTime(h,m,s);
-
-    // Show correct name
-    nameEl.innerHTML = addFireGlow(getName(h));
-
-    let next = (h+1)%24;
-    document.getElementById("timeRange").innerText =
-        formatHour(h) + " - " + formatHour(next);
-
-    buildStrip(h);
+/* GLOW NAME */
+function glowName(str){
+  return str.split(" ").map(w=>{
+    const c=w.split("").map((ch,i)=>{
+      const d=i<w.length-1?`<span class="dash-sep">-</span>`:"";
+      return`<span class="fc"><span class="b">${ch}</span><span class="g">${ch}</span><span class="s">${ch}</span></span>${d}`;
+    }).join("");
+    return`<span class="name-word">${c}</span>`;
+  }).join(`<span style="display:inline-block;width:2.2vw"></span>`);
 }
 
-setInterval(updateClock,1000);
-updateClock();
+/* HOUR WHEEL */
+function buildWheel(cur){
+  const track=document.getElementById("wheel-track");
+  const wheel=document.getElementById("hour-wheel");
+  const iW=Math.max(48,wheel.offsetWidth*0.13);
+  track.innerHTML="";
+  for(let i=0;i<24;i++){
+    const d=document.createElement("div");
+    d.className="wi"+(i===cur?" active":"");
+    d.style.width=iW+"px";
+    const h12=(i%12)||12,ap=i<12?"AM":"PM";
+    d.innerHTML=`<div class="wh">${h12}${ap}</div><div class="wn">${hourNames[i]}</div><div class="ws">${hourSefirot[i]}</div>`;
+    track.appendChild(d);
+  }
+  track.style.transform=`translateX(${-(cur*iW - wheel.offsetWidth/2 + iW/2)}px)`;
+}
 
+/* MAIN */
+let lastH=-1;
+function update(){
+  const now=new Date(), h=now.getHours();
+  const mm=String(now.getMinutes()).padStart(2,'0'), ss=String(now.getSeconds()).padStart(2,'0');
+  const h12=(h%12)||12, ap=h<12?"AM":"PM";
+  document.getElementById("clock").textContent=`${h12}:${mm}:${ss} ${ap}`;
+  if(h===lastH)return;
+  lastH=h;
+
+  document.getElementById("name-wrap").innerHTML=glowName(hourNames[h]);
+
+  const heb=getHebParts(), dayJs=now.getDay(), week=Math.ceil(heb.d/7);
+  const mIdx=getMonthIdx(heb.m), sPos=heb.y%7, yY=heb.y%50||50;
+  const yL=yearLetters(heb.y), yS=yL.split("").map(l=>`${l}(${letterSef[l]||""})`).join(" ");
+  const ptz=weekPartzuf[week-1]||"–";
+
+  document.getElementById("date-line").innerHTML=
+    `יום ${dayNames[dayJs].replace("יום ","")} (${daySefirot[dayJs]}) &nbsp;·&nbsp; `+
+    `שבוע ${toHebNum(week)} (${ptz}) &nbsp;·&nbsp; `+
+    `${heb.m} (${monthSefirot[Math.max(0,mIdx)]}) &nbsp;·&nbsp; שנה ${heb.y}<br>`+
+    `<span>${yS} &nbsp;|&nbsp; שמיטה ${shmitaLabels[sPos]} &nbsp;|&nbsp; ${toHebNum(yY)}״ ליובל</span>`;
+
+  const rG=document.getElementById("rings");
+  const defs=document.getElementById("arcDefs");
+  rG.innerHTML=""; defs.innerHTML=""; _pid=0;
+  const CX=220,CY=220;
+
+  drawRing(rG,defs,CX,CY,58,96, dayNames.map((d,i)=>({label:d.replace("יום ",""),sefi:daySefirot[i],active:i===dayJs})));
+  drawRing(rG,defs,CX,CY,99,132, weekPartzuf.map((p,i)=>({label:`שבוע ${toHebNum(i+1)}`,sefi:p,active:(i+1)===week})));
+  drawRing(rG,defs,CX,CY,135,176, monthNames.map((m,i)=>({label:m,sefi:monthSefirot[i],active:i===mIdx})));
+  drawRing(rG,defs,CX,CY,179,213, shmitaLabels.map((s,i)=>({label:s,sefi:shmitaSefirot[i],active:i===sPos})));
+
+  const yR=222;
+  rG.appendChild(mkEl("circle",{cx:CX,cy:CY,r:yR,fill:"none",stroke:"rgba(255,215,0,.11)","stroke-width":"9"}));
+  const yDeg=(yY/50)*360;
+  if(yDeg>0){
+    const yp1=pxy(CX,CY,yR,-90),yp2=pxy(CX,CY,yR,yDeg-90),ylg=yDeg>180?1:0;
+    rG.appendChild(mkEl("path",{
+      d:`M${yp1.x},${yp1.y}A${yR},${yR} 0 ${ylg} 1 ${yp2.x},${yp2.y}`,
+      fill:"none",stroke:"rgba(255,205,0,.72)","stroke-width":"9","stroke-linecap":"round",filter:"url(#glow1)"
+    }));
+  }
+  {
+    const lid="ylb"+(++_pid);
+    const la=pxy(CX,CY,yR,-22),lb=pxy(CX,CY,yR,22);
+    defs.appendChild(mkEl("path",{id:lid,d:`M${la.x},${la.y}A${yR},${yR} 0 0 1 ${lb.x},${lb.y}`,fill:"none"}));
+    const yt=mkEl("text",{"font-size":"9.5","font-family":"Frank Ruhl Libre,serif",fill:"#FFD700",filter:"url(#tglow2)"});
+    const ytp=mkEl("textPath",{href:`#${lid}`,startOffset:"50%","text-anchor":"middle"});
+    // FIX: Remove reversal for Yovel label
+    ytp.textContent=`${toHebNum(yY)}״ ליובל`;
+    yt.appendChild(ytp); rG.appendChild(yt);
+  }
+
+  [{r:77,lbl:"יום"},{r:115,lbl:"שבוע"},{r:155,lbl:"חודש"},{r:196,lbl:"שמיטה"}].forEach(b=>{
+    const bp=pxy(CX,CY,b.r,356);
+    rG.appendChild(Object.assign(mkEl("text",{x:bp.x,y:bp.y,class:"badge","font-size":"6.5"}),{textContent:b.lbl}));
+  });
+
+  const cg=document.getElementById("cinfo");
+  cg.innerHTML="";
+  [{t:hourNames[h].split(" ")[0],fs:14,cls:"c-main",dy:-9},
+   {t:hourNames[h].split(" ")[1],fs:14,cls:"c-main",dy:7},
+   {t:hourSefirot[h],            fs:9, cls:"c-sub", dy:21},
+   {t:`שעה ${toHebNum(h)}`,      fs:8, cls:"c-sub", dy:32}
+  ].forEach(ln=>{
+    const e=mkEl("text",{x:CX,y:CY+ln.dy,class:ln.cls,"font-size":ln.fs});
+    e.textContent=ln.t; cg.appendChild(e);
+  });
+  buildWheel(h);
+}
+
+function tick(){
+  const now=new Date(),h=now.getHours();
+  if(h!==lastH)update();
+  else {
+    const mm=String(now.getMinutes()).padStart(2,'0'),ss=String(now.getSeconds()).padStart(2,'0');
+    const h12=(h%12)||12,ap=h<12?"AM":"PM";
+    document.getElementById("clock").textContent=`${h12}:${mm}:${ss} ${ap}`;
+  }
+}
+update();
+setInterval(tick,1000);
 </script>
-
 </body>
 </html>

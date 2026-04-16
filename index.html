@@ -10,69 +10,72 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:'Frank Ruhl Libre',serif;}
 body::after{content:"";position:fixed;inset:0;pointer-events:none;
-  background:radial-gradient(ellipse 90% 55% at 50% 28%,rgba(150,110,0,.10) 0%,transparent 70%);}
+  background:radial-gradient(ellipse 80% 50% at 50% 30%,rgba(140,100,0,.12) 0%,transparent 68%);}
 #app{position:relative;z-index:1;width:100vw;height:100vh;display:flex;flex-direction:column;align-items:center;}
 
 /* TOP */
-#top{flex:0 0 auto;width:100%;text-align:center;padding:.8vh 2vw 0;}
-#clock{font-size:clamp(11px,3.4vw,28px);font-weight:300;letter-spacing:3px;color:#c09818;
-  text-shadow:0 0 8px #FFD700,0 0 18px #FFA500;}
-#name-wrap{margin:.35vh 0 .2vh;display:flex;align-items:center;justify-content:center;
-  flex-wrap:wrap;gap:0 2vw;min-height:6vh;}
+#top{flex:0 0 auto;width:100%;text-align:center;padding:.5vh 2vw 0;}
+#clock{font-size:clamp(13px,3.8vw,32px);font-weight:300;letter-spacing:3px;color:#c09818;
+  text-shadow:0 0 5px #FFD700,0 0 12px #FFA500;}
+#name-wrap{margin:.25vh 0 .1vh;display:flex;align-items:center;justify-content:center;
+  flex-wrap:wrap;gap:0 1.5vw;min-height:5vh;}
 .name-word{display:inline-flex;align-items:center;gap:1px;}
-.fc{position:relative;font-size:clamp(22px,7vw,68px);font-weight:900;line-height:1;}
-.fc .b{color:#FFE566;text-shadow:0 0 8px #fff,0 0 20px #FFD700,0 0 40px #FFA500,0 0 65px #FF6600;}
-.fc .g{position:absolute;top:0;left:0;color:#FFA500;opacity:.38;text-shadow:0 0 18px #FF6600;}
-.fc .s{position:absolute;top:0;left:0;color:#FF2200;opacity:.13;}
-.dash-sep{color:#6a4c00;font-size:clamp(9px,2.3vw,20px);margin-bottom:3px;opacity:.42;}
-
-  #date-line {
-  font-size: clamp(7.5px, 1.75vw, 15px);
-  color: #b08818;
-  /* הוספת המרווח כאן: */
-  padding: 0 4px 2vh; /* הגדלתי מ-0.25vh ל-2vh */
-  margin-bottom: 10px; /* מרווח נוסף בין הטקסט ל-SVG */
-  line-height: 1.5;
-  text-shadow: 0 0 5px rgba(255,200,0,.22);
-}
-
-#date-line span{opacity:.62;font-size:.84em;}
+.fc{position:relative;font-size:clamp(20px,6.2vw,60px);font-weight:900;line-height:1;}
+.fc .b{color:#FFE566;text-shadow:0 0 4px #fff,0 0 12px #FFD700,0 0 25px #FFA500,0 0 40px #FF6600;}
+.fc .g{position:absolute;top:0;left:0;color:#FFA500;opacity:.36;text-shadow:0 0 10px #FF6600;}
+.fc .s{position:absolute;top:0;left:0;color:#FF2200;opacity:.12;}
+.dash-sep{color:#6a4c00;font-size:clamp(8px,2vw,18px);margin-bottom:2px;opacity:.4;}
+#date-line{font-size:clamp(11px,2.5vw,21px);font-weight:700;color:#e8b820;
+  padding:0 4px .15vh;line-height:1.55;
+  text-shadow:0 0 6px rgba(255,200,0,.4),0 0 12px rgba(255,150,0,.2);letter-spacing:.4px;}
+#date-line .sub{font-size:clamp(9px,1.9vw,16px);font-weight:400;color:#c09010;opacity:.85;}
 
 /* RINGS */
 #ring-wrap{flex:1 1 auto;width:100%;display:flex;align-items:center;justify-content:center;min-height:0;}
 #ring-svg{width:100%;height:100%;overflow:visible;}
 
 /* HOUR WHEEL */
-#hour-wheel{flex:0 0 auto;width:100%;height:8.5vh;min-height:46px;overflow:hidden;position:relative;
-  background:rgba(0,0,0,.62);border-top:1px solid rgba(255,215,0,.2);display:flex;align-items:center;}
+#hour-wheel{flex:0 0 auto;width:100%;height:8vh;min-height:44px;overflow:hidden;position:relative;
+  background:rgba(0,0,0,.65);border-top:1px solid rgba(255,215,0,.18);display:flex;align-items:center;}
 #wheel-track{display:flex;align-items:center;position:absolute;left:0;gap:0;
   transition:transform .65s cubic-bezier(.4,0,.2,1);}
-.wi{flex:0 0 auto;width:13vw;min-width:48px;text-align:center;padding:2px 1px;
-  border-right:1px solid rgba(255,215,0,.07);}
-.wi .wh{font-size:clamp(5.5px,1.3vw,10px);color:#604808;margin-bottom:1px;}
-.wi .wn{font-size:clamp(5.5px,1.4vw,11px);color:#806010;line-height:1.2;direction:rtl;}
-.wi .ws{font-size:clamp(4.5px,1vw,8.5px);color:#403005;}
-.wi.active .wh{color:var(--gold);text-shadow:0 0 6px #FFD700;}
-.wi.active .wn{color:var(--gold);font-weight:700;text-shadow:0 0 8px #FFD700,0 0 16px #FFA500;}
-.wi.active .ws{color:#c8a020;}
-#hour-wheel::before,#hour-wheel::after{content:"";position:absolute;top:0;bottom:0;width:15%;z-index:2;pointer-events:none;}
+.wi{flex:0 0 auto;width:13vw;min-width:46px;text-align:center;padding:2px 1px;
+  border-right:1px solid rgba(255,215,0,.06);}
+.wi .wh{font-size:clamp(5px,1.2vw,9.5px);color:#554006;margin-bottom:1px;}
+.wi .wn{font-size:clamp(5px,1.3vw,10.5px);color:#756010;line-height:1.2;direction:rtl;}
+.wi .ws{font-size:clamp(4px,.95vw,8px);color:#3a2c04;}
+.wi.active .wh{color:var(--gold);text-shadow:0 0 5px #FFD700;}
+.wi.active .wn{color:var(--gold);font-weight:700;text-shadow:0 0 8px #FFD700,0 0 14px #FFA500;}
+.wi.active .ws{color:#c0a020;}
+#hour-wheel::before,#hour-wheel::after{content:"";position:absolute;top:0;bottom:0;width:14%;z-index:2;pointer-events:none;}
 #hour-wheel::before{left:0;background:linear-gradient(to right,var(--bg) 0%,transparent 100%);}
 #hour-wheel::after{right:0;background:linear-gradient(to left,var(--bg) 0%,transparent 100%);}
 #wheel-marker{position:absolute;top:0;bottom:0;left:50%;transform:translateX(-50%);
-  width:13vw;min-width:48px;border-left:1px solid rgba(255,215,0,.28);
-  border-right:1px solid rgba(255,215,0,.28);background:rgba(255,215,0,.04);pointer-events:none;z-index:1;}
+  width:13vw;min-width:46px;border-left:1px solid rgba(255,215,0,.25);
+  border-right:1px solid rgba(255,215,0,.25);background:rgba(255,215,0,.04);pointer-events:none;z-index:1;}
 
-/* SVG */
-.seg{stroke:#050400;stroke-width:1.4;}
-.seg-dim{fill:rgba(255,215,0,.045);}
-.seg-act{fill:rgba(255,200,0,.30);}
-.rl    {font-family:'Frank Ruhl Libre',serif;fill:rgba(185,142,14,.72);}
-.rl-act{font-family:'Frank Ruhl Libre',serif;fill:#FFE566;font-weight:700;}
-.rs    {font-family:'Frank Ruhl Libre',serif;fill:rgba(165,120,8,.50);}
-.rs-act{font-family:'Frank Ruhl Libre',serif;fill:rgba(255,210,70,.82);font-weight:700;}
+/* SVG classes */
+.seg{stroke:#050400;stroke-width:.7;}
+.seg-dim{fill:rgba(255,215,0,.04);}
+.seg-act{fill:rgba(255,200,0,.22);}
+/* main ring labels */
+.rl    {font-family:'Frank Ruhl Libre',serif;fill:rgba(225,178,22,.80);font-weight:700;}
+.rl-act{font-family:'Frank Ruhl Libre',serif;fill:#FFE566;font-weight:900;}
+/* sefirot — colored */
+.rs-chesed  {font-family:'Frank Ruhl Libre',serif;fill:rgba(80,160,255,.80);}
+.rs-gevurah {font-family:'Frank Ruhl Libre',serif;fill:rgba(255,80,80,.80);}
+.rs-tiferet {font-family:'Frank Ruhl Libre',serif;fill:rgba(255,230,80,.80);}
+.rs-netzach {font-family:'Frank Ruhl Libre',serif;fill:rgba(60,220,120,.80);}
+.rs-hod     {font-family:'Frank Ruhl Libre',serif;fill:rgba(255,120,210,.80);}
+.rs-yesod   {font-family:'Frank Ruhl Libre',serif;fill:rgba(180,120,255,.80);}
+.rs-malchut {font-family:'Frank Ruhl Libre',serif;fill:rgba(255,160,60,.80);}
+/* hour name ring */
+.hn    {font-family:'Frank Ruhl Libre',serif;fill:rgba(190,145,12,.72);}
+.hn-act{font-family:'Frank Ruhl Libre',serif;fill:#FFE566;font-weight:900;}
+/* centre */
 .c-main{font-family:'Frank Ruhl Libre',serif;fill:#FFE566;font-weight:900;text-anchor:middle;dominant-baseline:central;}
-.c-sub {font-family:'Frank Ruhl Libre',serif;fill:rgba(195,148,12,.82);text-anchor:middle;dominant-baseline:central;}
-.badge {font-family:'Frank Ruhl Libre',serif;fill:rgba(255,215,0,.38);text-anchor:middle;}
+.c-sub {font-family:'Frank Ruhl Libre',serif;fill:rgba(200,155,15,.85);text-anchor:middle;dominant-baseline:central;}
+.badge {font-family:'Frank Ruhl Libre',serif;fill:rgba(255,215,0,.30);text-anchor:middle;}
 </style>
 </head>
 <body>
@@ -86,25 +89,34 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;
     <svg id="ring-svg" viewBox="0 0 440 440" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <filter id="glow1" x="-50%" y="-50%" width="200%" height="200%">
-          <feGaussianBlur stdDeviation="4" result="b"/>
+          <feGaussianBlur stdDeviation="2.5" result="b"/>
           <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
         </filter>
         <filter id="glow2" x="-80%" y="-80%" width="260%" height="260%">
-          <feGaussianBlur stdDeviation="8" result="b"/>
-          <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
-        </filter>
-        <filter id="tglow" x="-40%" y="-40%" width="180%" height="180%">
-          <feGaussianBlur stdDeviation="2" result="b"/>
+          <feGaussianBlur stdDeviation="4" result="b"/>
           <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
         </filter>
         <filter id="tglow2" x="-60%" y="-60%" width="220%" height="220%">
-          <feGaussianBlur stdDeviation="3.5" result="b"/>
+          <feGaussianBlur stdDeviation="1.5" result="b"/>
+          <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <radialGradient id="fireGrad" cx="50%" cy="60%" r="55%">
+          <stop offset="0%"   stop-color="#FF6600" stop-opacity=".60"/>
+          <stop offset="45%"  stop-color="#CC3300" stop-opacity=".28"/>
+          <stop offset="100%" stop-color="#330000" stop-opacity="0"/>
+        </radialGradient>
+        <filter id="fireBlur" x="-40%" y="-40%" width="180%" height="180%">
+          <feGaussianBlur stdDeviation="6" result="b"/>
           <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
         </filter>
         <g id="arcDefs"></g>
       </defs>
+
       <g id="rings"></g>
-      <circle cx="220" cy="220" r="52" fill="rgba(6,5,0,.94)" stroke="rgba(255,215,0,.18)" stroke-width="1.2"/>
+      <circle id="fireBg" cx="220" cy="220" r="82"
+        fill="url(#fireGrad)" filter="url(#fireBlur)" opacity="0"/>
+      <circle cx="220" cy="220" r="76"
+        fill="rgba(4,2,0,.96)" stroke="rgba(255,180,0,.38)" stroke-width="1.8"/>
       <g id="cinfo"></g>
     </svg>
   </div>
@@ -115,14 +127,19 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;
 </div>
 
 <script>
-/* DATA */
+/* ═══ DATA ═══ */
 const hourNames=[
   "נדאי ניאד","נדיא נידא","נאדי נאיד","דאינ יאדנ","דאני יאנד","דיאנ ידאנ",
   "יהוה אהיה","יההו אההי","יוהה איהה","הוהי היהא","הויה היאה","ההוי ההיא",
   "והיה יהאה","וההי יההא","ויהה יאהה","היהו האהי","היוה האיה","ההיו ההאי",
   "אדני אינד","אדינ אידנ","אניד אנדי","דניא ינדא","דנאי ינאד","דינא ידנא"
 ];
-const hourSefirot=['חסד','גבורה','תפארת','נצח','הוד','יסוד','מלכות','חסד','גבורה','תפארת','נצח','הוד','יסוד','מלכות','חסד','גבורה','תפארת','נצח','הוד','יסוד','מלכות','חסד','גבורה','תפארת'];
+const hourSefirot=[
+  'חסד','גבורה','תפארת','נצח','הוד','יסוד','מלכות',
+  'חסד','גבורה','תפארת','נצח','הוד','יסוד','מלכות',
+  'חסד','גבורה','תפארת','נצח','הוד','יסוד','מלכות',
+  'חסד','גבורה','תפארת'
+];
 const dayNames=['יום א','יום ב','יום ג','יום ד','יום ה','יום ו','שבת'];
 const daySefirot=['חסד','גבורה','תפארת','נצח','הוד','יסוד','מלכות'];
 const monthNames=['תשרי','חשוון','כסלו','טבת','שבט','אדר','ניסן','אייר','סיוון','תמוז','אב','אלול'];
@@ -130,97 +147,152 @@ const monthSefirot=['חסד','גבורה','תפארת','נצח','הוד','יסו
 const weekPartzuf=['אבא','אימא','ז״א','נוק׳'];
 const shmitaLabels=['א','ב','ג','ד','ה','ו','שמיטה'];
 const shmitaSefirot=['חסד','גבורה','תפארת','נצח','הוד','יסוד','מלכות'];
-const letterSef={"א":"חסד","ב":"גבורה","ג":"תפארת","ד":"נצח","ה":"יסוד","ו":"מלכות","ז":"חסד","ח":"הוד","ט":"יסוד","י":"תפארת","כ":"נצח","ל":"הוד","מ":"יסוד","נ":"מלכות","ס":"חסד","ע":"גבורה","פ":"יסוד","צ":"תפארת","ק":"נצח","ר":"הוד","ש":"מלכות","ת":"הוד"};
+const letterSef={
+  "א":"חסד","ב":"גבורה","ג":"תפארת","ד":"נצח","ה":"יסוד","ו":"מלכות",
+  "ז":"חסד","ח":"הוד","ט":"יסוד","י":"תפארת","כ":"נצח","ל":"הוד",
+  "מ":"יסוד","נ":"מלכות","ס":"חסד","ע":"גבורה","פ":"יסוד","צ":"תפארת",
+  "ק":"נצח","ר":"הוד","ש":"מלכות","ת":"הוד"
+};
+const sefiClass={
+  'חסד':'chesed','גבורה':'gevurah','תפארת':'tiferet',
+  'נצח':'netzach','הוד':'hod','יסוד':'yesod','מלכות':'malchut'
+};
+function sefiCls(s){return 'rs-'+(sefiClass[s]||'tiferet');}
 
-/* UTILS */
+/* ═══ UTILS ═══ */
 const NS="http://www.w3.org/2000/svg";
-function mkEl(tag,attrs){const e=document.createElementNS(NS,tag);for(const[k,v]of Object.entries(attrs||{}))e.setAttribute(k,v);return e;}
-function toHebNum(n){const t=["","א","ב","ג","ד","ה","ו","ז","ח","ט","י","יא","יב","יג","יד","טו","טז","יז","יח","יט","כ","כא","כב","כג","כד","כה","כו","כז","כח","כט","ל","לא","לב","לג","לד","לה","לו","לז","לח","לט","מ","מא","מב","מג","מד","מה","מו","מז","מח","מט","נ"];return t[n]||String(n);}
-function yearLetters(y){y=y%1000;const h=["","ק","ר","ש","ת","תק","תר","תש","תת","תתק"],t=["","י","כ","ל","מ","נ","ס","ע","פ","צ"],o=["","א","ב","ג","ד","ה","ו","ז","ח","ט"];let hh=Math.floor(y/100),tt=Math.floor((y%100)/10),oo=y%10,r=h[hh];if(tt===1&&oo===5)r+="טו";else if(tt===1&&oo===6)r+="טז";else r+=t[tt]+o[oo];return r;}
-function getHebParts(){const now=new Date(),parts=new Intl.DateTimeFormat('he-u-ca-hebrew',{day:'numeric',month:'long',year:'numeric'}).formatToParts(now);let d,m,y;parts.forEach(p=>{if(p.type==='day')d=parseInt(p.value);if(p.type==='month')m=p.value;if(p.type==='year')y=parseInt(p.value);});return{d,m,y};}
-function getMonthIdx(name){return monthNames.findIndex(mn=>mn===name||name.includes(mn)||mn.includes(name));}
+function mk(tag,a){const e=document.createElementNS(NS,tag);for(const[k,v]of Object.entries(a||{}))e.setAttribute(k,v);return e;}
+function toHN(n){
+  const t=["","א","ב","ג","ד","ה","ו","ז","ח","ט","י","יא","יב","יג","יד","טו","טז","יז","יח","יט",
+    "כ","כא","כב","כג","כד","כה","כו","כז","כח","כט","ל","לא","לב","לג","לד","לה","לו","לז","לח","לט",
+    "מ","מא","מב","מג","מד","מה","מו","מז","מח","מט","נ"];
+  return t[n]||String(n);
+}
+function yearL(y){
+  y=y%1000;
+  const h=["","ק","ר","ש","ת","תק","תר","תש","תת","תתק"],
+        t=["","י","כ","ל","מ","נ","ס","ע","פ","צ"],
+        o=["","א","ב","ג","ד","ה","ו","ז","ח","ט"];
+  let hh=Math.floor(y/100),tt=Math.floor((y%100)/10),oo=y%10,r=h[hh];
+  if(tt===1&&oo===5)r+="טו";else if(tt===1&&oo===6)r+="טז";else r+=t[tt]+o[oo];
+  return r;
+}
+function getHeb(){
+  const p=new Intl.DateTimeFormat('he-u-ca-hebrew',{day:'numeric',month:'long',year:'numeric'}).formatToParts(new Date());
+  let d,m,y;p.forEach(x=>{if(x.type==='day')d=parseInt(x.value);if(x.type==='month')m=x.value;if(x.type==='year')y=parseInt(x.value);});
+  return{d,m,y};
+}
+function mIdx(name){return monthNames.findIndex(mn=>mn===name||name.includes(mn)||mn.includes(name));}
 function pxy(cx,cy,r,deg){const a=(deg-90)*Math.PI/180;return{x:cx+r*Math.cos(a),y:cy+r*Math.sin(a)};}
-
-/* SEGMENT PATH */
-function spath(cx,cy,r1,r2,s,e){
-  const G=1.0,ss=s+G/2,ee=e-G/2,lg=(ee-ss)>180?1:0;
+function sp(cx,cy,r1,r2,s,e){
+  const G=.7,ss=s+G/2,ee=e-G/2,lg=(ee-ss)>180?1:0;
   const a=pxy(cx,cy,r2,ss),b=pxy(cx,cy,r2,ee),c=pxy(cx,cy,r1,ee),d=pxy(cx,cy,r1,ss);
   return`M${a.x},${a.y}A${r2},${r2} 0 ${lg} 1 ${b.x},${b.y}L${c.x},${c.y}A${r1},${r1} 0 ${lg} 0 ${d.x},${d.y}Z`;
 }
 
-/* CURVED TEXT */
+/* ═══ CURVED TEXT ═══ */
 let _pid=0;
-function curvedText(parentG,defs,cx,cy,r,s,e,text,cls,fs,filterStr){
+function ctext(g,defs,cx,cy,r,s,e,text,cls,fs,flt){
   const id="p"+(++_pid);
-  const mid=(s+e)/2;
-  const bottom=(mid>90&&mid<270);
+  const mid=((s+e)/2+360)%360;
+  const isBottom=(mid>90&&mid<270);
 
-  let d;
-  if(!bottom){
-    // CW arc s→e
-    const p1=pxy(cx,cy,r,s),p2=pxy(cx,cy,r,e);
-    const lg=(e-s)>180?1:0;
-    d=`M${p1.x},${p1.y}A${r},${r} 0 ${lg} 1 ${p2.x},${p2.y}`;
+  let pathD;
+  if(!isBottom){
+    // TOP HALF — CW arc from s to e
+    const p1=pxy(cx,cy,r,s),p2=pxy(cx,cy,r,e),lg=(e-s)>180?1:0;
+    pathD=`M${p1.x},${p1.y}A${r},${r} 0 ${lg} 1 ${p2.x},${p2.y}`;
   } else {
-    // CCW arc e→s (flips text to be upright on bottom half)
-    const p1=pxy(cx,cy,r,e),p2=pxy(cx,cy,r,s);
-    const lg=(e-s)>180?1:0;
-    d=`M${p1.x},${p1.y}A${r},${r} 0 ${lg} 0 ${p2.x},${p2.y}`;
+    // BOTTOM HALF — CCW arc from e to s
+    const p1=pxy(cx,cy,r,e),p2=pxy(cx,cy,r,s),lg=(e-s)>180?1:0;
+    pathD=`M${p1.x},${p1.y}A${r},${r} 0 ${lg} 0 ${p2.x},${p2.y}`;
   }
 
-  // FIX: Document is RTL, so we do NOT reverse the string manually.
-  const str = text;
-
-  defs.appendChild(mkEl("path",{id,d,fill:"none"}));
-
-  const tEl=mkEl("text",{class:cls,"font-size":fs});
-  if(filterStr) tEl.setAttribute("filter",filterStr);
-  const tp=mkEl("textPath",{href:`#${id}`,startOffset:"50%","text-anchor":"middle"});
-  tp.textContent=str;
+  defs.appendChild(mk("path",{id,d:pathD,fill:"none"}));
+  
+  // Standard bidi handling instead of reversing the array string
+  const tEl=mk("text",{class:cls,"font-size":fs});
+  if(flt)tEl.setAttribute("filter",flt);
+  const tp=mk("textPath",{href:`#${id}`,startOffset:"50%","text-anchor":"middle"});
+  
+  tp.textContent=text;
   tEl.appendChild(tp);
-  parentG.appendChild(tEl);
+  g.appendChild(tEl);
 }
 
-/* DRAW ONE RING */
-function drawRing(g,defs,cx,cy,r1,r2,items){
-  const n=items.length, step=360/n, rH=r2-r1;
-  const rMid=(r1+r2)/2;
+/* ═══ DRAW RING ═══ */
+function drawRing(g,defs,cx,cy,r1,r2,items,maxFsMain,maxFsSefi){
+  const n=items.length,step=360/n,rH=r2-r1,rMid=(r1+r2)/2;
+  const CRAT=0.65;
 
   items.forEach((item,i)=>{
-    const s=i*step, e=s+step;
+    const s=i*step,e=s+step;
     if(item.active){
-      g.appendChild(mkEl("path",{d:spath(cx,cy,r1-2,r2+3,s,e),fill:"rgba(255,200,0,.11)",filter:"url(#glow2)"}));
+      g.appendChild(mk("path",{d:sp(cx,cy,r1-1,r2+2,s,e),fill:"rgba(255,200,0,.12)",filter:"url(#glow2)"}));
     }
-    const seg=mkEl("path",{d:spath(cx,cy,r1,r2,s,e),class:"seg "+(item.active?"seg-act":"seg-dim")});
+    const seg=mk("path",{d:sp(cx,cy,r1,r2,s,e),class:"seg "+(item.active?"seg-act":"seg-dim")});
     if(item.active)seg.setAttribute("filter","url(#glow1)");
     g.appendChild(seg);
 
-    const arcAvail = 2*Math.PI*rMid*(step/360);
-    const mainLen  = item.label.length || 1;
-    const CRAT=0.62;
-    const fsMainByArc  = arcAvail / (mainLen * CRAT);
-    const fsMainByHeight = rH * 0.50;
-    const fsMain = Math.min(Math.max(fsMainByArc, 5), fsMainByHeight);
+    const arcA=2*Math.PI*rMid*(step/360);
+    const hasSefi=!!item.sefi;
+    const twoLine=hasSefi&&rH>=13;
 
-    const rMain = r1 + rH*0.68;
-    const rSefi = r1 + rH*0.30;
+    let rMain,fsMain,rSefi,fsSefi;
+    if(twoLine){
+      rMain=r1+rH*0.70; rSefi=r1+rH*0.28;
+      fsMain=Math.min(Math.max(arcA/(item.label.length*CRAT),4),maxFsMain||rH*0.44);
+      fsSefi=Math.min(Math.max(arcA/(item.sefi.length*CRAT),3.2),maxFsSefi||rH*0.28);
+    } else {
+      rMain=rMid;
+      fsMain=Math.min(Math.max(arcA/(item.label.length*CRAT),4),maxFsMain||rH*0.65);
+      fsSefi=0;
+    }
 
-    const mCls = item.active ? "rl-act" : "rl";
-    const mFlt = item.active ? "url(#tglow2)" : null;
-    curvedText(g,defs,cx,cy,rMain,s,e,item.label,mCls,fsMain,mFlt);
+    ctext(g,defs,cx,cy,rMain,s,e,item.label,
+      item.active?"rl-act":"rl", fsMain, item.active?"url(#tglow2)":null);
 
-    if(item.sefi){
-      const sefiLen = item.sefi.length || 1;
-      const fsSefiByArc = arcAvail / (sefiLen * CRAT);
-      const fsSefiByHeight = rH * 0.32;
-      const fsSefi = Math.min(Math.max(fsSefiByArc, 4), fsSefiByHeight);
-      const sCls = item.active ? "rs-act" : "rs";
-      curvedText(g,defs,cx,cy,rSefi,s,e,item.sefi,sCls,fsSefi,null);
+    if(twoLine&&item.sefi){
+      ctext(g,defs,cx,cy,rSefi,s,e,item.sefi,
+        sefiCls(item.sefi), fsSefi, null);
     }
   });
 }
 
-/* GLOW NAME */
+/* ═══ HOUR NAME RING ═══ */
+function drawHourRing(g,defs,cx,cy,r1,r2,curH){
+  const step=360/24,rH=r2-r1,rMid=(r1+r2)/2;
+  const CRAT=0.62;
+
+  for(let i=0;i<24;i++){
+    const s=i*step,e=s+step,active=i===curH;
+    if(active){
+      g.appendChild(mk("path",{d:sp(cx,cy,r1-1,r2+2,s,e),fill:"rgba(255,200,0,.15)",filter:"url(#glow2)"}));
+    }
+    const seg=mk("path",{d:sp(cx,cy,r1,r2,s,e),class:"seg "+(active?"seg-act":"seg-dim")});
+    if(active)seg.setAttribute("filter","url(#glow1)");
+    g.appendChild(seg);
+
+    const arcA=2*Math.PI*rMid*(step/360);
+    const words=hourNames[i].split(" ");
+    const maxW=Math.max(...words.map(w=>w.length));
+    const fsW=Math.min(Math.max(arcA/(maxW*CRAT),3.2), rH*0.34);
+
+    const rW1=r1+rH*0.73, rW2=r1+rH*0.33;
+    const lCls=active?"hn-act":"hn";
+    const lFlt=active?"url(#tglow2)":null;
+
+    ctext(g,defs,cx,cy,rW1,s,e,words[0],lCls,fsW,lFlt);
+    if(words[1])ctext(g,defs,cx,cy,rW2,s,e,words[1],lCls,fsW,lFlt);
+
+    if(active){
+      const fsS=Math.min(Math.max(arcA/(hourSefirot[i].length*CRAT),3),rH*0.18);
+      ctext(g,defs,cx,cy,r1+rH*0.10,s,e,hourSefirot[i],sefiCls(hourSefirot[i]),fsS,null);
+    }
+  }
+}
+
+/* ═══ GLOW NAME ═══ */
 function glowName(str){
   return str.split(" ").map(w=>{
     const c=w.split("").map((ch,i)=>{
@@ -228,14 +300,14 @@ function glowName(str){
       return`<span class="fc"><span class="b">${ch}</span><span class="g">${ch}</span><span class="s">${ch}</span></span>${d}`;
     }).join("");
     return`<span class="name-word">${c}</span>`;
-  }).join(`<span style="display:inline-block;width:2.2vw"></span>`);
+  }).join(`<span style="display:inline-block;width:1.8vw"></span>`);
 }
 
-/* HOUR WHEEL */
+/* ═══ WHEEL ═══ */
 function buildWheel(cur){
   const track=document.getElementById("wheel-track");
   const wheel=document.getElementById("hour-wheel");
-  const iW=Math.max(48,wheel.offsetWidth*0.13);
+  const iW=Math.max(46,wheel.offsetWidth*0.13);
   track.innerHTML="";
   for(let i=0;i<24;i++){
     const d=document.createElement("div");
@@ -245,91 +317,112 @@ function buildWheel(cur){
     d.innerHTML=`<div class="wh">${h12}${ap}</div><div class="wn">${hourNames[i]}</div><div class="ws">${hourSefirot[i]}</div>`;
     track.appendChild(d);
   }
-  track.style.transform=`translateX(${-(cur*iW - wheel.offsetWidth/2 + iW/2)}px)`;
+  track.style.transform=`translateX(${-(cur*iW-wheel.offsetWidth/2+iW/2)}px)`;
 }
 
-/* MAIN */
+/* ═══ FIRE ═══ */
+function animateFire(){
+  const fb=document.getElementById("fireBg");
+  let t=0;
+  setInterval(()=>{
+    t+=0.07;
+    const op=0.55+Math.sin(t)*0.17+Math.sin(t*2.1)*0.09;
+    fb.setAttribute("opacity",op.toFixed(3));
+  },40);
+}
+
+/* ═══ MAIN UPDATE ═══ */
 let lastH=-1;
 function update(){
-  const now=new Date(), h=now.getHours();
-  const mm=String(now.getMinutes()).padStart(2,'0'), ss=String(now.getSeconds()).padStart(2,'0');
-  const h12=(h%12)||12, ap=h<12?"AM":"PM";
+  const now=new Date(),h=now.getHours();
+  const mm=String(now.getMinutes()).padStart(2,'0'),ss=String(now.getSeconds()).padStart(2,'0');
+  const h12=(h%12)||12,ap=h<12?"AM":"PM";
   document.getElementById("clock").textContent=`${h12}:${mm}:${ss} ${ap}`;
   if(h===lastH)return;
   lastH=h;
 
   document.getElementById("name-wrap").innerHTML=glowName(hourNames[h]);
 
-  const heb=getHebParts(), dayJs=now.getDay(), week=Math.ceil(heb.d/7);
-  const mIdx=getMonthIdx(heb.m), sPos=heb.y%7, yY=heb.y%50||50;
-  const yL=yearLetters(heb.y), yS=yL.split("").map(l=>`${l}(${letterSef[l]||""})`).join(" ");
+  const heb=getHeb(),dayJs=now.getDay(),week=Math.ceil(heb.d/7);
+  const mi=mIdx(heb.m),sPos=heb.y%7,yY=heb.y%50||50;
+  const yLet=yearL(heb.y),yS=yLet.split("").map(l=>`${l}(${letterSef[l]||""})`).join(" ");
   const ptz=weekPartzuf[week-1]||"–";
 
   document.getElementById("date-line").innerHTML=
-    `יום ${dayNames[dayJs].replace("יום ","")} (${daySefirot[dayJs]}) &nbsp;·&nbsp; `+
-    `שבוע ${toHebNum(week)} (${ptz}) &nbsp;·&nbsp; `+
-    `${heb.m} (${monthSefirot[Math.max(0,mIdx)]}) &nbsp;·&nbsp; שנה ${heb.y}<br>`+
-    `<span>${yS} &nbsp;|&nbsp; שמיטה ${shmitaLabels[sPos]} &nbsp;|&nbsp; ${toHebNum(yY)}״ ליובל</span>`;
+    `יום <b>${dayNames[dayJs].replace("יום ","")}</b> (${daySefirot[dayJs]}) &nbsp;·&nbsp; `+
+    `שבוע <b>${toHN(week)}</b> (${ptz}) &nbsp;·&nbsp; `+
+    `<b>${heb.m}</b> (${monthSefirot[Math.max(0,mi)]}) &nbsp;·&nbsp; שנה <b>${heb.y}</b><br>`+
+    `<span class="sub">${yS} &nbsp;|&nbsp; שמיטה <b>${shmitaLabels[sPos]}</b> &nbsp;|&nbsp; ${toHN(yY)}״ ליובל</span>`;
 
   const rG=document.getElementById("rings");
   const defs=document.getElementById("arcDefs");
   rG.innerHTML=""; defs.innerHTML=""; _pid=0;
   const CX=220,CY=220;
 
-  drawRing(rG,defs,CX,CY,58,96, dayNames.map((d,i)=>({label:d.replace("יום ",""),sefi:daySefirot[i],active:i===dayJs})));
-  drawRing(rG,defs,CX,CY,99,132, weekPartzuf.map((p,i)=>({label:`שבוע ${toHebNum(i+1)}`,sefi:p,active:(i+1)===week})));
-  drawRing(rG,defs,CX,CY,135,176, monthNames.map((m,i)=>({label:m,sefi:monthSefirot[i],active:i===mIdx})));
-  drawRing(rG,defs,CX,CY,179,213, shmitaLabels.map((s,i)=>({label:s,sefi:shmitaSefirot[i],active:i===sPos})));
+  drawHourRing(rG,defs,CX,CY,78,118,h);
+  drawRing(rG,defs,CX,CY,120,142,
+    dayNames.map((d,i)=>({label:d.replace("יום ",""),sefi:daySefirot[i],active:i===dayJs})),7,5);
+  drawRing(rG,defs,CX,CY,144,162,
+    weekPartzuf.map((p,i)=>({label:`שבוע ${toHN(i+1)}`,sefi:p,active:(i+1)===week})),6.5,5);
+  drawRing(rG,defs,CX,CY,164,186,
+    monthNames.map((m,i)=>({label:m,sefi:monthSefirot[i],active:i===mi})),6,4.5);
+  drawRing(rG,defs,CX,CY,188,203,
+    shmitaLabels.map((s,i)=>({label:s,sefi:shmitaSefirot[i],active:i===sPos})),5.5,4);
 
-  const yR=222;
-  rG.appendChild(mkEl("circle",{cx:CX,cy:CY,r:yR,fill:"none",stroke:"rgba(255,215,0,.11)","stroke-width":"9"}));
+  // Yovel progress arc
+  const yR=210;
+  rG.appendChild(mk("circle",{cx:CX,cy:CY,r:yR,fill:"none",stroke:"rgba(255,215,0,.09)","stroke-width":"6"}));
   const yDeg=(yY/50)*360;
   if(yDeg>0){
     const yp1=pxy(CX,CY,yR,-90),yp2=pxy(CX,CY,yR,yDeg-90),ylg=yDeg>180?1:0;
-    rG.appendChild(mkEl("path",{
+    rG.appendChild(mk("path",{
       d:`M${yp1.x},${yp1.y}A${yR},${yR} 0 ${ylg} 1 ${yp2.x},${yp2.y}`,
-      fill:"none",stroke:"rgba(255,205,0,.72)","stroke-width":"9","stroke-linecap":"round",filter:"url(#glow1)"
+      fill:"none",stroke:"rgba(255,205,0,.65)","stroke-width":"6",
+      "stroke-linecap":"round",filter:"url(#glow1)"
     }));
   }
+  
+  // Yovel label 
   {
     const lid="ylb"+(++_pid);
-    const la=pxy(CX,CY,yR,-22),lb=pxy(CX,CY,yR,22);
-    defs.appendChild(mkEl("path",{id:lid,d:`M${la.x},${la.y}A${yR},${yR} 0 0 1 ${lb.x},${lb.y}`,fill:"none"}));
-    const yt=mkEl("text",{"font-size":"9.5","font-family":"Frank Ruhl Libre,serif",fill:"#FFD700",filter:"url(#tglow2)"});
-    const ytp=mkEl("textPath",{href:`#${lid}`,startOffset:"50%","text-anchor":"middle"});
-    // FIX: Remove reversal for Yovel label
-    ytp.textContent=`${toHebNum(yY)}״ ליובל`;
+    const la=pxy(CX,CY,yR,-18),lb=pxy(CX,CY,yR,18);
+    defs.appendChild(mk("path",{id:lid,d:`M${la.x},${la.y}A${yR},${yR} 0 0 1 ${lb.x},${lb.y}`,fill:"none"}));
+    const yt=mk("text",{"font-size":"8.5","font-family":"Frank Ruhl Libre,serif",
+      fill:"#FFD700",filter:"url(#tglow2)"});
+    const ytp=mk("textPath",{href:`#${lid}`,startOffset:"50%","text-anchor":"middle"});
+    ytp.textContent=`${toHN(yY)}״ ליובל`; 
     yt.appendChild(ytp); rG.appendChild(yt);
   }
 
-  [{r:77,lbl:"יום"},{r:115,lbl:"שבוע"},{r:155,lbl:"חודש"},{r:196,lbl:"שמיטה"}].forEach(b=>{
-    const bp=pxy(CX,CY,b.r,356);
-    rG.appendChild(Object.assign(mkEl("text",{x:bp.x,y:bp.y,class:"badge","font-size":"6.5"}),{textContent:b.lbl}));
-  });
-
+  /* CENTRE */
   const cg=document.getElementById("cinfo");
   cg.innerHTML="";
-  [{t:hourNames[h].split(" ")[0],fs:14,cls:"c-main",dy:-9},
-   {t:hourNames[h].split(" ")[1],fs:14,cls:"c-main",dy:7},
-   {t:hourSefirot[h],            fs:9, cls:"c-sub", dy:21},
-   {t:`שעה ${toHebNum(h)}`,      fs:8, cls:"c-sub", dy:32}
+  const parts=hourNames[h].split(" ");
+  [
+    {t:parts[0], fs:20, cls:"c-main", dy:-20, flt:"url(#tglow2)"},
+    {t:parts[1], fs:20, cls:"c-main", dy:3,   flt:"url(#tglow2)"},
+    {t:hourSefirot[h], fs:11, cls:"c-sub", dy:20, flt:null},
+    {t:`שעה ${toHN(h)}`,fs:10, cls:"c-sub", dy:33, flt:null},
   ].forEach(ln=>{
-    const e=mkEl("text",{x:CX,y:CY+ln.dy,class:ln.cls,"font-size":ln.fs});
+    const e=mk("text",{x:CX,y:CY+ln.dy,class:ln.cls,"font-size":ln.fs});
+    if(ln.flt)e.setAttribute("filter",ln.flt);
     e.textContent=ln.t; cg.appendChild(e);
   });
+
+  document.getElementById("fireBg").setAttribute("opacity","0.6");
   buildWheel(h);
 }
 
 function tick(){
   const now=new Date(),h=now.getHours();
+  const mm=String(now.getMinutes()).padStart(2,'0'),ss=String(now.getSeconds()).padStart(2,'0');
+  const h12=(h%12)||12,ap=h<12?"AM":"PM";
+  document.getElementById("clock").textContent=`${h12}:${mm}:${ss} ${ap}`;
   if(h!==lastH)update();
-  else {
-    const mm=String(now.getMinutes()).padStart(2,'0'),ss=String(now.getSeconds()).padStart(2,'0');
-    const h12=(h%12)||12,ap=h<12?"AM":"PM";
-    document.getElementById("clock").textContent=`${h12}:${mm}:${ss} ${ap}`;
-  }
 }
+
 update();
+animateFire();
 setInterval(tick,1000);
 </script>
 </body>

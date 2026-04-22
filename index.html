@@ -2,425 +2,1164 @@
 <html lang="he" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <title>מערכת זמן קבלית</title>
 <link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@300;400;700;900&display=swap" rel="stylesheet">
 <style>
-:root{--gold:#FFD700;--gold2:#FFA500;--bg:#050400;--text:#f0dfa0;}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:'Frank Ruhl Libre',serif;}
-body::after{content:"";position:fixed;inset:0;pointer-events:none;
-  background:radial-gradient(ellipse 80% 50% at 50% 30%,rgba(140,100,0,.12) 0%,transparent 68%);}
-#app{position:relative;z-index:1;width:100vw;height:100vh;display:flex;flex-direction:column;align-items:center;}
+/* ═══════════════════════════════════════
+   DESIGN TOKENS — vivid Kabbalistic palette
+═══════════════════════════════════════ */
+:root {
+  --gold:      #FFE000;
+  --gold2:     #FFB300;
+  --gold3:     #FFF176;
+  --ember:     #FF6D00;
+  --ember2:    #FF3D00;
 
-/* TOP */
-#top{flex:0 0 auto;width:100%;text-align:center;padding:.5vh 2vw 0;}
-#clock{font-size:clamp(13px,3.8vw,32px);font-weight:300;letter-spacing:3px;color:#c09818;
-  text-shadow:0 0 5px #FFD700,0 0 12px #FFA500;}
-#name-wrap{margin:.25vh 0 .1vh;display:flex;align-items:center;justify-content:center;
-  flex-wrap:wrap;gap:0 1.5vw;min-height:5vh;}
-.name-word{display:inline-flex;align-items:center;gap:1px;}
-.fc{position:relative;font-size:clamp(20px,6.2vw,60px);font-weight:900;line-height:1;}
-.fc .b{color:#FFE566;text-shadow:0 0 4px #fff,0 0 12px #FFD700,0 0 25px #FFA500,0 0 40px #FF6600;}
-.fc .g{position:absolute;top:0;left:0;color:#FFA500;opacity:.36;text-shadow:0 0 10px #FF6600;}
-.fc .s{position:absolute;top:0;left:0;color:#FF2200;opacity:.12;}
-.dash-sep{color:#6a4c00;font-size:clamp(8px,2vw,18px);margin-bottom:2px;opacity:.4;}
-#date-line{font-size:clamp(11px,2.5vw,21px);font-weight:700;color:#e8b820;
-  padding:0 4px .15vh;line-height:1.55;
-  text-shadow:0 0 6px rgba(255,200,0,.4),0 0 12px rgba(255,150,0,.2);letter-spacing:.4px;}
-#date-line .sub{font-size:clamp(9px,1.9vw,16px);font-weight:400;color:#c09010;opacity:.85;}
+  /* Sefirah signature colors — full saturation */
+  --chesed:    #42A5F5;
+  --gevurah:   #EF5350;
+  --tiferet:   #FFD600;
+  --netzach:   #00E676;
+  --hod:       #EA80FC;
+  --yesod:     #B388FF;
+  --malchut:   #FF9100;
 
-/* RINGS */
-#ring-wrap{flex:1 1 auto;width:100%;display:flex;align-items:center;justify-content:center;min-height:0;}
-#ring-svg{width:100%;height:100%;overflow:visible;}
+  --bg:        #05030D;
+  --text:      #F5E6C8;
+}
 
-/* HOUR WHEEL */
-#hour-wheel{flex:0 0 auto;width:100%;height:8vh;min-height:44px;overflow:hidden;position:relative;
-  background:rgba(0,0,0,.65);border-top:1px solid rgba(255,215,0,.18);display:flex;align-items:center;}
-#wheel-track{display:flex;align-items:center;position:absolute;left:0;gap:0;
-  transition:transform .65s cubic-bezier(.4,0,.2,1);}
-.wi{flex:0 0 auto;width:13vw;min-width:46px;text-align:center;padding:2px 1px;
-  border-right:1px solid rgba(255,215,0,.06);}
-.wi .wh{font-size:clamp(5px,1.2vw,9.5px);color:#554006;margin-bottom:1px;}
-.wi .wn{font-size:clamp(5px,1.3vw,10.5px);color:#756010;line-height:1.2;direction:rtl;}
-.wi .ws{font-size:clamp(4px,.95vw,8px);color:#3a2c04;}
-.wi.active .wh{color:var(--gold);text-shadow:0 0 5px #FFD700;}
-.wi.active .wn{color:var(--gold);font-weight:700;text-shadow:0 0 8px #FFD700,0 0 14px #FFA500;}
-.wi.active .ws{color:#c0a020;}
-#hour-wheel::before,#hour-wheel::after{content:"";position:absolute;top:0;bottom:0;width:14%;z-index:2;pointer-events:none;}
-#hour-wheel::before{left:0;background:linear-gradient(to right,var(--bg) 0%,transparent 100%);}
-#hour-wheel::after{right:0;background:linear-gradient(to left,var(--bg) 0%,transparent 100%);}
-#wheel-marker{position:absolute;top:0;bottom:0;left:50%;transform:translateX(-50%);
-  width:13vw;min-width:46px;border-left:1px solid rgba(255,215,0,.25);
-  border-right:1px solid rgba(255,215,0,.25);background:rgba(255,215,0,.04);pointer-events:none;z-index:1;}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* SVG classes */
-.seg{stroke:#050400;stroke-width:.7;}
-.seg-dim{fill:rgba(255,215,0,.04);}
-.seg-act{fill:rgba(255,200,0,.22);}
-/* main ring labels */
-.rl    {font-family:'Frank Ruhl Libre',serif;fill:rgba(225,178,22,.80);font-weight:700;}
-.rl-act{font-family:'Frank Ruhl Libre',serif;fill:#FFE566;font-weight:900;}
-/* sefirot — colored */
-.rs-chesed  {font-family:'Frank Ruhl Libre',serif;fill:rgba(80,160,255,.80);}
-.rs-gevurah {font-family:'Frank Ruhl Libre',serif;fill:rgba(255,80,80,.80);}
-.rs-tiferet {font-family:'Frank Ruhl Libre',serif;fill:rgba(255,230,80,.80);}
-.rs-netzach {font-family:'Frank Ruhl Libre',serif;fill:rgba(60,220,120,.80);}
-.rs-hod     {font-family:'Frank Ruhl Libre',serif;fill:rgba(255,120,210,.80);}
-.rs-yesod   {font-family:'Frank Ruhl Libre',serif;fill:rgba(180,120,255,.80);}
-.rs-malchut {font-family:'Frank Ruhl Libre',serif;fill:rgba(255,160,60,.80);}
-/* hour name ring */
-.hn    {font-family:'Frank Ruhl Libre',serif;fill:rgba(190,145,12,.72);}
-.hn-act{font-family:'Frank Ruhl Libre',serif;fill:#FFE566;font-weight:900;}
-/* centre */
-.c-main{font-family:'Frank Ruhl Libre',serif;fill:#FFE566;font-weight:900;text-anchor:middle;dominant-baseline:central;}
-.c-sub {font-family:'Frank Ruhl Libre',serif;fill:rgba(200,155,15,.85);text-anchor:middle;dominant-baseline:central;}
-.badge {font-family:'Frank Ruhl Libre',serif;fill:rgba(255,215,0,.30);text-anchor:middle;}
+html {
+  font-size: clamp(10px, 1.6vmin, 18px);
+}
+html, body {
+  width: 100%; height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Frank Ruhl Libre', serif;
+  overflow: hidden;
+}
+
+/* ── Vivid jewel-tone ambient background ── */
+body::before {
+  content: "";
+  position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background:
+    /* Central gold-amber crown */
+    radial-gradient(ellipse 70% 50% at 50% 30%,  rgba(255,200,0,.22)    0%, transparent 52%),
+    /* Chesed — electric blue, left */
+    radial-gradient(ellipse 45% 35% at 8% 42%,   rgba(30,140,255,.20)   0%, transparent 58%),
+    /* Gevurah — deep crimson, right */
+    radial-gradient(ellipse 45% 35% at 92% 42%,  rgba(220,40,60,.18)    0%, transparent 58%),
+    /* Netzach — vivid green, lower-left */
+    radial-gradient(ellipse 35% 28% at 15% 78%,  rgba(0,210,100,.16)    0%, transparent 55%),
+    /* Hod — magenta, lower-right */
+    radial-gradient(ellipse 35% 28% at 85% 78%,  rgba(210,80,255,.16)   0%, transparent 55%),
+    /* Yesod — violet, bottom-centre */
+    radial-gradient(ellipse 50% 30% at 50% 96%,  rgba(130,80,255,.18)   0%, transparent 58%),
+    /* Tiferet — warm yellow heart */
+    radial-gradient(ellipse 28% 22% at 50% 52%,  rgba(255,220,0,.10)    0%, transparent 48%),
+    /* Deep space base */
+    radial-gradient(ellipse 100% 100% at 50% 50%, rgba(15,8,35,.0) 0%, rgba(5,3,13,1) 100%);
+}
+
+/* Animated shimmer overlay */
+body::after {
+  content: "";
+  position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  opacity: .022;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
+}
+
+/* noise grain now part of body::after above */
+
+/* ═══════════════════════════════════════
+   LAYOUT — grid, adapts to any aspect ratio
+═══════════════════════════════════════ */
+#app {
+  position: relative; z-index: 1;
+  width: 100vw; height: 100vh;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  overflow: hidden;
+}
+
+/* ═══════════════════════════════════════
+   HEADER
+═══════════════════════════════════════ */
+#top {
+  text-align: center;
+  padding: clamp(4px,.8vh,14px) clamp(6px,2vw,24px) clamp(2px,.3vh,6px);
+  background: linear-gradient(to bottom, rgba(6,4,10,1) 0%, rgba(6,4,10,.7) 80%, transparent 100%);
+}
+
+#clock {
+  font-size: clamp(11px, 3vw, 34px);
+  font-weight: 300;
+  letter-spacing: .38em;
+  color: var(--gold3);
+  text-shadow:
+    0 0 6px var(--gold),
+    0 0 18px var(--gold2),
+    0 0 38px rgba(255,190,0,.45);
+}
+
+#name-wrap {
+  margin: clamp(2px,.35vh,7px) 0 clamp(1px,.2vh,4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0 clamp(4px,1.2vw,16px);
+  min-height: clamp(26px,5.2vh,68px);
+}
+.name-word { display: inline-flex; align-items: center; gap: 1px; }
+
+.fc {
+  position: relative;
+  font-size: clamp(15px, 5.2vw, 60px);
+  font-weight: 900;
+  line-height: 1;
+}
+.fc .b {
+  color: #FFF9C4;
+  text-shadow:
+    0 0 2px #fff,
+    0 0 8px var(--gold),
+    0 0 20px var(--gold2),
+    0 0 38px var(--ember),
+    0 0 60px rgba(255,80,0,.3);
+}
+.fc .g { position: absolute; top:0; left:0; color:var(--gold2); opacity:.35; text-shadow:0 0 14px var(--ember); }
+.fc .s { position: absolute; top:0; left:0; color:#FF3D00; opacity:.12; }
+.dash-sep { color:rgba(255,200,0,.3); font-size:clamp(6px,1.6vw,15px); margin-bottom:1px; }
+
+/* Date line */
+/* ── DATE TITLE — big & detailed ── */
+#date-line {
+  font-size: clamp(10px, 2.1vw, 22px);
+  font-weight: 700;
+  padding: 0 clamp(4px,1vw,12px) clamp(2px,.3vh,6px);
+  line-height: 1.7;
+  letter-spacing: .02em;
+}
+
+/* Row 1: big headline date */
+#date-line .dl-headline {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0 .35em;
+  font-size: clamp(13px, 2.8vw, 30px);
+  font-weight: 900;
+  line-height: 1.5;
+  margin-bottom: .15em;
+}
+
+/* Row 2: attribute pills row */
+#date-line .dl-pills {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: clamp(3px,.5vw,8px) clamp(5px,1vw,14px);
+  font-size: clamp(8px, 1.55vw, 17px);
+  margin-bottom: .1em;
+}
+
+/* Row 3: year breakdown + shmita */
+#date-line .dl-sub {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: clamp(2px,.4vh,6px) clamp(6px,1.2vw,16px);
+  font-size: clamp(8px, 1.55vw, 17px);
+  font-weight: 400;
+  opacity: .94;
+}
+
+/* A sefirah "pill" — colored label + tag */
+.pill {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .05em;
+  padding: .12em .45em .14em;
+  border-radius: 5px;
+  border: 1px solid currentColor;
+  opacity: .88;
+  text-align: center;
+}
+.pill .pill-body { display:inline-flex; align-items:baseline; gap:.25em; }
+.pill .pill-name { font-weight: 700; white-space:nowrap; }
+.pill .pill-tag  { font-size: .76em; font-weight: 400; opacity: .82; white-space:nowrap; }
+
+/* Pill color variants */
+.pill-keter   { color:#E8E8FF; border-color:rgba(232,232,255,.4); background:rgba(232,232,255,.07); }
+.pill-chesed  { color:var(--chesed);  border-color:rgba(66,165,245,.4);  background:rgba(66,165,245,.08); }
+.pill-gevurah { color:var(--gevurah); border-color:rgba(239,83,80,.4);   background:rgba(239,83,80,.08); }
+.pill-tiferet { color:var(--tiferet); border-color:rgba(255,214,0,.4);   background:rgba(255,214,0,.08); }
+.pill-netzach { color:var(--netzach); border-color:rgba(0,230,118,.4);   background:rgba(0,230,118,.08); }
+.pill-hod     { color:var(--hod);     border-color:rgba(234,128,252,.4); background:rgba(234,128,252,.08); }
+.pill-yesod   { color:var(--yesod);   border-color:rgba(179,136,255,.4); background:rgba(179,136,255,.08); }
+.pill-malchut { color:var(--malchut); border-color:rgba(255,145,0,.4);   background:rgba(255,145,0,.08); }
+
+/* Year place-value chip */
+.yv-chip {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .06em;
+  padding: .1em .35em .12em;
+  border-radius: 4px;
+  border: 1px solid currentColor;
+  opacity: .90;
+  text-align: center;
+}
+/* Top row: letter — sefirah */
+.yv-chip .yv-top { display:inline-flex; align-items:baseline; gap:0; white-space:nowrap; }
+.yv-chip .yv-str  { font-weight: 900; font-size: 1em; }
+.yv-chip .yv-dash { font-weight:300; font-size:.85em; opacity:.50; margin:0 .2em; }
+.yv-chip .yv-sef  { font-size: .80em; font-weight: 400; opacity: .90; }
+
+/* ── Sefirah abbreviation status line ── */
+.sab-line {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  font-size: .78em;
+  font-weight: 700;
+  letter-spacing: .04em;
+  margin-top: .15em;
+  direction: rtl;
+}
+.sab-sep  { color:rgba(255,220,0,.20); font-size:.65em; margin:0 .05em; font-weight:300; }
+.sab-dim  { color:rgba(255,255,255,.18); font-weight:400; }
+
+/* Active letter — colored by sefirah */
+.sab-active       { font-weight:900; }
+.sab-keter        { color:#E8E8FF; text-shadow:0 0 6px rgba(232,232,255,.9), 0 0 14px rgba(200,200,255,.5); }
+.sab-chesed       { color:var(--chesed);  text-shadow:0 0 6px rgba(66,165,245,.9), 0 0 14px rgba(66,165,245,.5); }
+.sab-gevurah      { color:var(--gevurah); text-shadow:0 0 6px rgba(239,83,80,.9),  0 0 14px rgba(239,83,80,.5); }
+.sab-tiferet      { color:var(--tiferet); text-shadow:0 0 6px rgba(255,214,0,.9),  0 0 14px rgba(255,214,0,.5); }
+.sab-netzach      { color:var(--netzach); text-shadow:0 0 6px rgba(0,230,118,.9),  0 0 14px rgba(0,230,118,.5); }
+.sab-hod          { color:var(--hod);     text-shadow:0 0 6px rgba(234,128,252,.9),0 0 14px rgba(234,128,252,.5); }
+.sab-yesod        { color:var(--yesod);   text-shadow:0 0 6px rgba(179,136,255,.9),0 0 14px rgba(179,136,255,.5); }
+.sab-malchut      { color:var(--malchut); text-shadow:0 0 6px rgba(255,145,0,.9),  0 0 14px rgba(255,145,0,.5); }
+
+/* Separator dots */
+.dl-dot { color:rgba(255,220,0,.22); margin: 0 .15em; font-weight:300; }
+
+/* Headline tokens */
+.dl-dom-num  { color:#FFF9C4; text-shadow:0 0 8px rgba(255,240,0,.7),0 0 20px rgba(255,200,0,.4); }
+.dl-month-nm { color:#B9F6CA; text-shadow:0 0 8px rgba(0,230,120,.5); }
+.dl-year-nm  { color:#EA80FC; letter-spacing:.06em;
+               text-shadow:0 0 10px rgba(234,128,252,.75),0 0 24px rgba(180,50,255,.3); }
+.dl-rc-badge {
+  display:inline-block;
+  color:#E8E8FF; font-size:.72em; font-weight:700;
+  padding:.05em .4em; border-radius:3px;
+  border:1px solid rgba(232,232,255,.5);
+  background:rgba(232,232,255,.10);
+  text-shadow:0 0 8px rgba(220,220,255,.6);
+  vertical-align:middle; margin-right:.2em;
+}
+
+/* Sefirah tags inline */
+.dl-sef       { font-weight:400; font-size:.86em; }
+.dl-s-keter   { color:#E8E8FF;   text-shadow:0 0 6px rgba(232,232,255,.7); }
+.dl-s-chesed  { color:var(--chesed);  text-shadow:0 0 6px rgba(66,165,245,.75); }
+.dl-s-gevurah { color:var(--gevurah); text-shadow:0 0 6px rgba(239,83,80,.75); }
+.dl-s-tiferet { color:var(--tiferet); text-shadow:0 0 6px rgba(255,214,0,.75); }
+.dl-s-netzach { color:var(--netzach); text-shadow:0 0 6px rgba(0,230,118,.75); }
+.dl-s-hod     { color:var(--hod);     text-shadow:0 0 6px rgba(234,128,252,.75); }
+.dl-s-yesod   { color:var(--yesod);   text-shadow:0 0 6px rgba(179,136,255,.75); }
+.dl-s-malchut { color:var(--malchut); text-shadow:0 0 6px rgba(255,145,0,.75); }
+.dl-s-partzuf { color:#FFD180; }
+.dl-s-shmita  { color:#FFD600; }
+.dl-yovel     { color:#FFD180; }
+.dl-day       { color:var(--gold3); text-shadow:0 0 8px rgba(255,240,0,.65); }
+.dl-week      { color:#80D8FF; }
+.dl-month     { color:#B9F6CA; }
+.dl-year      { color:#EA80FC; }
+
+/* ═══════════════════════════════════════
+   RING AREA
+═══════════════════════════════════════ */
+#ring-wrap {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(2px,.4vh,8px) clamp(4px,1.2vw,18px);
+}
+
+/* SVG scales to fill available square */
+#ring-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  overflow: visible;
+}
+
+/* ═══════════════════════════════════════
+   HOUR WHEEL
+═══════════════════════════════════════ */
+#hour-wheel {
+  width: 100%;
+  height: clamp(46px,8.5vh,90px);
+  overflow: hidden;
+  position: relative;
+  background: linear-gradient(to bottom, rgba(8,5,14,.9), rgba(3,2,7,.98));
+  border-top: 1px solid rgba(255,210,0,.14);
+  display: flex;
+  align-items: center;
+}
+#wheel-track {
+  display: flex;
+  align-items: center;
+  position: absolute;
+  left: 0;
+  will-change: transform;
+  transition: transform .7s cubic-bezier(.4,0,.2,1);
+}
+.wi {
+  flex: 0 0 auto;
+  width: 13vw; min-width:44px; max-width:100px;
+  text-align: center;
+  padding: 3px 2px;
+  border-right: 1px solid rgba(255,215,0,.05);
+  opacity: .44;
+  transition: opacity .4s;
+}
+.wi .wh { font-size:clamp(5px,1.0vw,9px);  color:#4a3a06; margin-bottom:1px; letter-spacing:.5px; }
+.wi .wn { font-size:clamp(5px,1.1vw,10px); color:#6a5a18; line-height:1.25; direction:rtl; }
+.wi .ws { font-size:clamp(3.5px,.85vw,7px); color:#3a2e08; }
+
+.wi.near { opacity:.70; }
+.wi.near .wh { color:#8a6a20; }
+.wi.near .wn { color:#9a7a28; }
+
+.wi.active { opacity:1; }
+.wi.active .wh {
+  color:var(--gold3);
+  text-shadow:0 0 8px var(--gold),0 0 18px rgba(255,200,0,.55);
+  letter-spacing:1px;
+}
+.wi.active .wn {
+  color:#fff; font-weight:700;
+  text-shadow:0 0 6px var(--gold),0 0 14px var(--gold2),0 0 30px var(--ember);
+}
+.wi.active .ws { color:#d4aa30; }
+
+#hour-wheel::before,
+#hour-wheel::after {
+  content:""; position:absolute; top:0; bottom:0;
+  width:20%; z-index:2; pointer-events:none;
+}
+#hour-wheel::before { left:0; background:linear-gradient(to right,var(--bg) 25%,transparent); }
+#hour-wheel::after  { right:0; background:linear-gradient(to left, var(--bg) 25%,transparent); }
+
+#wheel-marker {
+  position:absolute; top:0; bottom:0; left:50%;
+  transform:translateX(-50%);
+  width:13vw; min-width:44px; max-width:100px;
+  border-left:1px solid rgba(255,220,0,.30);
+  border-right:1px solid rgba(255,220,0,.30);
+  background:linear-gradient(to bottom,rgba(255,220,0,.08),rgba(255,140,0,.04));
+  pointer-events:none; z-index:1;
+}
+#wheel-marker::before {
+  content:"";
+  position:absolute; top:0; left:0; right:0; height:2px;
+  background:linear-gradient(to right,transparent,var(--gold),transparent);
+  opacity:.75;
+}
+
+/* ═══════════════════════════════════════
+   SVG RING CLASSES
+═══════════════════════════════════════ */
+.seg         { stroke:var(--bg); stroke-width:.55; }
+.seg-dim     { fill:rgba(255,220,0,.04); }
+.seg-act     { fill:rgba(255,220,0,.16); }
+
+/* Per-sefirah active segment fills */
+.seg-chesed  { fill:rgba(66,165,245,.30);  stroke:rgba(66,165,245,.18); }
+.seg-gevurah { fill:rgba(239,83,80,.30);   stroke:rgba(239,83,80,.18); }
+.seg-tiferet { fill:rgba(255,214,0,.28);   stroke:rgba(255,214,0,.18); }
+.seg-netzach { fill:rgba(0,230,118,.28);   stroke:rgba(0,230,118,.18); }
+.seg-hod     { fill:rgba(234,128,252,.30); stroke:rgba(234,128,252,.18); }
+.seg-yesod   { fill:rgba(179,136,255,.30); stroke:rgba(179,136,255,.18); }
+.seg-malchut { fill:rgba(255,145,0,.30);   stroke:rgba(255,145,0,.18); }
+.seg-keter   { fill:rgba(232,232,255,.25);  stroke:rgba(232,232,255,.15); }
+
+/* Ring labels */
+.rl     { font-family:'Frank Ruhl Libre',serif; fill:rgba(225,185,35,.85); font-weight:700; }
+.rl-act { font-family:'Frank Ruhl Libre',serif; fill:#FFFFFF; font-weight:900; }
+.rl-ptz     { font-family:'Frank Ruhl Libre',serif; fill:rgba(255,209,128,.80); font-weight:700; }
+.rl-ptz-act { font-family:'Frank Ruhl Libre',serif; fill:#FFD180; font-weight:900; }
+
+/* Sefirah sub-labels — vivid */
+.rs-chesed  { font-family:'Frank Ruhl Libre',serif; fill:#64B5F6; }
+.rs-gevurah { font-family:'Frank Ruhl Libre',serif; fill:#EF9A9A; }
+.rs-tiferet { font-family:'Frank Ruhl Libre',serif; fill:#FFE57F; }
+.rs-netzach { font-family:'Frank Ruhl Libre',serif; fill:#69F0AE; }
+.rs-hod     { font-family:'Frank Ruhl Libre',serif; fill:#F48FB1; }
+.rs-yesod   { font-family:'Frank Ruhl Libre',serif; fill:#CE93D8; }
+.rs-malchut { font-family:'Frank Ruhl Libre',serif; fill:#FFCC80; }
+
+/* Hour name ring */
+.hn     { font-family:'Frank Ruhl Libre',serif; fill:rgba(200,160,20,.68); }
+.hn-act { font-family:'Frank Ruhl Libre',serif; fill:#FFFFFF; font-weight:900; }
+
+/* Centre */
+.c-main { font-family:'Frank Ruhl Libre',serif; fill:#FFF9C4; font-weight:900; text-anchor:middle; dominant-baseline:central; }
+.c-sub  { font-family:'Frank Ruhl Libre',serif; fill:rgba(220,188,50,.90); text-anchor:middle; dominant-baseline:central; }
 </style>
 </head>
 <body>
 <div id="app">
+
   <div id="top">
     <div id="clock">12:00:00 PM</div>
     <div id="name-wrap"></div>
     <div id="date-line"></div>
   </div>
+
   <div id="ring-wrap">
-    <svg id="ring-svg" viewBox="0 0 440 440" xmlns="http://www.w3.org/2000/svg">
+    <svg id="ring-svg" viewBox="0 0 440 440" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
       <defs>
         <filter id="glow1" x="-50%" y="-50%" width="200%" height="200%">
-          <feGaussianBlur stdDeviation="2.5" result="b"/>
+          <feGaussianBlur stdDeviation="2.2" result="b"/>
           <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
         </filter>
         <filter id="glow2" x="-80%" y="-80%" width="260%" height="260%">
           <feGaussianBlur stdDeviation="4" result="b"/>
           <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
         </filter>
-        <filter id="tglow2" x="-60%" y="-60%" width="220%" height="220%">
-          <feGaussianBlur stdDeviation="1.5" result="b"/>
+        <filter id="tglow" x="-60%" y="-60%" width="220%" height="220%">
+          <feGaussianBlur stdDeviation="1.1" result="b"/>
           <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
         </filter>
-        <radialGradient id="fireGrad" cx="50%" cy="60%" r="55%">
-          <stop offset="0%"   stop-color="#FF6600" stop-opacity=".60"/>
-          <stop offset="45%"  stop-color="#CC3300" stop-opacity=".28"/>
-          <stop offset="100%" stop-color="#330000" stop-opacity="0"/>
+        <filter id="tglow2" x="-80%" y="-80%" width="260%" height="260%">
+          <feGaussianBlur stdDeviation="2.2" result="b"/>
+          <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <radialGradient id="fireGrad" cx="50%" cy="52%" r="52%">
+          <stop offset="0%"   stop-color="#FF8C00" stop-opacity=".82"/>
+          <stop offset="35%"  stop-color="#E64000" stop-opacity=".42"/>
+          <stop offset="100%" stop-color="#1A0000" stop-opacity="0"/>
         </radialGradient>
-        <filter id="fireBlur" x="-40%" y="-40%" width="180%" height="180%">
-          <feGaussianBlur stdDeviation="6" result="b"/>
+        <filter id="fireBlur" x="-55%" y="-55%" width="210%" height="210%">
+          <feGaussianBlur stdDeviation="7.5"/>
+        </filter>
+        <filter id="yovGlow" x="-40%" y="-40%" width="180%" height="180%">
+          <feGaussianBlur stdDeviation="2" result="b"/>
           <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
         </filter>
         <g id="arcDefs"></g>
       </defs>
 
       <g id="rings"></g>
-      <circle id="fireBg" cx="220" cy="220" r="82"
+
+      <circle id="fireBg" cx="220" cy="220" r="86"
         fill="url(#fireGrad)" filter="url(#fireBlur)" opacity="0"/>
+
       <circle cx="220" cy="220" r="76"
-        fill="rgba(4,2,0,.96)" stroke="rgba(255,180,0,.38)" stroke-width="1.8"/>
+        fill="rgba(4,2,10,.97)"
+        stroke="rgba(255,200,0,.38)"
+        stroke-width="1.6"/>
+      <circle cx="220" cy="220" r="73"
+        fill="none"
+        stroke="rgba(255,220,0,.09)"
+        stroke-width=".8"/>
+
       <g id="cinfo"></g>
     </svg>
   </div>
+
   <div id="hour-wheel">
     <div id="wheel-marker"></div>
     <div id="wheel-track"></div>
   </div>
+
 </div>
 
 <script>
-/* ═══ DATA ═══ */
-const hourNames=[
+/* ═══════════════════════════════════════
+   DATA
+═══════════════════════════════════════ */
+const HOUR_NAMES = [
   "נדאי ניאד","נדיא נידא","נאדי נאיד","דאינ יאדנ","דאני יאנד","דיאנ ידאנ",
   "יהוה אהיה","יההו אההי","יוהה איהה","הוהי היהא","הויה היאה","ההוי ההיא",
   "והיה יהאה","וההי יההא","ויהה יאהה","היהו האהי","היוה האיה","ההיו ההאי",
   "אדני אינד","אדינ אידנ","אניד אנדי","דניא ינדא","דנאי ינאד","דינא ידנא"
 ];
-const hourSefirot=[
+const HOUR_SEF = [
   'חסד','גבורה','תפארת','נצח','הוד','יסוד','מלכות',
   'חסד','גבורה','תפארת','נצח','הוד','יסוד','מלכות',
   'חסד','גבורה','תפארת','נצח','הוד','יסוד','מלכות',
   'חסד','גבורה','תפארת'
 ];
-const dayNames=['יום א','יום ב','יום ג','יום ד','יום ה','יום ו','שבת'];
-const daySefirot=['חסד','גבורה','תפארת','נצח','הוד','יסוד','מלכות'];
-const monthNames=['תשרי','חשוון','כסלו','טבת','שבט','אדר','ניסן','אייר','סיוון','תמוז','אב','אלול'];
-const monthSefirot=['חסד','גבורה','תפארת','נצח','הוד','יסוד','חסד','גבורה','תפארת','נצח','הוד','יסוד'];
-const weekPartzuf=['אבא','אימא','ז״א','נוק׳'];
-const shmitaLabels=['א','ב','ג','ד','ה','ו','שמיטה'];
-const shmitaSefirot=['חסד','גבורה','תפארת','נצח','הוד','יסוד','מלכות'];
-const letterSef={
-  "א":"חסד","ב":"גבורה","ג":"תפארת","ד":"נצח","ה":"יסוד","ו":"מלכות",
-  "ז":"חסד","ח":"הוד","ט":"יסוד","י":"תפארת","כ":"נצח","ל":"הוד",
-  "מ":"יסוד","נ":"מלכות","ס":"חסד","ע":"גבורה","פ":"יסוד","צ":"תפארת",
-  "ק":"נצח","ר":"הוד","ש":"מלכות","ת":"הוד"
+const DAY_NAMES   = ['יום א','יום ב','יום ג','יום ד','יום ה','יום ו','שבת'];
+const DAY_SEF     = ['חסד','גבורה','תפארת','נצח','הוד','יסוד','מלכות'];
+const MONTH_NAMES = ['תשרי','חשוון','כסלו','טבת','שבט','אדר','ניסן','אייר','סיוון','תמוז','אב','אלול'];
+const MONTH_SEF   = ['חסד','גבורה','תפארת','נצח','הוד','יסוד','חסד','גבורה','תפארת','נצח','הוד','יסוד'];
+const WEEK_PTZ    = ['חכמה','בינה','תפארת','מלכות'];
+const SHMITA_L    = ['א','ב','ג','ד','ה','ו','שמיטה'];
+const SHMITA_SEF  = ['חסד','גבורה','תפארת','נצח','הוד','יסוד','מלכות'];
+
+const LETTER_SEF = {
+  "א":"כתר","ב":"חכמה","ג":"בינה","ד":"חסד","ה":"גבורה","ו":"תפארת",
+  "ז":"נצח","ח":"הוד","ט":"יסוד","י":"חכמה","כ":"כתר","ל":"תפארת",
+  "מ":"בינה","נ":"נצח","ס":"הוד","ע":"חסד","פ":"גבורה","צ":"יסוד",
+  "ק":"מלכות","ר":"הוד","ש":"אש","ת":"תפארת"
 };
-const sefiClass={
+
+/*
+ * YEAR PLACE-VALUE SEFIROT — each numeric component mapped separately
+ * Hundreds stay as ONE combined unit (תש=700=הוד, not ת+ש)
+ */
+const HUNDREDS_SEF = {
+  100:'חסד', 200:'גבורה', 300:'תפארת', 400:'נצח',
+  500:'הוד',  600:'יסוד',  700:'הוד',   800:'יסוד',  900:'מלכות'
+};
+const HUNDREDS_STR = {
+  100:'ק', 200:'ר', 300:'ש', 400:'ת',
+  500:'תק', 600:'תר', 700:'תש', 800:'תת', 900:'תתק'
+};
+const TENS_SEF = {
+  10:'חכמה',20:'כתר',30:'תפארת',40:'בינה',50:'נצח',
+  60:'הוד',70:'חסד',80:'יסוד',90:'תפארת'
+};
+const TENS_STR = {
+  10:'י',20:'כ',30:'ל',40:'מ',50:'נ',60:'ס',70:'ע',80:'פ',90:'צ'
+};
+const UNITS_SEF = {
+  1:'כתר',2:'חכמה',3:'בינה',4:'חסד',5:'גבורה',
+  6:'תפארת',7:'נצח',8:'הוד',9:'יסוד'
+};
+const UNITS_STR = {
+  1:'א',2:'ב',3:'ג',4:'ד',5:'ה',6:'ו',7:'ז',8:'ח',9:'ט'
+};
+const MIL_SEF = {
+  1:'כתר',2:'חכמה',3:'בינה',4:'חסד',5:'יסוד',6:'תפארת',7:'נצח'
+};
+
+const SEFI_KEY = {
+  'כתר':'keter',
   'חסד':'chesed','גבורה':'gevurah','תפארת':'tiferet',
   'נצח':'netzach','הוד':'hod','יסוד':'yesod','מלכות':'malchut'
 };
-function sefiCls(s){return 'rs-'+(sefiClass[s]||'tiferet');}
 
-/* ═══ UTILS ═══ */
-const NS="http://www.w3.org/2000/svg";
-function mk(tag,a){const e=document.createElementNS(NS,tag);for(const[k,v]of Object.entries(a||{}))e.setAttribute(k,v);return e;}
-function toHN(n){
-  const t=["","א","ב","ג","ד","ה","ו","ז","ח","ט","י","יא","יב","יג","יד","טו","טז","יז","יח","יט",
-    "כ","כא","כב","כג","כד","כה","כו","כז","כח","כט","ל","לא","לב","לג","לד","לה","לו","לז","לח","לט",
-    "מ","מא","מב","מג","מד","מה","מו","מז","מח","מט","נ"];
-  return t[n]||String(n);
+/* Vivid SVG fill per sefirah */
+const SEFI_COLOR = {
+  keter:'rgba(232,232,255,.95)',
+  chesed:'rgba(66,165,245,.95)',  gevurah:'rgba(239,83,80,.95)',
+  tiferet:'rgba(255,220,0,.95)',  netzach:'rgba(0,230,118,.95)',
+  hod:'rgba(234,128,252,.95)',    yesod:'rgba(179,136,255,.95)',
+  malchut:'rgba(255,145,0,.95)'
+};
+
+/* ═══════════════════════════════════════
+   UTILITIES
+═══════════════════════════════════════ */
+const NS = "http://www.w3.org/2000/svg";
+
+function mk(tag, a) {
+  const el = document.createElementNS(NS, tag);
+  for (const [k,v] of Object.entries(a||{})) el.setAttribute(k,v);
+  return el;
 }
-function yearL(y){
-  y=y%1000;
-  const h=["","ק","ר","ש","ת","תק","תר","תש","תת","תתק"],
-        t=["","י","כ","ל","מ","נ","ס","ע","פ","צ"],
-        o=["","א","ב","ג","ד","ה","ו","ז","ח","ט"];
-  let hh=Math.floor(y/100),tt=Math.floor((y%100)/10),oo=y%10,r=h[hh];
-  if(tt===1&&oo===5)r+="טו";else if(tt===1&&oo===6)r+="טז";else r+=t[tt]+o[oo];
+
+function sKey(s)     { return SEFI_KEY[s] || 'chesed'; }
+function sSvgCls(s)  { return 'rs-' + sKey(s); }
+function sColor(s)   { return SEFI_COLOR[sKey(s)] || SEFI_COLOR.tiferet; }
+function dlSef(s) {
+  const k = sKey(s);
+  return 'dl-sef dl-s-' + (k === 'tiferet' && s === 'כתר' ? 'keter' : k);
+}
+
+/* pill(name, sefirah, abbrevHtml) — colored bordered chip with optional status line */
+function pill(name, sef, abbrevHtml) {
+  const k = sef === 'כתר' ? 'keter' : sKey(sef);
+  const abLine = abbrevHtml
+    ? `<span class="sab-line">${abbrevHtml}</span>`
+    : '';
+  return `<span class="pill pill-${k}">`+
+    `<span class="pill-body">`+
+    `<span class="pill-name">${name}</span>`+
+    `<span class="pill-tag">${sef}</span>`+
+    `</span>`+
+    abLine+
+    `</span>`;
+}
+
+/* year-value chip */
+function yvChip(str, lbl, sef) {
+  const k = sef === 'כתר' ? 'keter' : sKey(sef);
+  return `<span class="yv-chip dl-s-${k}">`+
+    `<span class="yv-top">`+
+    `<span class="yv-str">${str}</span>`+
+    `<span class="yv-dash">—</span>`+
+    `<span class="yv-sef">${sef}</span>`+
+    `</span>`+
+    `</span>`;
+}
+
+function toHN(n) {
+  const t = ["","א","ב","ג","ד","ה","ו","ז","ח","ט",
+    "י","יא","יב","יג","יד","טו","טז","יז","יח","יט",
+    "כ","כא","כב","כג","כד","כה","כו","כז","כח","כט",
+    "ל","לא","לב","לג","לד","לה","לו","לז","לח","לט",
+    "מ","מא","מב","מג","מד","מה","מו","מז","מח","מט","נ"];
+  return t[n] || String(n);
+}
+
+/*
+ * yearLetters(y) — returns just the last-3 abbreviation string e.g. "תשפו"
+ * fullYearStr(y) — e.g. "ה׳תשפ״ו"
+ * yearComponents(y) — returns array of {str, val, sef} for display
+ */
+function yearLetters(y) {
+  const mod=y%1000;
+  const hh=Math.floor(mod/100), tt=Math.floor((mod%100)/10), oo=mod%10;
+  const hundV=hh*100, tenV=tt*10;
+  let r=HUNDREDS_STR[hundV]||"";
+  // special Gershayim cases
+  if (tt===1&&oo===5) r+="טו";
+  else if (tt===1&&oo===6) r+="טז";
+  else {
+    if (tenV) r+=TENS_STR[tenV]||"";
+    if (oo)   r+=UNITS_STR[oo]||"";
+  }
   return r;
 }
-function getHeb(){
-  const p=new Intl.DateTimeFormat('he-u-ca-hebrew',{day:'numeric',month:'long',year:'numeric'}).formatToParts(new Date());
-  let d,m,y;p.forEach(x=>{if(x.type==='day')d=parseInt(x.value);if(x.type==='month')m=x.value;if(x.type==='year')y=parseInt(x.value);});
-  return{d,m,y};
-}
-function mIdx(name){return monthNames.findIndex(mn=>mn===name||name.includes(mn)||mn.includes(name));}
-function pxy(cx,cy,r,deg){const a=(deg-90)*Math.PI/180;return{x:cx+r*Math.cos(a),y:cy+r*Math.sin(a)};}
-function sp(cx,cy,r1,r2,s,e){
-  const G=.7,ss=s+G/2,ee=e-G/2,lg=(ee-ss)>180?1:0;
-  const a=pxy(cx,cy,r2,ss),b=pxy(cx,cy,r2,ee),c=pxy(cx,cy,r1,ee),d=pxy(cx,cy,r1,ss);
-  return`M${a.x},${a.y}A${r2},${r2} 0 ${lg} 1 ${b.x},${b.y}L${c.x},${c.y}A${r1},${r1} 0 ${lg} 0 ${d.x},${d.y}Z`;
+
+function fullYearStr(y) {
+  const mil=Math.floor(y/1000);
+  const mH=["","א","ב","ג","ד","ה","ו","ז","ח","ט"][mil]||"";
+  const chars=yearLetters(y).split("");
+  if (chars.length>=2) chars.splice(chars.length-1,0,"״");
+  else chars.push("׳");
+  return mH+"׳"+chars.join("");
 }
 
-/* ═══ CURVED TEXT ═══ */
+/*
+ * Returns array of place-value components for the year, each with:
+ *   { str: "תש", label: "700 — שבע מאות", sef: "הוד", css: "hod" }
+ */
+function yearComponents(y) {
+  const mil=Math.floor(y/1000);
+  const mod=y%1000;
+  const hh=Math.floor(mod/100), tt=Math.floor((mod%100)/10), oo=mod%10;
+  const hundV=hh*100, tenV=tt*10;
+  const milStr=["","א","ב","ג","ד","ה","ו","ז","ח","ט"][mil]||"";
+  const milLabels=["","אחד","שניים","שלושה","ארבעה","חמשה","ששה","שבעה"];
+  const tenLabels={10:"עשרה",20:"עשרים",30:"שלושים",40:"ארבעים",50:"חמישים",
+                   60:"ששים",70:"שבעים",80:"שמונים",90:"תשעים"};
+  const unitLabels={1:"אחת",2:"שתיים",3:"שלוש",4:"ארבע",5:"חמש",
+                    6:"שש",7:"שבע",8:"שמונה",9:"תשע"};
+  const hundLabels={100:"מאה",200:"מאתיים",300:"שלש מאות",400:"ארבע מאות",
+                    500:"חמש מאות",600:"שש מאות",700:"שבע מאות",
+                    800:"שמונה מאות",900:"תשע מאות"};
+  const parts=[];
+  if (mil>0) parts.push({
+    str: milStr+"׳",
+    label: (milLabels[mil]||mil)+" אלפים",
+    sef: MIL_SEF[mil]||"כתר",
+    css: sKey(MIL_SEF[mil]||"כתר")
+  });
+  if (hundV>0) parts.push({
+    str: HUNDREDS_STR[hundV]||"",
+    label: hundLabels[hundV]||"",
+    sef: HUNDREDS_SEF[hundV]||"חסד",
+    css: sKey(HUNDREDS_SEF[hundV]||"חסד")
+  });
+  if (tenV>0) parts.push({
+    str: TENS_STR[tenV]||"",
+    label: tenLabels[tenV]||"",
+    sef: TENS_SEF[tenV]||"חסד",
+    css: sKey(TENS_SEF[tenV]||"חסד")
+  });
+  if (oo>0) parts.push({
+    str: UNITS_STR[oo]||"",
+    label: unitLabels[oo]||"",
+    sef: UNITS_SEF[oo]||"כתר",
+    css: sKey(UNITS_SEF[oo]||"כתר")
+  });
+  return parts;
+}
+
+function weekPtzLabel(wn, ptz) {
+  const sub=["ד׳","ח׳","ז״א ד׳","נוק׳ ד׳"];
+  return (sub[(wn-1)%4]||"ד׳")+ptz;
+}
+
+/*
+ * Day-of-month sefirah:
+ *   1 (א) = כתר  — ראש חודש
+ *   30 (ל) = כתר  — ראש חודש
+ *   2–29: cycle of 7 starting from חסד
+ *     position = (day - 2) % 7  → 0=חסד 1=גבורה 2=תפארת 3=נצח 4=הוד 5=יסוד 6=מלכות
+ *   Verify: 2,9,16,23 → (d-2)%7=0 → חסד ✓
+ *           5,12,19,26 → (d-2)%7=3 → נצח ✓
+ */
+const CYCLE_7 = ['חסד','גבורה','תפארת','נצח','הוד','יסוד','מלכות'];
+
+function domSefirah(d) {
+  if (d===1 || d===30) return 'כתר';
+  return CYCLE_7[(d-2)%7];
+}
+
+/* Is today ראש חודש? (day 1 or 30) */
+function isRoshChodesh(d) { return d===1||d===30; }
+
+/*
+ * sefAbbrev(currentSefirah, includeKeter)
+ * Builds the abbreviated sequence string like  כ ח ג ת נ ה י מ
+ * with the active one highlighted, others dimmed.
+ * The abbreviation letters:
+ *   כתר=כ  חסד=ח  גבורה=ג  תפארת=ת  נצח=נ  הוד=ה  יסוד=י  מלכות=מ
+ */
+const SEF_ABBREV = [
+  {s:'כתר',  a:'כ', k:'keter'},
+  {s:'חסד',  a:'ח', k:'chesed'},
+  {s:'גבורה',a:'ג', k:'gevurah'},
+  {s:'תפארת',a:'ת', k:'tiferet'},
+  {s:'נצח',  a:'נ', k:'netzach'},
+  {s:'הוד',  a:'ה', k:'hod'},
+  {s:'יסוד', a:'י', k:'yesod'},
+  {s:'מלכות',a:'מ', k:'malchut'}
+];
+
+/* Week sefirot (4-week cycle): חכמה בינה תפארת מלכות */
+const WEEK_SEF_ABBREV = [
+  {s:'חכמה', a:'ח', k:'chesed'},
+  {s:'בינה', a:'ב', k:'gevurah'},
+  {s:'תפארת',a:'ת', k:'tiferet'},
+  {s:'מלכות',a:'מ', k:'malchut'}
+];
+
+function sefAbbrevLine(currentSef, list) {
+  return list.map(item => {
+    const active = item.s === currentSef;
+    if (active) {
+      return `<span class="sab-active sab-${item.k}">${item.a}</span>`;
+    }
+    return `<span class="sab-dim">${item.a}</span>`;
+  }).join('<span class="sab-sep">׳</span>');
+}
+
+/* 7-cycle abbreviation (no כתר) — for יום בחודש, יום השבוע, חודש */
+function sefAbbrev7(currentSef) {
+  return sefAbbrevLine(currentSef, SEF_ABBREV.slice(1));
+}
+
+/* 8-cycle abbreviation (with כתר) — for יום בחודש when כתר is possible */
+function sefAbbrev8(currentSef) {
+  return sefAbbrevLine(currentSef, SEF_ABBREV);
+}
+
+/* 4-cycle for week */
+function sefAbbrev4(currentSef) {
+  return sefAbbrevLine(currentSef, WEEK_SEF_ABBREV);
+}
+
+function getHebDate() {
+  const parts=new Intl.DateTimeFormat('he-u-ca-hebrew',
+    {day:'numeric',month:'long',year:'numeric'}).formatToParts(new Date());
+  let d,m,y;
+  parts.forEach(x=>{
+    if(x.type==='day')   d=parseInt(x.value);
+    if(x.type==='month') m=x.value;
+    if(x.type==='year')  y=parseInt(x.value);
+  });
+  return {d,m,y};
+}
+
+function mIdx(name) {
+  return MONTH_NAMES.findIndex(mn=>mn===name||name.includes(mn)||mn.includes(name));
+}
+
+function pt(cx,cy,r,deg) {
+  const a=(deg-90)*Math.PI/180;
+  return {x:cx+r*Math.cos(a),y:cy+r*Math.sin(a)};
+}
+
+function segPath(cx,cy,r1,r2,sa,ea) {
+  const G=.6,s=sa+G/2,e=ea-G/2,lg=(e-s)>180?1:0;
+  const a=pt(cx,cy,r2,s),b=pt(cx,cy,r2,e),c=pt(cx,cy,r1,e),d=pt(cx,cy,r1,s);
+  return `M${a.x},${a.y}A${r2},${r2} 0 ${lg} 1 ${b.x},${b.y}`+
+         `L${c.x},${c.y}A${r1},${r1} 0 ${lg} 0 ${d.x},${d.y}Z`;
+}
+
+/* ═══════════════════════════════════════
+   CURVED TEXT
+═══════════════════════════════════════ */
 let _pid=0;
-function ctext(g,defs,cx,cy,r,s,e,text,cls,fs,flt){
+
+function ctext(g,defs,cx,cy,r,sa,ea,text,cls,fs,flt) {
   const id="p"+(++_pid);
-  const mid=((s+e)/2+360)%360;
-  const isBottom=(mid>90&&mid<270);
-
-  let pathD;
-  if(!isBottom){
-    // TOP HALF — CW arc from s to e
-    const p1=pxy(cx,cy,r,s),p2=pxy(cx,cy,r,e),lg=(e-s)>180?1:0;
-    pathD=`M${p1.x},${p1.y}A${r},${r} 0 ${lg} 1 ${p2.x},${p2.y}`;
+  const mid=((sa+ea)/2+360)%360;
+  const bot=mid>90&&mid<270;
+  let d;
+  if (!bot) {
+    const p1=pt(cx,cy,r,sa),p2=pt(cx,cy,r,ea),lg=(ea-sa)>180?1:0;
+    d=`M${p1.x},${p1.y}A${r},${r} 0 ${lg} 1 ${p2.x},${p2.y}`;
   } else {
-    // BOTTOM HALF — CCW arc from e to s
-    const p1=pxy(cx,cy,r,e),p2=pxy(cx,cy,r,s),lg=(e-s)>180?1:0;
-    pathD=`M${p1.x},${p1.y}A${r},${r} 0 ${lg} 0 ${p2.x},${p2.y}`;
+    const p1=pt(cx,cy,r,ea),p2=pt(cx,cy,r,sa),lg=(ea-sa)>180?1:0;
+    d=`M${p1.x},${p1.y}A${r},${r} 0 ${lg} 0 ${p2.x},${p2.y}`;
   }
-
-  defs.appendChild(mk("path",{id,d:pathD,fill:"none"}));
-  
-  // Standard bidi handling instead of reversing the array string
+  defs.appendChild(mk("path",{id,d,fill:"none"}));
   const tEl=mk("text",{class:cls,"font-size":fs});
-  if(flt)tEl.setAttribute("filter",flt);
+  if(flt) tEl.setAttribute("filter",flt);
   const tp=mk("textPath",{href:`#${id}`,startOffset:"50%","text-anchor":"middle"});
-  
   tp.textContent=text;
   tEl.appendChild(tp);
   g.appendChild(tEl);
 }
 
-/* ═══ DRAW RING ═══ */
-function drawRing(g,defs,cx,cy,r1,r2,items,maxFsMain,maxFsSefi){
-  const n=items.length,step=360/n,rH=r2-r1,rMid=(r1+r2)/2;
-  const CRAT=0.65;
+/* ═══════════════════════════════════════
+   DRAW GENERIC RING
+═══════════════════════════════════════ */
+function drawRing(g,defs,cx,cy,r1,r2,items,mxMain,mxSefi) {
+  const n=items.length,step=360/n,rH=r2-r1,rMid=(r1+r2)/2,CRAT=.65;
 
   items.forEach((item,i)=>{
     const s=i*step,e=s+step;
-    if(item.active){
-      g.appendChild(mk("path",{d:sp(cx,cy,r1-1,r2+2,s,e),fill:"rgba(255,200,0,.12)",filter:"url(#glow2)"}));
+    const sk=item.sefi?sKey(item.sefi):null;
+
+    if (item.active) {
+      const hFill=sk
+        ? SEFI_COLOR[sk].replace('.95)','.20)')
+        : 'rgba(255,210,0,.15)';
+      g.appendChild(mk("path",{d:segPath(cx,cy,r1-2,r2+2.5,s,e),fill:hFill,filter:"url(#glow2)"}));
     }
-    const seg=mk("path",{d:sp(cx,cy,r1,r2,s,e),class:"seg "+(item.active?"seg-act":"seg-dim")});
-    if(item.active)seg.setAttribute("filter","url(#glow1)");
+
+    const segCls=item.active
+      ? "seg "+(sk?"seg-"+sk:"seg-act")
+      : "seg seg-dim";
+    const seg=mk("path",{d:segPath(cx,cy,r1,r2,s,e),class:segCls});
+    if(item.active) seg.setAttribute("filter","url(#glow1)");
     g.appendChild(seg);
 
-    const arcA=2*Math.PI*rMid*(step/360);
-    const hasSefi=!!item.sefi;
-    const twoLine=hasSefi&&rH>=13;
-
+    const arcLen=2*Math.PI*rMid*(step/360);
+    const twoLine=!!item.sefi&&rH>=13;
     let rMain,fsMain,rSefi,fsSefi;
+
     if(twoLine){
-      rMain=r1+rH*0.70; rSefi=r1+rH*0.28;
-      fsMain=Math.min(Math.max(arcA/(item.label.length*CRAT),4),maxFsMain||rH*0.44);
-      fsSefi=Math.min(Math.max(arcA/(item.sefi.length*CRAT),3.2),maxFsSefi||rH*0.28);
+      rMain=r1+rH*.70; rSefi=r1+rH*.28;
+      fsMain=Math.min(Math.max(arcLen/(item.label.length*CRAT),4),mxMain||rH*.44);
+      fsSefi=Math.min(Math.max(arcLen/(item.sefi.length*CRAT),3.2),mxSefi||rH*.28);
     } else {
       rMain=rMid;
-      fsMain=Math.min(Math.max(arcA/(item.label.length*CRAT),4),maxFsMain||rH*0.65);
-      fsSefi=0;
+      fsMain=Math.min(Math.max(arcLen/(item.label.length*CRAT),4),mxMain||rH*.65);
     }
 
-    ctext(g,defs,cx,cy,rMain,s,e,item.label,
-      item.active?"rl-act":"rl", fsMain, item.active?"url(#tglow2)":null);
+    const lCls=item.active?(item.partzuf?"rl-ptz-act":"rl-act"):(item.partzuf?"rl-ptz":"rl");
+    ctext(g,defs,cx,cy,rMain,s,e,item.label,lCls,fsMain,item.active?"url(#tglow2)":null);
 
-    if(twoLine&&item.sefi){
-      ctext(g,defs,cx,cy,rSefi,s,e,item.sefi,
-        sefiCls(item.sefi), fsSefi, null);
-    }
+    if(twoLine&&item.sefi)
+      ctext(g,defs,cx,cy,rSefi,s,e,item.sefi,sSvgCls(item.sefi),fsSefi,null);
   });
 }
 
-/* ═══ HOUR NAME RING ═══ */
-function drawHourRing(g,defs,cx,cy,r1,r2,curH){
-  const step=360/24,rH=r2-r1,rMid=(r1+r2)/2;
-  const CRAT=0.62;
+/* ═══════════════════════════════════════
+   DRAW HOUR RING
+═══════════════════════════════════════ */
+function drawHourRing(g,defs,cx,cy,r1,r2,curH) {
+  const step=360/24,rH=r2-r1,rMid=(r1+r2)/2,CRAT=.62;
 
   for(let i=0;i<24;i++){
     const s=i*step,e=s+step,active=i===curH;
+    const sk=sKey(HOUR_SEF[i]);
+
     if(active){
-      g.appendChild(mk("path",{d:sp(cx,cy,r1-1,r2+2,s,e),fill:"rgba(255,200,0,.15)",filter:"url(#glow2)"}));
+      g.appendChild(mk("path",{
+        d:segPath(cx,cy,r1-2,r2+2.5,s,e),
+        fill:SEFI_COLOR[sk].replace('.95)','.18)'),
+        filter:"url(#glow2)"
+      }));
     }
-    const seg=mk("path",{d:sp(cx,cy,r1,r2,s,e),class:"seg "+(active?"seg-act":"seg-dim")});
-    if(active)seg.setAttribute("filter","url(#glow1)");
+
+    const seg=mk("path",{
+      d:segPath(cx,cy,r1,r2,s,e),
+      class:"seg "+(active?"seg-"+sk:"seg-dim")
+    });
+    if(active) seg.setAttribute("filter","url(#glow1)");
     g.appendChild(seg);
 
-    const arcA=2*Math.PI*rMid*(step/360);
-    const words=hourNames[i].split(" ");
+    const arcLen=2*Math.PI*rMid*(step/360);
+    const words=HOUR_NAMES[i].split(" ");
     const maxW=Math.max(...words.map(w=>w.length));
-    const fsW=Math.min(Math.max(arcA/(maxW*CRAT),3.2), rH*0.34);
-
-    const rW1=r1+rH*0.73, rW2=r1+rH*0.33;
+    const fsW=Math.min(Math.max(arcLen/(maxW*CRAT),3.2),rH*.34);
+    const rW1=r1+rH*.73,rW2=r1+rH*.33;
     const lCls=active?"hn-act":"hn";
     const lFlt=active?"url(#tglow2)":null;
 
     ctext(g,defs,cx,cy,rW1,s,e,words[0],lCls,fsW,lFlt);
-    if(words[1])ctext(g,defs,cx,cy,rW2,s,e,words[1],lCls,fsW,lFlt);
+    if(words[1]) ctext(g,defs,cx,cy,rW2,s,e,words[1],lCls,fsW,lFlt);
 
     if(active){
-      const fsS=Math.min(Math.max(arcA/(hourSefirot[i].length*CRAT),3),rH*0.18);
-      ctext(g,defs,cx,cy,r1+rH*0.10,s,e,hourSefirot[i],sefiCls(hourSefirot[i]),fsS,null);
+      const sefi=HOUR_SEF[i];
+      const fsS=Math.min(Math.max(arcLen/(sefi.length*CRAT),2.8),rH*.18);
+      ctext(g,defs,cx,cy,r1+rH*.10,s,e,sefi,sSvgCls(sefi),fsS,null);
     }
   }
 }
 
-/* ═══ GLOW NAME ═══ */
-function glowName(str){
-  return str.split(" ").map(w=>{
-    const c=w.split("").map((ch,i)=>{
-      const d=i<w.length-1?`<span class="dash-sep">-</span>`:"";
-      return`<span class="fc"><span class="b">${ch}</span><span class="g">${ch}</span><span class="s">${ch}</span></span>${d}`;
+/* ═══════════════════════════════════════
+   GLOW NAME
+═══════════════════════════════════════ */
+function buildGlowName(str) {
+  return str.split(" ").map(word=>{
+    const chars=word.split("").map((ch,i)=>{
+      const dash=i<word.length-1?`<span class="dash-sep">-</span>`:"";
+      return `<span class="fc"><span class="b">${ch}</span><span class="g">${ch}</span><span class="s">${ch}</span></span>${dash}`;
     }).join("");
-    return`<span class="name-word">${c}</span>`;
-  }).join(`<span style="display:inline-block;width:1.8vw"></span>`);
+    return `<span class="name-word">${chars}</span>`;
+  }).join(`<span style="display:inline-block;width:clamp(6px,1.4vw,18px)"></span>`);
 }
 
-/* ═══ WHEEL ═══ */
-function buildWheel(cur){
+/* ═══════════════════════════════════════
+   WHEEL
+═══════════════════════════════════════ */
+function buildWheel(cur) {
   const track=document.getElementById("wheel-track");
   const wheel=document.getElementById("hour-wheel");
-  const iW=Math.max(46,wheel.offsetWidth*0.13);
+  const iW=Math.min(Math.max(44,wheel.offsetWidth*.13),100);
   track.innerHTML="";
   for(let i=0;i<24;i++){
+    const adj=Math.abs(i-cur)===1||Math.abs(i-cur)===23;
     const d=document.createElement("div");
-    d.className="wi"+(i===cur?" active":"");
+    d.className="wi"+(i===cur?" active":adj?" near":"");
     d.style.width=iW+"px";
     const h12=(i%12)||12,ap=i<12?"AM":"PM";
-    d.innerHTML=`<div class="wh">${h12}${ap}</div><div class="wn">${hourNames[i]}</div><div class="ws">${hourSefirot[i]}</div>`;
+    d.innerHTML=
+      `<div class="wh">${h12}${ap}</div>`+
+      `<div class="wn">${HOUR_NAMES[i]}</div>`+
+      `<div class="ws">${HOUR_SEF[i]}</div>`;
     track.appendChild(d);
   }
   track.style.transform=`translateX(${-(cur*iW-wheel.offsetWidth/2+iW/2)}px)`;
 }
 
-/* ═══ FIRE ═══ */
-function animateFire(){
+/* ═══════════════════════════════════════
+   FIRE
+═══════════════════════════════════════ */
+function animateFire() {
   const fb=document.getElementById("fireBg");
   let t=0;
   setInterval(()=>{
-    t+=0.07;
-    const op=0.55+Math.sin(t)*0.17+Math.sin(t*2.1)*0.09;
+    t+=.06;
+    const op=.60+Math.sin(t)*.18+Math.sin(t*2.4+1)*.09;
     fb.setAttribute("opacity",op.toFixed(3));
   },40);
 }
 
-/* ═══ MAIN UPDATE ═══ */
-let lastH=-1;
-function update(){
+/* ═══════════════════════════════════════
+   MAIN UPDATE
+═══════════════════════════════════════ */
+let lastHour=-1;
+
+function update() {
   const now=new Date(),h=now.getHours();
-  const mm=String(now.getMinutes()).padStart(2,'0'),ss=String(now.getSeconds()).padStart(2,'0');
-  const h12=(h%12)||12,ap=h<12?"AM":"PM";
-  document.getElementById("clock").textContent=`${h12}:${mm}:${ss} ${ap}`;
-  if(h===lastH)return;
-  lastH=h;
+  const heb=getHebDate();
+  const dayJs=now.getDay();
+  const week=Math.ceil(heb.d/7);
+  const mi=mIdx(heb.m);
+  const sPos=heb.y%7;
+  const yY=heb.y%50||50;
+  const yFull    = fullYearStr(heb.y);
+  const yComps   = yearComponents(heb.y);
+  /* week sefirah computed inline in weekPill below */
+  const mSef     = MONTH_SEF[Math.max(0,mi)];
+  const dom      = toHN(heb.d);
+  const domSef   = domSefirah(heb.d);
+  const isRC     = isRoshChodesh(heb.d);
 
-  document.getElementById("name-wrap").innerHTML=glowName(hourNames[h]);
+  lastHour=h;
 
-  const heb=getHeb(),dayJs=now.getDay(),week=Math.ceil(heb.d/7);
-  const mi=mIdx(heb.m),sPos=heb.y%7,yY=heb.y%50||50;
-  const yLet=yearL(heb.y),yS=yLet.split("").map(l=>`${l}(${letterSef[l]||""})`).join(" ");
-  const ptz=weekPartzuf[week-1]||"–";
+  /* Header name */
+  document.getElementById("name-wrap").innerHTML=buildGlowName(HOUR_NAMES[h]);
 
-  document.getElementById("date-line").innerHTML=
-    `יום <b>${dayNames[dayJs].replace("יום ","")}</b> (${daySefirot[dayJs]}) &nbsp;·&nbsp; `+
-    `שבוע <b>${toHN(week)}</b> (${ptz}) &nbsp;·&nbsp; `+
-    `<b>${heb.m}</b> (${monthSefirot[Math.max(0,mi)]}) &nbsp;·&nbsp; שנה <b>${heb.y}</b><br>`+
-    `<span class="sub">${yS} &nbsp;|&nbsp; שמיטה <b>${shmitaLabels[sPos]}</b> &nbsp;|&nbsp; ${toHN(yY)}״ ליובל</span>`;
+  /* ── DATE TITLE ──
+   * Row 1 (headline): ג באייר ה׳תשפ״ו  (big, glowing)
+   * Row 2 (pills):    יום החודש pill · יום השבוע pill · שבוע pill · חודש pill · שמיטה pill
+   * Row 3 (year):     each year component as a colored chip + yovel
+   */
 
+  /* Row 1 — big headline */
+  const rcBadge = isRC ? `<span class="dl-rc-badge">ראש חודש</span>` : "";
+  const row1 =
+    `<div class="dl-headline">`+
+    rcBadge+
+    `<span class="dl-dom-num">${dom}</span>`+
+    `<span class="dl-month-nm">ב${heb.m}</span>`+
+    `<span class="dl-year-nm">${yFull}</span>`+
+    `</div>`;
+
+  /* ── Row 2 — attribute pills with abbreviation status lines ── */
+
+  /* יום בחודש pill — uses 8-abbrev (includes כתר for ראש חודש) */
+  const domPillKey = domSef === 'כתר' ? 'keter' : sKey(domSef);
+  const domPill =
+    `<span class="pill pill-${domPillKey}">`+
+    `<span class="pill-body"><span class="pill-name">${dom} בחודש</span><span class="pill-tag">${domSef}</span></span>`+
+    `<span class="sab-line">${sefAbbrev8(domSef)}</span>`+
+    `</span>`;
+
+  /* יום השבוע — 7-cycle */
+  const dayPill = pill(DAY_NAMES[dayJs], DAY_SEF[dayJs], sefAbbrev7(DAY_SEF[dayJs]));
+
+  /* שבוע בחודש — 4-cycle: חכמה בינה תפארת מלכות */
+  const weekPtz  = WEEK_PTZ[(week-1)%4]||'מלכות';
+  const weekPill = pill(`שבוע ${toHN(week)}`, weekPtz, sefAbbrev4(weekPtz));
+
+  /* חודש — 7-cycle */
+  const monthPill = pill(heb.m, mSef, sefAbbrev7(mSef));
+
+  /* שמיטה — 7-cycle */
+  const shmitaPill = pill(`שמיטה ${SHMITA_L[sPos]}`, SHMITA_SEF[sPos], sefAbbrev7(SHMITA_SEF[sPos]));
+
+  const row2 =
+    `<div class="dl-pills">`+
+    domPill+
+    `<span class="dl-dot">·</span>`+
+    dayPill+
+    `<span class="dl-dot">·</span>`+
+    weekPill+
+    `<span class="dl-dot">·</span>`+
+    monthPill+
+    `<span class="dl-dot">·</span>`+
+    shmitaPill+
+    `</div>`;
+
+  /* ── Row 3 — year place-value chips with abbreviation + yovel ── */
+  /* For each year component we show: letter — sefirah — abbrev status
+   * Units & Tens & Hundreds: 7-cycle (no כתר)
+   * Millennium: uses MIL_SEF so כתר possible → 8-abbrev
+   */
+  const yvChips = yComps.map((c,ci) => {
+    const abbr = ci===0 ? sefAbbrev8(c.sef) : sefAbbrev7(c.sef);
+    const k = c.sef === 'כתר' ? 'keter' : sKey(c.sef);
+    return `<span class="yv-chip dl-s-${k}">`+
+      `<span class="yv-top">`+
+      `<span class="yv-str">${c.str}</span>`+
+      `<span class="yv-dash">—</span>`+
+      `<span class="yv-sef">${c.sef}</span>`+
+      `</span>`+
+      `<span class="sab-line">${abbr}</span>`+
+      `</span>`;
+  }).join(' ');
+
+  const row3 =
+    `<div class="dl-sub">`+
+    yvChips+
+    `<span class="dl-dot">|</span>`+
+    `<span class="dl-yovel">${toHN(yY)}״ ליובל</span>`+
+    `</div>`;
+
+  document.getElementById("date-line").innerHTML = row1+row2+row3;
+
+  /* SVG rings */
   const rG=document.getElementById("rings");
   const defs=document.getElementById("arcDefs");
   rG.innerHTML=""; defs.innerHTML=""; _pid=0;
   const CX=220,CY=220;
 
   drawHourRing(rG,defs,CX,CY,78,118,h);
-  drawRing(rG,defs,CX,CY,120,142,
-    dayNames.map((d,i)=>({label:d.replace("יום ",""),sefi:daySefirot[i],active:i===dayJs})),7,5);
-  drawRing(rG,defs,CX,CY,144,162,
-    weekPartzuf.map((p,i)=>({label:`שבוע ${toHN(i+1)}`,sefi:p,active:(i+1)===week})),6.5,5);
-  drawRing(rG,defs,CX,CY,164,186,
-    monthNames.map((m,i)=>({label:m,sefi:monthSefirot[i],active:i===mi})),6,4.5);
-  drawRing(rG,defs,CX,CY,188,203,
-    shmitaLabels.map((s,i)=>({label:s,sefi:shmitaSefirot[i],active:i===sPos})),5.5,4);
 
-  // Yovel progress arc
+  drawRing(rG,defs,CX,CY,120,142,
+    DAY_NAMES.map((d,i)=>({label:d.replace("יום ",""),sefi:DAY_SEF[i],active:i===dayJs})),7,5);
+
+  drawRing(rG,defs,CX,CY,144,162,
+    WEEK_PTZ.map((p,i)=>({label:`שבוע ${toHN(i+1)}`,sefi:p,active:(i+1)===week,partzuf:true})),6.5,5);
+
+  drawRing(rG,defs,CX,CY,164,186,
+    MONTH_NAMES.map((m,i)=>({label:m,sefi:MONTH_SEF[i],active:i===mi})),6,4.5);
+
+  drawRing(rG,defs,CX,CY,188,203,
+    SHMITA_L.map((s,i)=>({label:s,sefi:SHMITA_SEF[i],active:i===sPos})),5.5,4);
+
+  /* Yovel arc */
   const yR=210;
-  rG.appendChild(mk("circle",{cx:CX,cy:CY,r:yR,fill:"none",stroke:"rgba(255,215,0,.09)","stroke-width":"6"}));
-  const yDeg=(yY/50)*360;
-  if(yDeg>0){
-    const yp1=pxy(CX,CY,yR,-90),yp2=pxy(CX,CY,yR,yDeg-90),ylg=yDeg>180?1:0;
-    rG.appendChild(mk("path",{
-      d:`M${yp1.x},${yp1.y}A${yR},${yR} 0 ${ylg} 1 ${yp2.x},${yp2.y}`,
-      fill:"none",stroke:"rgba(255,205,0,.65)","stroke-width":"6",
-      "stroke-linecap":"round",filter:"url(#glow1)"
-    }));
+  rG.appendChild(mk("circle",{cx:CX,cy:CY,r:yR,fill:"none",stroke:"rgba(255,220,0,.08)","stroke-width":"6"}));
+  if(yY>0){
+    const yDeg=(yY/50)*360;
+    const yp1=pt(CX,CY,yR,-90),yp2=pt(CX,CY,yR,yDeg-90),ylg=yDeg>180?1:0;
+    const yD=`M${yp1.x},${yp1.y}A${yR},${yR} 0 ${ylg} 1 ${yp2.x},${yp2.y}`;
+    rG.appendChild(mk("path",{d:yD,fill:"none",stroke:"rgba(255,210,0,.24)","stroke-width":"12","stroke-linecap":"round",filter:"url(#glow2)"}));
+    rG.appendChild(mk("path",{d:yD,fill:"none",stroke:"rgba(255,235,0,.82)","stroke-width":"4.5","stroke-linecap":"round",filter:"url(#yovGlow)"}));
   }
-  
-  // Yovel label 
   {
     const lid="ylb"+(++_pid);
-    const la=pxy(CX,CY,yR,-18),lb=pxy(CX,CY,yR,18);
+    const la=pt(CX,CY,yR,-22),lb=pt(CX,CY,yR,22);
     defs.appendChild(mk("path",{id:lid,d:`M${la.x},${la.y}A${yR},${yR} 0 0 1 ${lb.x},${lb.y}`,fill:"none"}));
-    const yt=mk("text",{"font-size":"8.5","font-family":"Frank Ruhl Libre,serif",
-      fill:"#FFD700",filter:"url(#tglow2)"});
+    const yt=mk("text",{"font-size":"8.5","font-family":"Frank Ruhl Libre,serif",fill:"rgba(255,238,0,.92)",filter:"url(#tglow)"});
     const ytp=mk("textPath",{href:`#${lid}`,startOffset:"50%","text-anchor":"middle"});
-    ytp.textContent=`${toHN(yY)}״ ליובל`; 
+    ytp.textContent=`${toHN(yY)}״ ליובל`;
     yt.appendChild(ytp); rG.appendChild(yt);
   }
 
-  /* CENTRE */
+  /* Centre */
   const cg=document.getElementById("cinfo");
   cg.innerHTML="";
-  const parts=hourNames[h].split(" ");
+  const [w1,w2]=HOUR_NAMES[h].split(" ");
+  const hSef=HOUR_SEF[h];
+  const hCol=sColor(hSef);
   [
-    {t:parts[0], fs:20, cls:"c-main", dy:-20, flt:"url(#tglow2)"},
-    {t:parts[1], fs:20, cls:"c-main", dy:3,   flt:"url(#tglow2)"},
-    {t:hourSefirot[h], fs:11, cls:"c-sub", dy:20, flt:null},
-    {t:`שעה ${toHN(h)}`,fs:10, cls:"c-sub", dy:33, flt:null},
+    {t:w1,    fs:20,fill:"#FFF9C4",flt:"url(#tglow2)",dy:-20,fw:"900"},
+    {t:w2,    fs:20,fill:"#FFF9C4",flt:"url(#tglow2)",dy:3,  fw:"900"},
+    {t:hSef,  fs:11,fill:hCol,     flt:"url(#tglow)", dy:21, fw:"700"},
+    {t:`שעה ${toHN(h)}`,fs:10,fill:"rgba(215,182,42,.90)",flt:null,dy:34,fw:"400"},
   ].forEach(ln=>{
-    const e=mk("text",{x:CX,y:CY+ln.dy,class:ln.cls,"font-size":ln.fs});
-    if(ln.flt)e.setAttribute("filter",ln.flt);
-    e.textContent=ln.t; cg.appendChild(e);
+    const el=mk("text",{x:CX,y:CY+ln.dy,"font-size":ln.fs,
+      "font-family":"Frank Ruhl Libre,serif",fill:ln.fill,
+      "font-weight":ln.fw,"text-anchor":"middle","dominant-baseline":"central"});
+    if(ln.flt) el.setAttribute("filter",ln.flt);
+    el.textContent=ln.t;
+    cg.appendChild(el);
   });
 
-  document.getElementById("fireBg").setAttribute("opacity","0.6");
+  document.getElementById("fireBg").setAttribute("opacity","0.64");
   buildWheel(h);
 }
 
-function tick(){
+/* ═══════════════════════════════════════
+   TICK
+═══════════════════════════════════════ */
+function tick() {
   const now=new Date(),h=now.getHours();
-  const mm=String(now.getMinutes()).padStart(2,'0'),ss=String(now.getSeconds()).padStart(2,'0');
+  const mm=String(now.getMinutes()).padStart(2,'0');
+  const ss=String(now.getSeconds()).padStart(2,'0');
   const h12=(h%12)||12,ap=h<12?"AM":"PM";
   document.getElementById("clock").textContent=`${h12}:${mm}:${ss} ${ap}`;
-  if(h!==lastH)update();
+  if(h!==lastHour) update();
 }
 
+/* ═══════════════════════════════════════
+   RESIZE — recenter wheel
+═══════════════════════════════════════ */
+let _rt;
+window.addEventListener("resize",()=>{
+  clearTimeout(_rt);
+  _rt=setTimeout(()=>buildWheel(lastHour),120);
+});
+
+/* ═══════════════════════════════════════
+   BOOT
+═══════════════════════════════════════ */
 update();
 animateFire();
 setInterval(tick,1000);

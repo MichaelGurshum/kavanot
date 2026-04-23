@@ -154,10 +154,10 @@ body::after {
   justify-content: center;
   flex-wrap: wrap;
   gap: 0 .35em;
-  font-size: clamp(13px, 2.8vw, 30px);
+  font-size: clamp(16px, 3.6vw, 40px);
   font-weight: 900;
-  line-height: 1.5;
-  margin-bottom: .15em;
+  line-height: 1.4;
+  margin-bottom: .18em;
 }
 
 /* Row 2: attribute pills row */
@@ -167,8 +167,8 @@ body::after {
   justify-content: center;
   flex-wrap: wrap;
   gap: clamp(3px,.5vw,8px) clamp(5px,1vw,14px);
-  font-size: clamp(8px, 1.55vw, 17px);
-  margin-bottom: .1em;
+  font-size: clamp(9px, 1.8vw, 20px);
+  margin-bottom: .12em;
 }
 
 /* Row 3: year breakdown + shmita */
@@ -178,9 +178,9 @@ body::after {
   justify-content: center;
   flex-wrap: wrap;
   gap: clamp(2px,.4vh,6px) clamp(6px,1.2vw,16px);
-  font-size: clamp(8px, 1.55vw, 17px);
+  font-size: clamp(9px, 1.75vw, 19px);
   font-weight: 400;
-  opacity: .94;
+  opacity: 1;
 }
 
 /* A sefirah "pill" — colored label + tag */
@@ -192,12 +192,20 @@ body::after {
   padding: .12em .45em .14em;
   border-radius: 5px;
   border: 1px solid currentColor;
-  opacity: .88;
+  opacity: 1;
   text-align: center;
 }
 .pill .pill-body { display:inline-flex; align-items:baseline; gap:.25em; }
-.pill .pill-name { font-weight: 700; white-space:nowrap; }
+.pill .pill-name { font-weight: 900; white-space:nowrap; }
 .pill .pill-tag  { font-size: .76em; font-weight: 400; opacity: .82; white-space:nowrap; }
+.pill .pill-ptz  {
+  font-size: .72em; font-weight: 700; opacity: .90;
+  color: #FFE57F;
+  text-shadow: 0 0 6px rgba(255,230,80,.6);
+  white-space: nowrap;
+  margin-top: .05em;
+  letter-spacing: .02em;
+}
 
 /* Pill color variants */
 .pill-keter   { color:#E8E8FF; border-color:rgba(232,232,255,.4); background:rgba(232,232,255,.07); }
@@ -208,6 +216,7 @@ body::after {
 .pill-hod     { color:var(--hod);     border-color:rgba(234,128,252,.4); background:rgba(234,128,252,.08); }
 .pill-yesod   { color:var(--yesod);   border-color:rgba(179,136,255,.4); background:rgba(179,136,255,.08); }
 .pill-malchut { color:var(--malchut); border-color:rgba(255,145,0,.4);   background:rgba(255,145,0,.08); }
+/* dl-shmita-badge removed — shmita now uses full pill */
 
 /* Year place-value chip */
 .yv-chip {
@@ -218,7 +227,7 @@ body::after {
   padding: .1em .35em .12em;
   border-radius: 4px;
   border: 1px solid currentColor;
-  opacity: .90;
+  opacity: 1;
   text-align: center;
 }
 /* Top row: letter — sefirah */
@@ -232,14 +241,14 @@ body::after {
   display: inline-flex;
   align-items: center;
   gap: 0;
-  font-size: .78em;
+  font-size: .82em;
   font-weight: 700;
-  letter-spacing: .04em;
-  margin-top: .15em;
+  letter-spacing: .05em;
+  margin-top: .18em;
   direction: rtl;
 }
 .sab-sep  { color:rgba(255,220,0,.20); font-size:.65em; margin:0 .05em; font-weight:300; }
-.sab-dim  { color:rgba(255,255,255,.18); font-weight:400; }
+.sab-dim  { color:rgba(255,255,255,.55); font-weight:500; text-shadow:0 0 4px rgba(255,255,255,.25); }
 
 /* Active letter — colored by sefirah */
 .sab-active       { font-weight:900; }
@@ -256,10 +265,10 @@ body::after {
 .dl-dot { color:rgba(255,220,0,.22); margin: 0 .15em; font-weight:300; }
 
 /* Headline tokens */
-.dl-dom-num  { color:#FFF9C4; text-shadow:0 0 8px rgba(255,240,0,.7),0 0 20px rgba(255,200,0,.4); }
-.dl-month-nm { color:#B9F6CA; text-shadow:0 0 8px rgba(0,230,120,.5); }
-.dl-year-nm  { color:#EA80FC; letter-spacing:.06em;
-               text-shadow:0 0 10px rgba(234,128,252,.75),0 0 24px rgba(180,50,255,.3); }
+.dl-dom-num  { color:#FFFFFF; font-weight:900; text-shadow:0 0 6px #fff,0 0 14px rgba(255,240,0,.9),0 0 28px rgba(255,200,0,.6); }
+.dl-month-nm { color:#CCFFDD; font-weight:900; text-shadow:0 0 8px rgba(0,240,130,.8),0 0 20px rgba(0,200,100,.5); }
+.dl-year-nm  { color:#F3ADFF; font-weight:900; letter-spacing:.08em;
+               text-shadow:0 0 8px #f3adff,0 0 18px rgba(234,128,252,.9),0 0 35px rgba(180,50,255,.5); }
 .dl-rc-badge {
   display:inline-block;
   color:#E8E8FF; font-size:.72em; font-weight:700;
@@ -409,6 +418,7 @@ body::after {
 .rl-ptz-act { font-family:'Frank Ruhl Libre',serif; fill:#FFD180; font-weight:900; }
 
 /* Sefirah sub-labels — vivid */
+.rs-keter   { font-family:'Frank Ruhl Libre',serif; fill:#E8E8FF; filter:url(#tglow); }
 .rs-chesed  { font-family:'Frank Ruhl Libre',serif; fill:#64B5F6; }
 .rs-gevurah { font-family:'Frank Ruhl Libre',serif; fill:#EF9A9A; }
 .rs-tiferet { font-family:'Frank Ruhl Libre',serif; fill:#FFE57F; }
@@ -418,12 +428,17 @@ body::after {
 .rs-malchut { font-family:'Frank Ruhl Libre',serif; fill:#FFCC80; }
 
 /* Hour name ring */
-.hn     { font-family:'Frank Ruhl Libre',serif; fill:rgba(200,160,20,.68); }
+.hn     { font-family:'Frank Ruhl Libre',serif; fill:rgba(220,175,30,.82);
+          filter:url(#tglow); }
 .hn-act { font-family:'Frank Ruhl Libre',serif; fill:#FFFFFF; font-weight:900; }
+/* Hour number label — dimmer than the name, smaller */
+.hn-num { font-family:'Frank Ruhl Libre',serif; fill:rgba(180,140,20,.55); font-weight:400; }
 
 /* Centre */
-.c-main { font-family:'Frank Ruhl Libre',serif; fill:#FFF9C4; font-weight:900; text-anchor:middle; dominant-baseline:central; }
-.c-sub  { font-family:'Frank Ruhl Libre',serif; fill:rgba(220,188,50,.90); text-anchor:middle; dominant-baseline:central; }
+.c-main { font-family:'Frank Ruhl Libre',serif; fill:#FFFFFF; font-weight:900; text-anchor:middle; dominant-baseline:central;
+          filter:url(#tglow2); }
+.c-sub  { font-family:'Frank Ruhl Libre',serif; fill:rgba(235,200,60,.95); text-anchor:middle; dominant-baseline:central;
+          filter:url(#tglow); }
 </style>
 </head>
 <body>
@@ -591,16 +606,23 @@ function dlSef(s) {
 
 /* pill(name, sefirah, abbrevHtml) — colored bordered chip with optional status line */
 function pill(name, sef, abbrevHtml) {
+  return pillWithExtra(name, sef, abbrevHtml, null);
+}
+
+/* pillWithExtra — pill with optional extra HTML row below the abbrev line */
+function pillWithExtra(name, sef, abbrevHtml, extraHtml) {
   const k = sef === 'כתר' ? 'keter' : sKey(sef);
   const abLine = abbrevHtml
     ? `<span class="sab-line">${abbrevHtml}</span>`
     : '';
+  const exLine = extraHtml || '';
   return `<span class="pill pill-${k}">`+
     `<span class="pill-body">`+
     `<span class="pill-name">${name}</span>`+
     `<span class="pill-tag">${sef}</span>`+
     `</span>`+
     abLine+
+    exLine+
     `</span>`;
 }
 
@@ -791,6 +813,20 @@ function mIdx(name) {
   return MONTH_NAMES.findIndex(mn=>mn===name||name.includes(mn)||mn.includes(name));
 }
 
+/*
+ * Month partzuf/filling label:
+ *   Summer months (ניסן=6 through אלול=11, plus תשרי=0):
+ *     ב״ן דמ״ה וב״ן דב״ן
+ *   Winter months (חשוון=1 through אדר=5):
+ *     מ״ה דמ״ה ומ״ה דב״ן
+ */
+function monthPartzuf(mi) {
+  const summer = [0,6,7,8,9,10,11]; // תשרי + ניסן through אלול
+  return summer.includes(mi)
+    ? 'ב״ן דמ״ה וב״ן דב״ן'
+    : 'מ״ה דמ״ה ומ״ה דב״ן';
+}
+
 function pt(cx,cy,r,deg) {
   const a=(deg-90)*Math.PI/180;
   return {x:cx+r*Math.cos(a),y:cy+r*Math.sin(a)};
@@ -902,20 +938,62 @@ function drawHourRing(g,defs,cx,cy,r1,r2,curH) {
     const arcLen=2*Math.PI*rMid*(step/360);
     const words=HOUR_NAMES[i].split(" ");
     const maxW=Math.max(...words.map(w=>w.length));
-    const fsW=Math.min(Math.max(arcLen/(maxW*CRAT),3.2),rH*.34);
-    const rW1=r1+rH*.73,rW2=r1+rH*.33;
+
+    /* Layout from outer→inner:
+     *  r1+rH*.88  — hour number (1-12 AM/PM)
+     *  r1+rH*.66  — name word 1
+     *  r1+rH*.30  — name word 2
+     *  r1+rH*.10  — sefirah (active only)
+     */
+    const fsH=Math.min(Math.max(arcLen/(4*CRAT),2.8),rH*.20);  // hour num font
+    const fsW=Math.min(Math.max(arcLen/(maxW*CRAT),3.0),rH*.30); // name font
     const lCls=active?"hn-act":"hn";
     const lFlt=active?"url(#tglow2)":null;
 
-    ctext(g,defs,cx,cy,rW1,s,e,words[0],lCls,fsW,lFlt);
-    if(words[1]) ctext(g,defs,cx,cy,rW2,s,e,words[1],lCls,fsW,lFlt);
+    // Hour number label  e.g. "12AM" or "3PM"
+    const h12=(i%12)||12, ap=i<12?"AM":"PM";
+    const hourLabel=`${h12}${ap}`;
+    const hNumCls=active?"hn-act":"hn-num";
+    ctext(g,defs,cx,cy,r1+rH*.88,s,e,hourLabel,hNumCls,fsH,active?"url(#tglow2)":null);
 
-    if(active){
-      const sefi=HOUR_SEF[i];
-      const fsS=Math.min(Math.max(arcLen/(sefi.length*CRAT),2.8),rH*.18);
-      ctext(g,defs,cx,cy,r1+rH*.10,s,e,sefi,sSvgCls(sefi),fsS,null);
-    }
+    // Name words
+    ctext(g,defs,cx,cy,r1+rH*.66,s,e,words[0],lCls,fsW,lFlt);
+    if(words[1]) ctext(g,defs,cx,cy,r1+rH*.30,s,e,words[1],lCls,fsW,lFlt);
+
+    // Sefirah label removed from hour ring per user request
   }
+}
+
+/* ═══════════════════════════════════════
+   RING TITLE LABEL
+   Draws a short curved title at the top of a ring band
+   r = midpoint radius of the ring
+═══════════════════════════════════════ */
+function drawRingTitle(g, defs, cx, cy, r, title) {
+  const id = "rt" + (++_pid);
+  // Arc at the very top — from 265° to 275° (tiny 10° arc centred at top)
+  // We want the text to sit inside the ring gap at the 12-o'clock position
+  const span = 18; // degrees each side of top
+  const p1 = pt(cx, cy, r, -span), p2 = pt(cx, cy, r, span);
+  defs.appendChild(mk("path", {
+    id, fill: "none",
+    d: `M${p1.x},${p1.y}A${r},${r} 0 0 1 ${p2.x},${p2.y}`
+  }));
+  const txt = mk("text", {
+    "font-family": "Frank Ruhl Libre,serif",
+    "font-size": "5.5",
+    "font-weight": "900",
+    fill: "rgba(255,230,100,.70)",
+    filter: "url(#tglow)"
+  });
+  const tp = mk("textPath", {
+    href: `#${id}`,
+    startOffset: "50%",
+    "text-anchor": "middle"
+  });
+  tp.textContent = title;
+  txt.appendChild(tp);
+  g.appendChild(txt);
 }
 
 /* ═══════════════════════════════════════
@@ -947,8 +1025,7 @@ function buildWheel(cur) {
     const h12=(i%12)||12,ap=i<12?"AM":"PM";
     d.innerHTML=
       `<div class="wh">${h12}${ap}</div>`+
-      `<div class="wn">${HOUR_NAMES[i]}</div>`+
-      `<div class="ws">${HOUR_SEF[i]}</div>`;
+      `<div class="wn">${HOUR_NAMES[i]}</div>`;
     track.appendChild(d);
   }
   track.style.transform=`translateX(${-(cur*iW-wheel.offsetWidth/2+iW/2)}px)`;
@@ -979,7 +1056,7 @@ function update() {
   const week=Math.ceil(heb.d/7);
   const mi=mIdx(heb.m);
   const sPos=heb.y%7;
-  const yY=heb.y%50||50;
+  const yY=67; // יובל ס״ז — traditional count from entry into Eretz Yisrael
   const yFull    = fullYearStr(heb.y);
   const yComps   = yearComponents(heb.y);
   /* week sefirah computed inline in weekPill below */
@@ -1011,12 +1088,13 @@ function update() {
 
   /* ── Row 2 — attribute pills with abbreviation status lines ── */
 
-  /* יום בחודש pill — uses 8-abbrev (includes כתר for ראש חודש) */
+  /* יום בחודש pill — 8-cycle only when it IS כתר (ראש חודש), else 7-cycle */
   const domPillKey = domSef === 'כתר' ? 'keter' : sKey(domSef);
+  const domAbbrev  = domSef === 'כתר' ? sefAbbrev8(domSef) : sefAbbrev7(domSef);
   const domPill =
     `<span class="pill pill-${domPillKey}">`+
     `<span class="pill-body"><span class="pill-name">${dom} בחודש</span><span class="pill-tag">${domSef}</span></span>`+
-    `<span class="sab-line">${sefAbbrev8(domSef)}</span>`+
+    `<span class="sab-line">${domAbbrev}</span>`+
     `</span>`;
 
   /* יום השבוע — 7-cycle */
@@ -1026,11 +1104,14 @@ function update() {
   const weekPtz  = WEEK_PTZ[(week-1)%4]||'מלכות';
   const weekPill = pill(`שבוע ${toHN(week)}`, weekPtz, sefAbbrev4(weekPtz));
 
-  /* חודש — 7-cycle */
-  const monthPill = pill(heb.m, mSef, sefAbbrev7(mSef));
+  /* חודש — 7-cycle + summer/winter partzuf label */
+  const mPtz     = monthPartzuf(mi);
+  const mPtzHtml = `<span class="pill-ptz">${mPtz}</span>`;
+  const monthPill = pillWithExtra(heb.m, mSef, sefAbbrev7(mSef), mPtzHtml);
 
-  /* שמיטה — 7-cycle */
-  const shmitaPill = pill(`שמיטה ${SHMITA_L[sPos]}`, SHMITA_SEF[sPos], sefAbbrev7(SHMITA_SEF[sPos]));
+  /* שמיטה — full pill with sefirah + abbrev status */
+  const shmitaLabel = sPos===6 ? 'שנת שמיטה' : `שמיטה ${SHMITA_L[sPos]}`;
+  const shmitaPill  = pill(shmitaLabel, SHMITA_SEF[sPos], sefAbbrev7(SHMITA_SEF[sPos]));
 
   const row2 =
     `<div class="dl-pills">`+
@@ -1051,7 +1132,8 @@ function update() {
    * Millennium: uses MIL_SEF so כתר possible → 8-abbrev
    */
   const yvChips = yComps.map((c,ci) => {
-    const abbr = ci===0 ? sefAbbrev8(c.sef) : sefAbbrev7(c.sef);
+    // Only use 8-cycle (includes כ) when the sefirah actually IS כתר
+    const abbr = c.sef === 'כתר' ? sefAbbrev8(c.sef) : sefAbbrev7(c.sef);
     const k = c.sef === 'כתר' ? 'keter' : sKey(c.sef);
     return `<span class="yv-chip dl-s-${k}">`+
       `<span class="yv-top">`+
@@ -1063,11 +1145,21 @@ function update() {
       `</span>`;
   }).join(' ');
 
+  /* יובל ס״ז — hardcoded traditional count */
+  const yovelChip =
+    `<span class="yv-chip dl-s-yesod">`+
+    `<span class="yv-top">`+
+    `<span class="yv-str">יובל</span>`+
+    `<span class="yv-dash"> </span>`+
+    `<span class="yv-sef">ס״ז</span>`+
+    `</span>`+
+    `</span>`;
+
   const row3 =
     `<div class="dl-sub">`+
     yvChips+
     `<span class="dl-dot">|</span>`+
-    `<span class="dl-yovel">${toHN(yY)}״ ליובל</span>`+
+    yovelChip+
     `</div>`;
 
   document.getElementById("date-line").innerHTML = row1+row2+row3;
@@ -1089,28 +1181,15 @@ function update() {
   drawRing(rG,defs,CX,CY,164,186,
     MONTH_NAMES.map((m,i)=>({label:m,sefi:MONTH_SEF[i],active:i===mi})),6,4.5);
 
+  /* ── Shmita ring (188-203) ── */
   drawRing(rG,defs,CX,CY,188,203,
     SHMITA_L.map((s,i)=>({label:s,sefi:SHMITA_SEF[i],active:i===sPos})),5.5,4);
 
-  /* Yovel arc */
-  const yR=210;
-  rG.appendChild(mk("circle",{cx:CX,cy:CY,r:yR,fill:"none",stroke:"rgba(255,220,0,.08)","stroke-width":"6"}));
-  if(yY>0){
-    const yDeg=(yY/50)*360;
-    const yp1=pt(CX,CY,yR,-90),yp2=pt(CX,CY,yR,yDeg-90),ylg=yDeg>180?1:0;
-    const yD=`M${yp1.x},${yp1.y}A${yR},${yR} 0 ${ylg} 1 ${yp2.x},${yp2.y}`;
-    rG.appendChild(mk("path",{d:yD,fill:"none",stroke:"rgba(255,210,0,.24)","stroke-width":"12","stroke-linecap":"round",filter:"url(#glow2)"}));
-    rG.appendChild(mk("path",{d:yD,fill:"none",stroke:"rgba(255,235,0,.82)","stroke-width":"4.5","stroke-linecap":"round",filter:"url(#yovGlow)"}));
-  }
-  {
-    const lid="ylb"+(++_pid);
-    const la=pt(CX,CY,yR,-22),lb=pt(CX,CY,yR,22);
-    defs.appendChild(mk("path",{id:lid,d:`M${la.x},${la.y}A${yR},${yR} 0 0 1 ${lb.x},${lb.y}`,fill:"none"}));
-    const yt=mk("text",{"font-size":"8.5","font-family":"Frank Ruhl Libre,serif",fill:"rgba(255,238,0,.92)",filter:"url(#tglow)"});
-    const ytp=mk("textPath",{href:`#${lid}`,startOffset:"50%","text-anchor":"middle"});
-    ytp.textContent=`${toHN(yY)}״ ליובל`;
-    yt.appendChild(ytp); rG.appendChild(yt);
-  }
+  /* ── Ring title labels — drawn at 12-o'clock inside each ring band ── */
+  drawRingTitle(rG,defs,CX,CY,131,'יום');       // day ring mid  120-142
+  drawRingTitle(rG,defs,CX,CY,153,'שבוע');      // week ring mid 144-162
+  drawRingTitle(rG,defs,CX,CY,175,'חודש');      // month ring mid 164-186
+  drawRingTitle(rG,defs,CX,CY,196,'שמיטה');     // shmita ring mid 188-203
 
   /* Centre */
   const cg=document.getElementById("cinfo");
@@ -1119,10 +1198,9 @@ function update() {
   const hSef=HOUR_SEF[h];
   const hCol=sColor(hSef);
   [
-    {t:w1,    fs:20,fill:"#FFF9C4",flt:"url(#tglow2)",dy:-20,fw:"900"},
-    {t:w2,    fs:20,fill:"#FFF9C4",flt:"url(#tglow2)",dy:3,  fw:"900"},
-    {t:hSef,  fs:11,fill:hCol,     flt:"url(#tglow)", dy:21, fw:"700"},
-    {t:`שעה ${toHN(h)}`,fs:10,fill:"rgba(215,182,42,.90)",flt:null,dy:34,fw:"400"},
+    {t:w1,    fs:20,fill:"#FFF9C4",flt:"url(#tglow2)",dy:-14,fw:"900"},
+    {t:w2,    fs:20,fill:"#FFF9C4",flt:"url(#tglow2)",dy:9,  fw:"900"},
+    {t:`שעה ${toHN(h)}`,fs:10,fill:"rgba(215,182,42,.90)",flt:null,dy:28,fw:"400"},
   ].forEach(ln=>{
     const el=mk("text",{x:CX,y:CY+ln.dy,"font-size":ln.fs,
       "font-family":"Frank Ruhl Libre,serif",fill:ln.fill,

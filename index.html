@@ -25,7 +25,7 @@
   --yesod:     #B388FF;
   --malchut:   #FF9100;
 
-  --bg:        #05030D;
+  --bg:        #06040A;
   --text:      #F5E6C8;
 }
 
@@ -42,39 +42,25 @@ html, body {
   overflow: hidden;
 }
 
-/* ── Vivid jewel-tone ambient background ── */
+/* Multi-layer ambient glow */
 body::before {
   content: "";
   position: fixed; inset: 0; pointer-events: none; z-index: 0;
   background:
-    /* Central gold-amber crown */
-    radial-gradient(ellipse 70% 50% at 50% 30%,  rgba(255,200,0,.22)    0%, transparent 52%),
-    /* Chesed — electric blue, left */
-    radial-gradient(ellipse 45% 35% at 8% 42%,   rgba(30,140,255,.20)   0%, transparent 58%),
-    /* Gevurah — deep crimson, right */
-    radial-gradient(ellipse 45% 35% at 92% 42%,  rgba(220,40,60,.18)    0%, transparent 58%),
-    /* Netzach — vivid green, lower-left */
-    radial-gradient(ellipse 35% 28% at 15% 78%,  rgba(0,210,100,.16)    0%, transparent 55%),
-    /* Hod — magenta, lower-right */
-    radial-gradient(ellipse 35% 28% at 85% 78%,  rgba(210,80,255,.16)   0%, transparent 55%),
-    /* Yesod — violet, bottom-centre */
-    radial-gradient(ellipse 50% 30% at 50% 96%,  rgba(130,80,255,.18)   0%, transparent 58%),
-    /* Tiferet — warm yellow heart */
-    radial-gradient(ellipse 28% 22% at 50% 52%,  rgba(255,220,0,.10)    0%, transparent 48%),
-    /* Deep space base */
-    radial-gradient(ellipse 100% 100% at 50% 50%, rgba(15,8,35,.0) 0%, rgba(5,3,13,1) 100%);
+    radial-gradient(ellipse 80% 60% at 50% 35%,  rgba(255,190,0,.16)   0%, transparent 55%),
+    radial-gradient(ellipse 40% 30% at 10% 60%,  rgba(66,165,245,.11)  0%, transparent 55%),
+    radial-gradient(ellipse 40% 30% at 90% 60%,  rgba(179,136,255,.11) 0%, transparent 55%),
+    radial-gradient(ellipse 50% 35% at 50% 98%,  rgba(255,109,0,.14)   0%, transparent 60%),
+    radial-gradient(ellipse 30% 20% at 50% 52%,  rgba(0,230,118,.05)   0%, transparent 50%);
 }
 
-/* Animated shimmer overlay */
+/* Noise grain */
 body::after {
   content: "";
-  position: fixed; inset: 0; pointer-events: none; z-index: 0;
-  opacity: .022;
+  position: fixed; inset: 0; pointer-events: none; z-index: 0; opacity: .03;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   background-size: 180px 180px;
 }
-
-/* noise grain now part of body::after above */
 
 /* ═══════════════════════════════════════
    LAYOUT — grid, adapts to any aspect ratio
@@ -138,150 +124,35 @@ body::after {
 .dash-sep { color:rgba(255,200,0,.3); font-size:clamp(6px,1.6vw,15px); margin-bottom:1px; }
 
 /* Date line */
-/* ── DATE TITLE — big & detailed ── */
 #date-line {
-  font-size: clamp(10px, 2.1vw, 22px);
+  font-size: clamp(9px, 1.9vw, 20px);
   font-weight: 700;
-  padding: 0 clamp(4px,1vw,12px) clamp(2px,.3vh,6px);
-  line-height: 1.7;
+  padding: 0 clamp(4px,1vw,12px) clamp(2px,.25vh,5px);
+  line-height: 1.65;
   letter-spacing: .02em;
 }
-
-/* Row 1: big headline date */
-#date-line .dl-headline {
-  display: flex;
-  align-items: baseline;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 0 .35em;
-  font-size: clamp(16px, 3.6vw, 40px);
-  font-weight: 900;
-  line-height: 1.4;
-  margin-bottom: .18em;
-}
-
-/* Row 2: attribute pills row */
-#date-line .dl-pills {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: clamp(3px,.5vw,8px) clamp(5px,1vw,14px);
-  font-size: clamp(9px, 1.8vw, 20px);
-  margin-bottom: .12em;
-}
-
-/* Row 3: year breakdown + shmita */
-#date-line .dl-sub {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: clamp(2px,.4vh,6px) clamp(6px,1.2vw,16px);
-  font-size: clamp(9px, 1.75vw, 19px);
+#date-line .sub {
+  display: block;
+  font-size: clamp(7px, 1.5vw, 16px);
   font-weight: 400;
-  opacity: 1;
+  opacity: .93;
+  margin-top: 1px;
 }
 
-/* A sefirah "pill" — colored label + tag */
-.pill {
-  display: inline-flex;
-  flex-direction: column;
-  align-items: center;
-  gap: .05em;
-  padding: .12em .45em .14em;
-  border-radius: 5px;
-  border: 1px solid currentColor;
-  opacity: 1;
-  text-align: center;
+/* Date-line token colors */
+.dl-dot   { color:rgba(255,220,0,.22); margin:0 .18em; }
+.dl-day   { color:var(--gold3); text-shadow:0 0 8px rgba(255,240,0,.65); }
+.dl-week  { color:#80D8FF;  text-shadow:0 0 8px rgba(0,200,255,.5); }
+.dl-month { color:#B9F6CA;  text-shadow:0 0 8px rgba(0,230,120,.45); }
+.dl-year  {
+  color:#EA80FC; font-weight:900; letter-spacing:.07em;
+  text-shadow:0 0 10px rgba(234,128,252,.75),0 0 24px rgba(180,50,255,.35);
 }
-.pill .pill-body { display:inline-flex; align-items:baseline; gap:.25em; }
-.pill .pill-name { font-weight: 900; white-space:nowrap; }
-.pill .pill-tag  { font-size: .76em; font-weight: 400; opacity: .82; white-space:nowrap; }
-.pill .pill-ptz  {
-  font-size: .72em; font-weight: 700; opacity: .90;
-  color: #FFE57F;
-  text-shadow: 0 0 6px rgba(255,230,80,.6);
-  white-space: nowrap;
-  margin-top: .05em;
-  letter-spacing: .02em;
-}
+.dl-dom   { color:var(--malchut); font-weight:700; text-shadow:0 0 8px rgba(255,145,0,.55); }
+.dl-yovel { color:#FFD180; }
 
-/* Pill color variants */
-.pill-keter   { color:#E8E8FF; border-color:rgba(232,232,255,.4); background:rgba(232,232,255,.07); }
-.pill-chesed  { color:var(--chesed);  border-color:rgba(66,165,245,.4);  background:rgba(66,165,245,.08); }
-.pill-gevurah { color:var(--gevurah); border-color:rgba(239,83,80,.4);   background:rgba(239,83,80,.08); }
-.pill-tiferet { color:var(--tiferet); border-color:rgba(255,214,0,.4);   background:rgba(255,214,0,.08); }
-.pill-netzach { color:var(--netzach); border-color:rgba(0,230,118,.4);   background:rgba(0,230,118,.08); }
-.pill-hod     { color:var(--hod);     border-color:rgba(234,128,252,.4); background:rgba(234,128,252,.08); }
-.pill-yesod   { color:var(--yesod);   border-color:rgba(179,136,255,.4); background:rgba(179,136,255,.08); }
-.pill-malchut { color:var(--malchut); border-color:rgba(255,145,0,.4);   background:rgba(255,145,0,.08); }
-/* dl-shmita-badge removed — shmita now uses full pill */
-
-/* Year place-value chip */
-.yv-chip {
-  display: inline-flex;
-  flex-direction: column;
-  align-items: center;
-  gap: .06em;
-  padding: .1em .35em .12em;
-  border-radius: 4px;
-  border: 1px solid currentColor;
-  opacity: 1;
-  text-align: center;
-}
-/* Top row: letter — sefirah */
-.yv-chip .yv-top { display:inline-flex; align-items:baseline; gap:0; white-space:nowrap; }
-.yv-chip .yv-str  { font-weight: 900; font-size: 1em; }
-.yv-chip .yv-dash { font-weight:300; font-size:.85em; opacity:.50; margin:0 .2em; }
-.yv-chip .yv-sef  { font-size: .80em; font-weight: 400; opacity: .90; }
-
-/* ── Sefirah abbreviation status line ── */
-.sab-line {
-  display: inline-flex;
-  align-items: center;
-  gap: 0;
-  font-size: .82em;
-  font-weight: 700;
-  letter-spacing: .05em;
-  margin-top: .18em;
-  direction: rtl;
-}
-.sab-sep  { color:rgba(255,220,0,.20); font-size:.65em; margin:0 .05em; font-weight:300; }
-.sab-dim  { color:rgba(255,255,255,.55); font-weight:500; text-shadow:0 0 4px rgba(255,255,255,.25); }
-
-/* Active letter — colored by sefirah */
-.sab-active       { font-weight:900; }
-.sab-keter        { color:#E8E8FF; text-shadow:0 0 6px rgba(232,232,255,.9), 0 0 14px rgba(200,200,255,.5); }
-.sab-chesed       { color:var(--chesed);  text-shadow:0 0 6px rgba(66,165,245,.9), 0 0 14px rgba(66,165,245,.5); }
-.sab-gevurah      { color:var(--gevurah); text-shadow:0 0 6px rgba(239,83,80,.9),  0 0 14px rgba(239,83,80,.5); }
-.sab-tiferet      { color:var(--tiferet); text-shadow:0 0 6px rgba(255,214,0,.9),  0 0 14px rgba(255,214,0,.5); }
-.sab-netzach      { color:var(--netzach); text-shadow:0 0 6px rgba(0,230,118,.9),  0 0 14px rgba(0,230,118,.5); }
-.sab-hod          { color:var(--hod);     text-shadow:0 0 6px rgba(234,128,252,.9),0 0 14px rgba(234,128,252,.5); }
-.sab-yesod        { color:var(--yesod);   text-shadow:0 0 6px rgba(179,136,255,.9),0 0 14px rgba(179,136,255,.5); }
-.sab-malchut      { color:var(--malchut); text-shadow:0 0 6px rgba(255,145,0,.9),  0 0 14px rgba(255,145,0,.5); }
-
-/* Separator dots */
-.dl-dot { color:rgba(255,220,0,.22); margin: 0 .15em; font-weight:300; }
-
-/* Headline tokens */
-.dl-dom-num  { color:#FFFFFF; font-weight:900; text-shadow:0 0 6px #fff,0 0 14px rgba(255,240,0,.9),0 0 28px rgba(255,200,0,.6); }
-.dl-month-nm { color:#CCFFDD; font-weight:900; text-shadow:0 0 8px rgba(0,240,130,.8),0 0 20px rgba(0,200,100,.5); }
-.dl-year-nm  { color:#F3ADFF; font-weight:900; letter-spacing:.08em;
-               text-shadow:0 0 8px #f3adff,0 0 18px rgba(234,128,252,.9),0 0 35px rgba(180,50,255,.5); }
-.dl-rc-badge {
-  display:inline-block;
-  color:#E8E8FF; font-size:.72em; font-weight:700;
-  padding:.05em .4em; border-radius:3px;
-  border:1px solid rgba(232,232,255,.5);
-  background:rgba(232,232,255,.10);
-  text-shadow:0 0 8px rgba(220,220,255,.6);
-  vertical-align:middle; margin-right:.2em;
-}
-
-/* Sefirah tags inline */
+/* Sefirah tags */
 .dl-sef       { font-weight:400; font-size:.86em; }
-.dl-s-keter   { color:#E8E8FF;   text-shadow:0 0 6px rgba(232,232,255,.7); }
 .dl-s-chesed  { color:var(--chesed);  text-shadow:0 0 6px rgba(66,165,245,.75); }
 .dl-s-gevurah { color:var(--gevurah); text-shadow:0 0 6px rgba(239,83,80,.75); }
 .dl-s-tiferet { color:var(--tiferet); text-shadow:0 0 6px rgba(255,214,0,.75); }
@@ -291,11 +162,10 @@ body::after {
 .dl-s-malchut { color:var(--malchut); text-shadow:0 0 6px rgba(255,145,0,.75); }
 .dl-s-partzuf { color:#FFD180; }
 .dl-s-shmita  { color:#FFD600; }
-.dl-yovel     { color:#FFD180; }
-.dl-day       { color:var(--gold3); text-shadow:0 0 8px rgba(255,240,0,.65); }
-.dl-week      { color:#80D8FF; }
-.dl-month     { color:#B9F6CA; }
-.dl-year      { color:#EA80FC; }
+
+/* Year letter breakdown */
+.ys-let { color:var(--gold3); font-weight:700; text-shadow:0 0 5px rgba(255,230,0,.65); }
+.ys-sef { color:var(--yesod); font-size:.8em; }
 
 /* ═══════════════════════════════════════
    RING AREA
@@ -409,7 +279,6 @@ body::after {
 .seg-hod     { fill:rgba(234,128,252,.30); stroke:rgba(234,128,252,.18); }
 .seg-yesod   { fill:rgba(179,136,255,.30); stroke:rgba(179,136,255,.18); }
 .seg-malchut { fill:rgba(255,145,0,.30);   stroke:rgba(255,145,0,.18); }
-.seg-keter   { fill:rgba(232,232,255,.25);  stroke:rgba(232,232,255,.15); }
 
 /* Ring labels */
 .rl     { font-family:'Frank Ruhl Libre',serif; fill:rgba(225,185,35,.85); font-weight:700; }
@@ -418,7 +287,6 @@ body::after {
 .rl-ptz-act { font-family:'Frank Ruhl Libre',serif; fill:#FFD180; font-weight:900; }
 
 /* Sefirah sub-labels — vivid */
-.rs-keter   { font-family:'Frank Ruhl Libre',serif; fill:#E8E8FF; filter:url(#tglow); }
 .rs-chesed  { font-family:'Frank Ruhl Libre',serif; fill:#64B5F6; }
 .rs-gevurah { font-family:'Frank Ruhl Libre',serif; fill:#EF9A9A; }
 .rs-tiferet { font-family:'Frank Ruhl Libre',serif; fill:#FFE57F; }
@@ -428,17 +296,12 @@ body::after {
 .rs-malchut { font-family:'Frank Ruhl Libre',serif; fill:#FFCC80; }
 
 /* Hour name ring */
-.hn     { font-family:'Frank Ruhl Libre',serif; fill:rgba(220,175,30,.82);
-          filter:url(#tglow); }
+.hn     { font-family:'Frank Ruhl Libre',serif; fill:rgba(200,160,20,.68); }
 .hn-act { font-family:'Frank Ruhl Libre',serif; fill:#FFFFFF; font-weight:900; }
-/* Hour number label — dimmer than the name, smaller */
-.hn-num { font-family:'Frank Ruhl Libre',serif; fill:rgba(180,140,20,.55); font-weight:400; }
 
 /* Centre */
-.c-main { font-family:'Frank Ruhl Libre',serif; fill:#FFFFFF; font-weight:900; text-anchor:middle; dominant-baseline:central;
-          filter:url(#tglow2); }
-.c-sub  { font-family:'Frank Ruhl Libre',serif; fill:rgba(235,200,60,.95); text-anchor:middle; dominant-baseline:central;
-          filter:url(#tglow); }
+.c-main { font-family:'Frank Ruhl Libre',serif; fill:#FFF9C4; font-weight:900; text-anchor:middle; dominant-baseline:central; }
+.c-sub  { font-family:'Frank Ruhl Libre',serif; fill:rgba(220,188,50,.90); text-anchor:middle; dominant-baseline:central; }
 </style>
 </head>
 <body>
@@ -529,7 +392,7 @@ const DAY_NAMES   = ['יום א','יום ב','יום ג','יום ד','יום ה'
 const DAY_SEF     = ['חסד','גבורה','תפארת','נצח','הוד','יסוד','מלכות'];
 const MONTH_NAMES = ['תשרי','חשוון','כסלו','טבת','שבט','אדר','ניסן','אייר','סיוון','תמוז','אב','אלול'];
 const MONTH_SEF   = ['חסד','גבורה','תפארת','נצח','הוד','יסוד','חסד','גבורה','תפארת','נצח','הוד','יסוד'];
-const WEEK_PTZ    = ['חכמה','בינה','תפארת','מלכות'];
+const WEEK_PTZ    = ['אבא','אימא','ז״א','נוק׳'];
 const SHMITA_L    = ['א','ב','ג','ד','ה','ו','שמיטה'];
 const SHMITA_SEF  = ['חסד','גבורה','תפארת','נצח','הוד','יסוד','מלכות'];
 
@@ -540,45 +403,13 @@ const LETTER_SEF = {
   "ק":"מלכות","ר":"הוד","ש":"אש","ת":"תפארת"
 };
 
-/*
- * YEAR PLACE-VALUE SEFIROT — each numeric component mapped separately
- * Hundreds stay as ONE combined unit (תש=700=הוד, not ת+ש)
- */
-const HUNDREDS_SEF = {
-  100:'חסד', 200:'גבורה', 300:'תפארת', 400:'נצח',
-  500:'הוד',  600:'יסוד',  700:'הוד',   800:'יסוד',  900:'מלכות'
-};
-const HUNDREDS_STR = {
-  100:'ק', 200:'ר', 300:'ש', 400:'ת',
-  500:'תק', 600:'תר', 700:'תש', 800:'תת', 900:'תתק'
-};
-const TENS_SEF = {
-  10:'חכמה',20:'כתר',30:'תפארת',40:'בינה',50:'נצח',
-  60:'הוד',70:'חסד',80:'יסוד',90:'תפארת'
-};
-const TENS_STR = {
-  10:'י',20:'כ',30:'ל',40:'מ',50:'נ',60:'ס',70:'ע',80:'פ',90:'צ'
-};
-const UNITS_SEF = {
-  1:'כתר',2:'חכמה',3:'בינה',4:'חסד',5:'גבורה',
-  6:'תפארת',7:'נצח',8:'הוד',9:'יסוד'
-};
-const UNITS_STR = {
-  1:'א',2:'ב',3:'ג',4:'ד',5:'ה',6:'ו',7:'ז',8:'ח',9:'ט'
-};
-const MIL_SEF = {
-  1:'כתר',2:'חכמה',3:'בינה',4:'חסד',5:'יסוד',6:'תפארת',7:'נצח'
-};
-
 const SEFI_KEY = {
-  'כתר':'keter',
   'חסד':'chesed','גבורה':'gevurah','תפארת':'tiferet',
   'נצח':'netzach','הוד':'hod','יסוד':'yesod','מלכות':'malchut'
 };
 
 /* Vivid SVG fill per sefirah */
 const SEFI_COLOR = {
-  keter:'rgba(232,232,255,.95)',
   chesed:'rgba(66,165,245,.95)',  gevurah:'rgba(239,83,80,.95)',
   tiferet:'rgba(255,220,0,.95)',  netzach:'rgba(0,230,118,.95)',
   hod:'rgba(234,128,252,.95)',    yesod:'rgba(179,136,255,.95)',
@@ -596,47 +427,10 @@ function mk(tag, a) {
   return el;
 }
 
-function sKey(s)     { return SEFI_KEY[s] || 'chesed'; }
+function sKey(s)     { return SEFI_KEY[s] || 'tiferet'; }
 function sSvgCls(s)  { return 'rs-' + sKey(s); }
 function sColor(s)   { return SEFI_COLOR[sKey(s)] || SEFI_COLOR.tiferet; }
-function dlSef(s) {
-  const k = sKey(s);
-  return 'dl-sef dl-s-' + (k === 'tiferet' && s === 'כתר' ? 'keter' : k);
-}
-
-/* pill(name, sefirah, abbrevHtml) — colored bordered chip with optional status line */
-function pill(name, sef, abbrevHtml) {
-  return pillWithExtra(name, sef, abbrevHtml, null);
-}
-
-/* pillWithExtra — pill with optional extra HTML row below the abbrev line */
-function pillWithExtra(name, sef, abbrevHtml, extraHtml) {
-  const k = sef === 'כתר' ? 'keter' : sKey(sef);
-  const abLine = abbrevHtml
-    ? `<span class="sab-line">${abbrevHtml}</span>`
-    : '';
-  const exLine = extraHtml || '';
-  return `<span class="pill pill-${k}">`+
-    `<span class="pill-body">`+
-    `<span class="pill-name">${name}</span>`+
-    `<span class="pill-tag">${sef}</span>`+
-    `</span>`+
-    abLine+
-    exLine+
-    `</span>`;
-}
-
-/* year-value chip */
-function yvChip(str, lbl, sef) {
-  const k = sef === 'כתר' ? 'keter' : sKey(sef);
-  return `<span class="yv-chip dl-s-${k}">`+
-    `<span class="yv-top">`+
-    `<span class="yv-str">${str}</span>`+
-    `<span class="yv-dash">—</span>`+
-    `<span class="yv-sef">${sef}</span>`+
-    `</span>`+
-    `</span>`;
-}
+function dlSef(s)    { return 'dl-sef dl-s-' + sKey(s); }
 
 function toHN(n) {
   const t = ["","א","ב","ג","ד","ה","ו","ז","ח","ט",
@@ -647,23 +441,16 @@ function toHN(n) {
   return t[n] || String(n);
 }
 
-/*
- * yearLetters(y) — returns just the last-3 abbreviation string e.g. "תשפו"
- * fullYearStr(y) — e.g. "ה׳תשפ״ו"
- * yearComponents(y) — returns array of {str, val, sef} for display
- */
 function yearLetters(y) {
-  const mod=y%1000;
+  const mod = y%1000;
+  const H=["","ק","ר","ש","ת","תק","תר","תש","תת","תתק"],
+        T=["","י","כ","ל","מ","נ","ס","ע","פ","צ"],
+        O=["","א","ב","ג","ד","ה","ו","ז","ח","ט"];
   const hh=Math.floor(mod/100), tt=Math.floor((mod%100)/10), oo=mod%10;
-  const hundV=hh*100, tenV=tt*10;
-  let r=HUNDREDS_STR[hundV]||"";
-  // special Gershayim cases
+  let r=H[hh];
   if (tt===1&&oo===5) r+="טו";
   else if (tt===1&&oo===6) r+="טז";
-  else {
-    if (tenV) r+=TENS_STR[tenV]||"";
-    if (oo)   r+=UNITS_STR[oo]||"";
-  }
+  else r+=T[tt]+O[oo];
   return r;
 }
 
@@ -676,125 +463,9 @@ function fullYearStr(y) {
   return mH+"׳"+chars.join("");
 }
 
-/*
- * Returns array of place-value components for the year, each with:
- *   { str: "תש", label: "700 — שבע מאות", sef: "הוד", css: "hod" }
- */
-function yearComponents(y) {
-  const mil=Math.floor(y/1000);
-  const mod=y%1000;
-  const hh=Math.floor(mod/100), tt=Math.floor((mod%100)/10), oo=mod%10;
-  const hundV=hh*100, tenV=tt*10;
-  const milStr=["","א","ב","ג","ד","ה","ו","ז","ח","ט"][mil]||"";
-  const milLabels=["","אחד","שניים","שלושה","ארבעה","חמשה","ששה","שבעה"];
-  const tenLabels={10:"עשרה",20:"עשרים",30:"שלושים",40:"ארבעים",50:"חמישים",
-                   60:"ששים",70:"שבעים",80:"שמונים",90:"תשעים"};
-  const unitLabels={1:"אחת",2:"שתיים",3:"שלוש",4:"ארבע",5:"חמש",
-                    6:"שש",7:"שבע",8:"שמונה",9:"תשע"};
-  const hundLabels={100:"מאה",200:"מאתיים",300:"שלש מאות",400:"ארבע מאות",
-                    500:"חמש מאות",600:"שש מאות",700:"שבע מאות",
-                    800:"שמונה מאות",900:"תשע מאות"};
-  const parts=[];
-  if (mil>0) parts.push({
-    str: milStr+"׳",
-    label: (milLabels[mil]||mil)+" אלפים",
-    sef: MIL_SEF[mil]||"כתר",
-    css: sKey(MIL_SEF[mil]||"כתר")
-  });
-  if (hundV>0) parts.push({
-    str: HUNDREDS_STR[hundV]||"",
-    label: hundLabels[hundV]||"",
-    sef: HUNDREDS_SEF[hundV]||"חסד",
-    css: sKey(HUNDREDS_SEF[hundV]||"חסד")
-  });
-  if (tenV>0) parts.push({
-    str: TENS_STR[tenV]||"",
-    label: tenLabels[tenV]||"",
-    sef: TENS_SEF[tenV]||"חסד",
-    css: sKey(TENS_SEF[tenV]||"חסד")
-  });
-  if (oo>0) parts.push({
-    str: UNITS_STR[oo]||"",
-    label: unitLabels[oo]||"",
-    sef: UNITS_SEF[oo]||"כתר",
-    css: sKey(UNITS_SEF[oo]||"כתר")
-  });
-  return parts;
-}
-
 function weekPtzLabel(wn, ptz) {
   const sub=["ד׳","ח׳","ז״א ד׳","נוק׳ ד׳"];
   return (sub[(wn-1)%4]||"ד׳")+ptz;
-}
-
-/*
- * Day-of-month sefirah:
- *   1 (א) = כתר  — ראש חודש
- *   30 (ל) = כתר  — ראש חודש
- *   2–29: cycle of 7 starting from חסד
- *     position = (day - 2) % 7  → 0=חסד 1=גבורה 2=תפארת 3=נצח 4=הוד 5=יסוד 6=מלכות
- *   Verify: 2,9,16,23 → (d-2)%7=0 → חסד ✓
- *           5,12,19,26 → (d-2)%7=3 → נצח ✓
- */
-const CYCLE_7 = ['חסד','גבורה','תפארת','נצח','הוד','יסוד','מלכות'];
-
-function domSefirah(d) {
-  if (d===1 || d===30) return 'כתר';
-  return CYCLE_7[(d-2)%7];
-}
-
-/* Is today ראש חודש? (day 1 or 30) */
-function isRoshChodesh(d) { return d===1||d===30; }
-
-/*
- * sefAbbrev(currentSefirah, includeKeter)
- * Builds the abbreviated sequence string like  כ ח ג ת נ ה י מ
- * with the active one highlighted, others dimmed.
- * The abbreviation letters:
- *   כתר=כ  חסד=ח  גבורה=ג  תפארת=ת  נצח=נ  הוד=ה  יסוד=י  מלכות=מ
- */
-const SEF_ABBREV = [
-  {s:'כתר',  a:'כ', k:'keter'},
-  {s:'חסד',  a:'ח', k:'chesed'},
-  {s:'גבורה',a:'ג', k:'gevurah'},
-  {s:'תפארת',a:'ת', k:'tiferet'},
-  {s:'נצח',  a:'נ', k:'netzach'},
-  {s:'הוד',  a:'ה', k:'hod'},
-  {s:'יסוד', a:'י', k:'yesod'},
-  {s:'מלכות',a:'מ', k:'malchut'}
-];
-
-/* Week sefirot (4-week cycle): חכמה בינה תפארת מלכות */
-const WEEK_SEF_ABBREV = [
-  {s:'חכמה', a:'ח', k:'chesed'},
-  {s:'בינה', a:'ב', k:'gevurah'},
-  {s:'תפארת',a:'ת', k:'tiferet'},
-  {s:'מלכות',a:'מ', k:'malchut'}
-];
-
-function sefAbbrevLine(currentSef, list) {
-  return list.map(item => {
-    const active = item.s === currentSef;
-    if (active) {
-      return `<span class="sab-active sab-${item.k}">${item.a}</span>`;
-    }
-    return `<span class="sab-dim">${item.a}</span>`;
-  }).join('<span class="sab-sep">׳</span>');
-}
-
-/* 7-cycle abbreviation (no כתר) — for יום בחודש, יום השבוע, חודש */
-function sefAbbrev7(currentSef) {
-  return sefAbbrevLine(currentSef, SEF_ABBREV.slice(1));
-}
-
-/* 8-cycle abbreviation (with כתר) — for יום בחודש when כתר is possible */
-function sefAbbrev8(currentSef) {
-  return sefAbbrevLine(currentSef, SEF_ABBREV);
-}
-
-/* 4-cycle for week */
-function sefAbbrev4(currentSef) {
-  return sefAbbrevLine(currentSef, WEEK_SEF_ABBREV);
 }
 
 function getHebDate() {
@@ -811,20 +482,6 @@ function getHebDate() {
 
 function mIdx(name) {
   return MONTH_NAMES.findIndex(mn=>mn===name||name.includes(mn)||mn.includes(name));
-}
-
-/*
- * Month partzuf/filling label:
- *   Summer months (ניסן=6 through אלול=11, plus תשרי=0):
- *     ב״ן דמ״ה וב״ן דב״ן
- *   Winter months (חשוון=1 through אדר=5):
- *     מ״ה דמ״ה ומ״ה דב״ן
- */
-function monthPartzuf(mi) {
-  const summer = [0,6,7,8,9,10,11]; // תשרי + ניסן through אלול
-  return summer.includes(mi)
-    ? 'ב״ן דמ״ה וב״ן דב״ן'
-    : 'מ״ה דמ״ה ומ״ה דב״ן';
 }
 
 function pt(cx,cy,r,deg) {
@@ -938,62 +595,20 @@ function drawHourRing(g,defs,cx,cy,r1,r2,curH) {
     const arcLen=2*Math.PI*rMid*(step/360);
     const words=HOUR_NAMES[i].split(" ");
     const maxW=Math.max(...words.map(w=>w.length));
-
-    /* Layout from outer→inner:
-     *  r1+rH*.88  — hour number (1-12 AM/PM)
-     *  r1+rH*.66  — name word 1
-     *  r1+rH*.30  — name word 2
-     *  r1+rH*.10  — sefirah (active only)
-     */
-    const fsH=Math.min(Math.max(arcLen/(4*CRAT),2.8),rH*.20);  // hour num font
-    const fsW=Math.min(Math.max(arcLen/(maxW*CRAT),3.0),rH*.30); // name font
+    const fsW=Math.min(Math.max(arcLen/(maxW*CRAT),3.2),rH*.34);
+    const rW1=r1+rH*.73,rW2=r1+rH*.33;
     const lCls=active?"hn-act":"hn";
     const lFlt=active?"url(#tglow2)":null;
 
-    // Hour number label  e.g. "12AM" or "3PM"
-    const h12=(i%12)||12, ap=i<12?"AM":"PM";
-    const hourLabel=`${h12}${ap}`;
-    const hNumCls=active?"hn-act":"hn-num";
-    ctext(g,defs,cx,cy,r1+rH*.88,s,e,hourLabel,hNumCls,fsH,active?"url(#tglow2)":null);
+    ctext(g,defs,cx,cy,rW1,s,e,words[0],lCls,fsW,lFlt);
+    if(words[1]) ctext(g,defs,cx,cy,rW2,s,e,words[1],lCls,fsW,lFlt);
 
-    // Name words
-    ctext(g,defs,cx,cy,r1+rH*.66,s,e,words[0],lCls,fsW,lFlt);
-    if(words[1]) ctext(g,defs,cx,cy,r1+rH*.30,s,e,words[1],lCls,fsW,lFlt);
-
-    // Sefirah label removed from hour ring per user request
+    if(active){
+      const sefi=HOUR_SEF[i];
+      const fsS=Math.min(Math.max(arcLen/(sefi.length*CRAT),2.8),rH*.18);
+      ctext(g,defs,cx,cy,r1+rH*.10,s,e,sefi,sSvgCls(sefi),fsS,null);
+    }
   }
-}
-
-/* ═══════════════════════════════════════
-   RING TITLE LABEL
-   Draws a short curved title at the top of a ring band
-   r = midpoint radius of the ring
-═══════════════════════════════════════ */
-function drawRingTitle(g, defs, cx, cy, r, title) {
-  const id = "rt" + (++_pid);
-  // Arc at the very top — from 265° to 275° (tiny 10° arc centred at top)
-  // We want the text to sit inside the ring gap at the 12-o'clock position
-  const span = 18; // degrees each side of top
-  const p1 = pt(cx, cy, r, -span), p2 = pt(cx, cy, r, span);
-  defs.appendChild(mk("path", {
-    id, fill: "none",
-    d: `M${p1.x},${p1.y}A${r},${r} 0 0 1 ${p2.x},${p2.y}`
-  }));
-  const txt = mk("text", {
-    "font-family": "Frank Ruhl Libre,serif",
-    "font-size": "5.5",
-    "font-weight": "900",
-    fill: "rgba(255,230,100,.70)",
-    filter: "url(#tglow)"
-  });
-  const tp = mk("textPath", {
-    href: `#${id}`,
-    startOffset: "50%",
-    "text-anchor": "middle"
-  });
-  tp.textContent = title;
-  txt.appendChild(tp);
-  g.appendChild(txt);
 }
 
 /* ═══════════════════════════════════════
@@ -1025,7 +640,8 @@ function buildWheel(cur) {
     const h12=(i%12)||12,ap=i<12?"AM":"PM";
     d.innerHTML=
       `<div class="wh">${h12}${ap}</div>`+
-      `<div class="wn">${HOUR_NAMES[i]}</div>`;
+      `<div class="wn">${HOUR_NAMES[i]}</div>`+
+      `<div class="ws">${HOUR_SEF[i]}</div>`;
     track.appendChild(d);
   }
   track.style.transform=`translateX(${-(cur*iW-wheel.offsetWidth/2+iW/2)}px)`;
@@ -1056,113 +672,43 @@ function update() {
   const week=Math.ceil(heb.d/7);
   const mi=mIdx(heb.m);
   const sPos=heb.y%7;
-  const yY=67; // יובל ס״ז — traditional count from entry into Eretz Yisrael
-  const yFull    = fullYearStr(heb.y);
-  const yComps   = yearComponents(heb.y);
-  /* week sefirah computed inline in weekPill below */
-  const mSef     = MONTH_SEF[Math.max(0,mi)];
-  const dom      = toHN(heb.d);
-  const domSef   = domSefirah(heb.d);
-  const isRC     = isRoshChodesh(heb.d);
+  const yY=heb.y%50||50;
+  const yLet=yearLetters(heb.y);
+  const yFull=fullYearStr(heb.y);
+  const yChars=yLet.split("").filter(l=>l!=="״"&&l!=="׳");
+  const yS=yChars.map(l=>
+    `<span class="ys-let">${l}</span><span class="ys-sef">(${LETTER_SEF[l]||""})</span>`
+  ).join(" ");
+  const ptzBase=WEEK_PTZ[(week-1)%4]||"נוק׳";
+  const ptz=weekPtzLabel(week,ptzBase);
+  const mSef=MONTH_SEF[Math.max(0,mi)];
+  const dom=toHN(heb.d);
 
   lastHour=h;
 
   /* Header name */
   document.getElementById("name-wrap").innerHTML=buildGlowName(HOUR_NAMES[h]);
 
-  /* ── DATE TITLE ──
-   * Row 1 (headline): ג באייר ה׳תשפ״ו  (big, glowing)
-   * Row 2 (pills):    יום החודש pill · יום השבוע pill · שבוע pill · חודש pill · שמיטה pill
-   * Row 3 (year):     each year component as a colored chip + yovel
-   */
-
-  /* Row 1 — big headline */
-  const rcBadge = isRC ? `<span class="dl-rc-badge">ראש חודש</span>` : "";
-  const row1 =
-    `<div class="dl-headline">`+
-    rcBadge+
-    `<span class="dl-dom-num">${dom}</span>`+
-    `<span class="dl-month-nm">ב${heb.m}</span>`+
-    `<span class="dl-year-nm">${yFull}</span>`+
-    `</div>`;
-
-  /* ── Row 2 — attribute pills with abbreviation status lines ── */
-
-  /* יום בחודש pill — 8-cycle only when it IS כתר (ראש חודש), else 7-cycle */
-  const domPillKey = domSef === 'כתר' ? 'keter' : sKey(domSef);
-  const domAbbrev  = domSef === 'כתר' ? sefAbbrev8(domSef) : sefAbbrev7(domSef);
-  const domPill =
-    `<span class="pill pill-${domPillKey}">`+
-    `<span class="pill-body"><span class="pill-name">${dom} בחודש</span><span class="pill-tag">${domSef}</span></span>`+
-    `<span class="sab-line">${domAbbrev}</span>`+
+  /* Date line */
+  document.getElementById("date-line").innerHTML=
+    `<span class="dl-day">יום <b>${DAY_NAMES[dayJs].replace("יום ","")}</b></span>`+
+    `<span class="${dlSef(DAY_SEF[dayJs])}">(${DAY_SEF[dayJs]})</span>`+
+    `<span class="dl-dot">·</span>`+
+    `<span class="dl-week">שבוע <b>${toHN(week)}</b></span>`+
+    `<span class="dl-sef dl-s-partzuf">(${ptz})</span>`+
+    `<span class="dl-dot">·</span>`+
+    `<span class="dl-month"><b>${heb.m}</b></span>`+
+    `<span class="${dlSef(mSef)}">(${mSef})</span>`+
+    `<span class="dl-dot">·</span>`+
+    `<span class="dl-year">${yFull}</span>`+
+    `<br>`+
+    `<span class="sub">`+
+    `<span class="dl-dom">${dom} ב${heb.m}</span> &nbsp;|&nbsp; `+
+    `${yS} &nbsp;|&nbsp; `+
+    `שמיטה <b class="dl-s-shmita">${SHMITA_L[sPos]}</b>`+
+    `<span class="${dlSef(SHMITA_SEF[sPos])}">(${SHMITA_SEF[sPos]})</span>`+
+    ` &nbsp;|&nbsp; <span class="dl-yovel">${toHN(yY)}״ ליובל</span>`+
     `</span>`;
-
-  /* יום השבוע — 7-cycle */
-  const dayPill = pill(DAY_NAMES[dayJs], DAY_SEF[dayJs], sefAbbrev7(DAY_SEF[dayJs]));
-
-  /* שבוע בחודש — 4-cycle: חכמה בינה תפארת מלכות */
-  const weekPtz  = WEEK_PTZ[(week-1)%4]||'מלכות';
-  const weekPill = pill(`שבוע ${toHN(week)}`, weekPtz, sefAbbrev4(weekPtz));
-
-  /* חודש — 7-cycle + summer/winter partzuf label */
-  const mPtz     = monthPartzuf(mi);
-  const mPtzHtml = `<span class="pill-ptz">${mPtz}</span>`;
-  const monthPill = pillWithExtra(heb.m, mSef, sefAbbrev7(mSef), mPtzHtml);
-
-  /* שמיטה — full pill with sefirah + abbrev status */
-  const shmitaLabel = sPos===6 ? 'שנת שמיטה' : `שמיטה ${SHMITA_L[sPos]}`;
-  const shmitaPill  = pill(shmitaLabel, SHMITA_SEF[sPos], sefAbbrev7(SHMITA_SEF[sPos]));
-
-  const row2 =
-    `<div class="dl-pills">`+
-    domPill+
-    `<span class="dl-dot">·</span>`+
-    dayPill+
-    `<span class="dl-dot">·</span>`+
-    weekPill+
-    `<span class="dl-dot">·</span>`+
-    monthPill+
-    `<span class="dl-dot">·</span>`+
-    shmitaPill+
-    `</div>`;
-
-  /* ── Row 3 — year place-value chips with abbreviation + yovel ── */
-  /* For each year component we show: letter — sefirah — abbrev status
-   * Units & Tens & Hundreds: 7-cycle (no כתר)
-   * Millennium: uses MIL_SEF so כתר possible → 8-abbrev
-   */
-  const yvChips = yComps.map((c,ci) => {
-    // Only use 8-cycle (includes כ) when the sefirah actually IS כתר
-    const abbr = c.sef === 'כתר' ? sefAbbrev8(c.sef) : sefAbbrev7(c.sef);
-    const k = c.sef === 'כתר' ? 'keter' : sKey(c.sef);
-    return `<span class="yv-chip dl-s-${k}">`+
-      `<span class="yv-top">`+
-      `<span class="yv-str">${c.str}</span>`+
-      `<span class="yv-dash">—</span>`+
-      `<span class="yv-sef">${c.sef}</span>`+
-      `</span>`+
-      `<span class="sab-line">${abbr}</span>`+
-      `</span>`;
-  }).join(' ');
-
-  /* יובל ס״ז — hardcoded traditional count */
-  const yovelChip =
-    `<span class="yv-chip dl-s-yesod">`+
-    `<span class="yv-top">`+
-    `<span class="yv-str">יובל</span>`+
-    `<span class="yv-dash"> </span>`+
-    `<span class="yv-sef">ס״ז</span>`+
-    `</span>`+
-    `</span>`;
-
-  const row3 =
-    `<div class="dl-sub">`+
-    yvChips+
-    `<span class="dl-dot">|</span>`+
-    yovelChip+
-    `</div>`;
-
-  document.getElementById("date-line").innerHTML = row1+row2+row3;
 
   /* SVG rings */
   const rG=document.getElementById("rings");
@@ -1181,15 +727,28 @@ function update() {
   drawRing(rG,defs,CX,CY,164,186,
     MONTH_NAMES.map((m,i)=>({label:m,sefi:MONTH_SEF[i],active:i===mi})),6,4.5);
 
-  /* ── Shmita ring (188-203) ── */
   drawRing(rG,defs,CX,CY,188,203,
     SHMITA_L.map((s,i)=>({label:s,sefi:SHMITA_SEF[i],active:i===sPos})),5.5,4);
 
-  /* ── Ring title labels — drawn at 12-o'clock inside each ring band ── */
-  drawRingTitle(rG,defs,CX,CY,131,'יום');       // day ring mid  120-142
-  drawRingTitle(rG,defs,CX,CY,153,'שבוע');      // week ring mid 144-162
-  drawRingTitle(rG,defs,CX,CY,175,'חודש');      // month ring mid 164-186
-  drawRingTitle(rG,defs,CX,CY,196,'שמיטה');     // shmita ring mid 188-203
+  /* Yovel arc */
+  const yR=210;
+  rG.appendChild(mk("circle",{cx:CX,cy:CY,r:yR,fill:"none",stroke:"rgba(255,220,0,.08)","stroke-width":"6"}));
+  if(yY>0){
+    const yDeg=(yY/50)*360;
+    const yp1=pt(CX,CY,yR,-90),yp2=pt(CX,CY,yR,yDeg-90),ylg=yDeg>180?1:0;
+    const yD=`M${yp1.x},${yp1.y}A${yR},${yR} 0 ${ylg} 1 ${yp2.x},${yp2.y}`;
+    rG.appendChild(mk("path",{d:yD,fill:"none",stroke:"rgba(255,210,0,.24)","stroke-width":"12","stroke-linecap":"round",filter:"url(#glow2)"}));
+    rG.appendChild(mk("path",{d:yD,fill:"none",stroke:"rgba(255,235,0,.82)","stroke-width":"4.5","stroke-linecap":"round",filter:"url(#yovGlow)"}));
+  }
+  {
+    const lid="ylb"+(++_pid);
+    const la=pt(CX,CY,yR,-22),lb=pt(CX,CY,yR,22);
+    defs.appendChild(mk("path",{id:lid,d:`M${la.x},${la.y}A${yR},${yR} 0 0 1 ${lb.x},${lb.y}`,fill:"none"}));
+    const yt=mk("text",{"font-size":"8.5","font-family":"Frank Ruhl Libre,serif",fill:"rgba(255,238,0,.92)",filter:"url(#tglow)"});
+    const ytp=mk("textPath",{href:`#${lid}`,startOffset:"50%","text-anchor":"middle"});
+    ytp.textContent=`${toHN(yY)}״ ליובל`;
+    yt.appendChild(ytp); rG.appendChild(yt);
+  }
 
   /* Centre */
   const cg=document.getElementById("cinfo");
@@ -1198,9 +757,10 @@ function update() {
   const hSef=HOUR_SEF[h];
   const hCol=sColor(hSef);
   [
-    {t:w1,    fs:20,fill:"#FFF9C4",flt:"url(#tglow2)",dy:-14,fw:"900"},
-    {t:w2,    fs:20,fill:"#FFF9C4",flt:"url(#tglow2)",dy:9,  fw:"900"},
-    {t:`שעה ${toHN(h)}`,fs:10,fill:"rgba(215,182,42,.90)",flt:null,dy:28,fw:"400"},
+    {t:w1,    fs:20,fill:"#FFF9C4",flt:"url(#tglow2)",dy:-20,fw:"900"},
+    {t:w2,    fs:20,fill:"#FFF9C4",flt:"url(#tglow2)",dy:3,  fw:"900"},
+    {t:hSef,  fs:11,fill:hCol,     flt:"url(#tglow)", dy:21, fw:"700"},
+    {t:`שעה ${toHN(h)}`,fs:10,fill:"rgba(215,182,42,.90)",flt:null,dy:34,fw:"400"},
   ].forEach(ln=>{
     const el=mk("text",{x:CX,y:CY+ln.dy,"font-size":ln.fs,
       "font-family":"Frank Ruhl Libre,serif",fill:ln.fill,

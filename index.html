@@ -2,8 +2,10 @@
 <html lang="he" dir="rtl">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-<title>מערכת זמן קבלית</title>
+<title>מערכת זמן קבלית v1777327451</title>
 <link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@300;400;700;900&display=swap" rel="stylesheet">
 <style>
 /* ═══════════════════════════════════════
@@ -273,20 +275,20 @@ body::after {
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
-  gap: 0 .22em;
-  font-size: clamp(8px, 1.5vw, 16px);
+  gap: .1em .3em;
+  font-size: clamp(11px, 2.0vw, 22px);
   font-weight: 700;
-  margin-bottom: .14em;
-  opacity: .95;
+  margin-bottom: .18em;
+  opacity: 1;
   direction: rtl;
 }
-.dl-attr-date    { color:rgba(255,240,180,.85); font-weight:900; margin-left:.4em; }
+.dl-attr-date    { color:rgba(255,240,180,.92); font-weight:900; font-size:1.05em; margin-left:.4em; letter-spacing:.02em; }
 .dl-attr-sep     { color:rgba(255,220,0,.25); margin:0 .15em; }
 .dl-attr-space   { display:inline-block; width:.25em; }
 .dl-attr-d       { color:rgba(255,220,80,.50); font-size:.88em; font-weight:700; }
 .dl-attr-sef     { font-weight:900; }
-.dl-attr-bracket { color:rgba(255,255,255,.28); font-size:.72em; font-weight:300;
-                   letter-spacing:.01em; margin-right:.08em; }
+.dl-attr-bracket { color:rgba(255,255,255,.32); font-size:.75em; font-weight:300;
+                   letter-spacing:.01em; margin-right:.10em; }
 
 /* Year chip label (שנה / עשרות / מאות / אלפים) */
 .yv-chip .yv-label {
@@ -385,7 +387,7 @@ body::after {
 }
 .wi .wh { font-size:clamp(5px,1.0vw,9px);  color:#4a3a06; margin-bottom:1px; letter-spacing:.5px; }
 .wi .wn { font-size:clamp(5px,1.1vw,10px); color:#6a5a18; line-height:1.25; direction:rtl; }
-.wi .ws { font-size:clamp(3.5px,.85vw,7px); color:#3a2e08; }
+/* .wi .ws removed — sefirah not shown in wheel */
 
 .wi.near { opacity:.70; }
 .wi.near .wh { color:#8a6a20; }
@@ -837,22 +839,27 @@ const WEEK_SEF_ABBREV = [
 ];
 
 function sefAbbrevLine(currentSef, list) {
-  // For full 11-list, insert ″ group separators after positions 3 and 6 (after ד and ת)
-  // giving visual  כחב״ד | חג״ת | נהי״מ
-  const fullLen = SEF_ABBREV.length; // 11
-  const isFullList = list.length === fullLen;
+  // Full 11-list:  כ ח ב ד ״ ח ג ת ״ נ ה י מ
+  //   group breaks after idx 3 (ד) and idx 6 (ת)
+  // 7-list (slice 4): ח ג ת ״ נ ה י מ
+  //   group break after idx 2 (ת)
+  // 4-list (week):  ח ב ת מ  — no group breaks
+  const isFullList = list.length === 11;
+  const is7List    = list.length === 7;
 
   return list.map((item, idx) => {
     const active = item.s === currentSef;
     const letter = active
       ? `<span class="sab-active sab-${item.k}">${item.a}</span>`
       : `<span class="sab-dim">${item.a}</span>`;
-    // Insert group separator after ד (idx 3) and after ת (idx 6) in full list
+
+    if (idx === list.length - 1) return letter; // last — no separator
+
     let sep = '<span class="sab-sep">׳</span>';
-    if (isFullList && (idx === 3 || idx === 6)) {
-      sep = '<span class="sab-grp">״</span>';
-    }
-    return idx < list.length - 1 ? letter + sep : letter;
+    if (isFullList && (idx === 3 || idx === 6)) sep = '<span class="sab-grp">״</span>';
+    if (is7List    &&  idx === 2)               sep = '<span class="sab-grp">״</span>';
+
+    return letter + sep;
   }).join('');
 }
 
@@ -1119,6 +1126,29 @@ function buildWheel(cur) {
 }
 
 /* ═══════════════════════════════════════
+   HOURLY CHIME
+═══════════════════════════════════════ */
+function playHourChime() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    function tone(freq, startT, dur, gainPeak) {
+      const osc=ctx.createOscillator(), gain=ctx.createGain();
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.type='sine'; osc.frequency.setValueAtTime(freq, startT);
+      gain.gain.setValueAtTime(0, startT);
+      gain.gain.linearRampToValueAtTime(gainPeak, startT+0.012);
+      gain.gain.exponentialRampToValueAtTime(0.001, startT+dur);
+      osc.start(startT); osc.stop(startT+dur);
+    }
+    const t = ctx.currentTime;
+    tone(528,  t,       2.8, 0.18);
+    tone(792,  t,       2.2, 0.09);
+    tone(1056, t,       1.6, 0.04);
+    tone(528,  t+0.9,   2.0, 0.10);
+  } catch(e) {}
+}
+
+/* ═══════════════════════════════════════
    FIRE
 ═══════════════════════════════════════ */
 function animateFire() {
@@ -1142,7 +1172,7 @@ function update() {
   const dayJs=now.getDay();
   const week=Math.ceil(heb.d/7);
   const mi=mIdx(heb.m);
-  const sPos=heb.y%7;
+  const sPos=(heb.y-1)%7; // 0=חסד…6=מלכות, year 1=chesed
   const yY=67; // יובל ס״ז — traditional count from entry into Eretz Yisrael
   const yFull    = fullYearStr(heb.y);
   const yComps   = yearComponents(heb.y);
@@ -1152,6 +1182,7 @@ function update() {
   const domSef   = domSefirah(heb.d);
   const isRC     = isRoshChodesh(heb.d);
 
+  if (lastHour !== -1) playHourChime();
   lastHour=h;
 
   /* Header name */
@@ -1208,6 +1239,7 @@ function update() {
   const attrItems = [
     sfBracketed(DAY_SEF[dayJs],    'יום',          true),   // first — no ד
     sfBracketed(domSef,            'יום בחודש',    false),
+    sfBracketed(weekPtz,           'שבוע',         false),
     sfBracketed(mSef,              'חודש',         false),
     ...yReversed.map((comp,i) => sfBracketed(comp.sef, yLabels[i]||'', false))
   ];
@@ -1325,7 +1357,7 @@ function update() {
     {t:w1,          fs:18,fill:"#FFF9C4",          flt:"url(#tglow2)",dy:-28,fw:"900"},
     {t:w2,          fs:18,fill:"#FFF9C4",          flt:"url(#tglow2)",dy:-8, fw:"900"},
     {t:centreTime,  fs:13,fill:"#80D8FF",           flt:"url(#tglow)", dy:11, fw:"300",tag:"centre-time"},
-    {t:`שעה ${toHN(h)}`,fs:9,fill:"rgba(215,182,42,.85)",flt:null,    dy:26, fw:"400"},
+    {t:'שעה',fs:9,fill:"rgba(215,182,42,.85)",flt:null,dy:26, fw:"400"},
   ].forEach(ln=>{
     const el=mk("text",{x:CX,y:CY+ln.dy,"font-size":ln.fs,
       "font-family":"Frank Ruhl Libre,serif",fill:ln.fill,

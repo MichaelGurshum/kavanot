@@ -1128,7 +1128,7 @@ function buildWheel(cur) {
 /* ═══════════════════════════════════════
    HOURLY CHIME
 ═══════════════════════════════════════ */
-function playHourChime() {
+/*function playHourChime() {
   try {
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
     function tone(freq, startT, dur, gainPeak) {
@@ -1146,7 +1146,7 @@ function playHourChime() {
     tone(1056, t,       1.6, 0.04);
     tone(528,  t+0.9,   2.0, 0.10);
   } catch(e) {}
-}
+}*/
 
 /* ═══════════════════════════════════════
    FIRE
@@ -1182,7 +1182,7 @@ function update() {
   const domSef   = domSefirah(heb.d);
   const isRC     = isRoshChodesh(heb.d);
 
-  if (lastHour !== -1) playHourChime();
+ // if (lastHour !== -1) playHourChime();
   lastHour=h;
 
   /* Header name */

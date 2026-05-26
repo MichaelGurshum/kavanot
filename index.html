@@ -882,7 +882,7 @@ function sefAbbrevFull(currentSef) {
 function sefAbbrev4(currentSef) {
   return sefAbbrevLine(currentSef, WEEK_SEF_ABBREV);
 }
-
+/*
 function getHebDate() {
   const parts=new Intl.DateTimeFormat('he-u-ca-hebrew',
     {day:'numeric',month:'long',year:'numeric'}).formatToParts(new Date());
@@ -893,8 +893,27 @@ function getHebDate() {
     if(x.type==='year')  y=parseInt(x.value);
   });
   return {d,m,y};
-}
+}. */
+function getHebDate() {
+  const parts = new Intl.DateTimeFormat('he-u-ca-hebrew',
+    {day:'numeric',month:'long',year:'numeric'}).formatToParts(new Date());
 
+  let d,m,y;
+
+  parts.forEach(x => {
+    if (x.type === 'day') d = parseInt(x.value);
+
+    if (x.type === 'month') {
+      m = x.value
+        .replace('סיוון', 'סיון')
+        .replace('חשוון', 'חשון');
+    }
+
+    if (x.type === 'year') y = parseInt(x.value);
+  });
+
+  return {d,m,y};
+}
 function mIdx(name) {
   return MONTH_NAMES.findIndex(mn=>mn===name||name.includes(mn)||mn.includes(name));
 }
